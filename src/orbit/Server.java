@@ -13,16 +13,18 @@ public class Server {
 	
 	public Server(){
 		
-		//Accept connections and create new threads for each - Should probably change to EXECUTOR SERVICE
+		//Accept connections and create new threads for each
+		//Should probably change to EXECUTOR SERVICE
+		//Or throttle with Semaphores
 		ServerSocket ss = null;
 		try{
 			ss = new ServerSocket(6789);
 			while(true){
 				System.out.println("Waiting for connection...");
 				Socket s = ss.accept();
-				OrbitServerThread oc = new OrbitServerThread(this, s);
-				clients.add(oc);
-				oc.start();
+				OrbitServerThread ost = new OrbitServerThread(this, s);
+				clients.add(ost);
+				ost.start();
 			}
 		}catch(IOException ioe){
 			System.out.println("IOE Exception in Server constructor " + ioe.getMessage());
