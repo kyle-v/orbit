@@ -10,8 +10,7 @@ Feel free to edit this with additional info or guidelines.
 ##Guidelines for code you commit.
 1. Comment your fucking code. At least one comment at the top of each block of code or function that says what it does (besides the obvious ones). I think eventually we are going to need to make real documentation, for which we can use javadocs so it'll be helpful to at least have basic descriptions for now.
 2. Use System.out.println("Something") for anything major like loading or launching something. Don't print stuff in loops that make the console really messy and confusing. You can do it for your own tests but remove it before pushing.
-
-
+3. Before you work on code, check the GroupMe to see if anyone else is working on that piece of code. Either wait until they finish to start working or deal with merges together.
 
 Feel free to work on whatever code you see fit. Here is the plan I have in mind for the first steps, but don't feel like you have to follow it:
 
