@@ -11,8 +11,8 @@ public class OrbitServerThread extends Thread {
 	ObjectInputStream ois = null;
 	ObjectOutputStream oos = null;
 	
-	public OrbitServerThread(Server server, Socket socket){
-		System.out.println("New Orbit Client has connected to server: " + socket.getInetAddress() + " : " + socket.getPort());
+	public OrbitServerThread(Server server, Socket s){
+		System.out.println("New Orbit Client has connected to server: " + s.getInetAddress() + " : " + s.getPort());
 		this.server = server;
 		this.s = s;
 	}
