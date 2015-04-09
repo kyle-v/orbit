@@ -4,18 +4,17 @@ The way of importing the project into Eclipse has changed.
 
 
 ##How to Import the  into Eclipse
-1. Clone the git repo
-2. In the menubar under Help -> Install new software
-3. Enter in the "Work with" field:  http://dist.springsource.com/release/TOOLS/gradle
-4. Select All, click next, next, etc finish.
-5. In the project manager, right-click, Import - Gradle. Click next. Select the "orbit" folder in the repository (not the repository itself) and then click **Build Model**. Select the all the projects.  Next next etc. 
-6. Now there are two projects, core and desktop. Desktop is everything desktop specific, so all the Swing and GUI stuff will be here. Everything else is in orbit-core. 
-7. To test it works, right click on the orbit-desktop project and choose Run as -> Java Application and choose DesktopLauncher (because it has the main). It should pop up a window and not give any exceptions or anything weird.
+1. Go to the Eclipse Marketplace (Menubar under Help) and then search for EGit and install it and restart eclipse
+2. In the menubar choose Window->Show View ->Other -> Git -> Git Repositories. This will open a eclipse tab that shows repos in your work.
+3. In the menubar under Help -> Install new software
+4. Enter in the "Work with" field:  http://dist.springsource.com/release/TOOLS/gradle
+5. Select All, click next, next, etc finish.
+6. In the project manager, right-click, Import - Gradle. Click next. Select the "orbit" folder in the repository (not the repository itself) and then click **Build Model**. Select the all the projects.  Next next etc. 
+7. Now there are two projects, core and desktop. Desktop is everything desktop specific, so all the Swing and GUI stuff will be here. Everything else is in orbit-core. 
+8. To test it works, right click on the orbit-desktop project and choose Run as -> Java Application and choose DesktopLauncher (because it has the main). It should pop up a window and not give any exceptions or anything weird.
 
 ##How to use GIT with Eclipse
-1. In the project manager, right-click, Import - Git - Projects from Git. Click next. Clone URI - Protocol - HTTPS - Copy paste the repo URL. Next next etc. 
-2. If Git is not an option - go to the Eclipse Marketplace (Menubar under Help) and then search for EGit and install it and restart eclipse
-3. Once you have it in your eclipse workspace, you can right click the project and choose Show In -> Git Repositories. That will open up the Repos viewer and from that you can branch and commit etc.
+
 
 ##Guidelines for code you commit.
 1. Comment your fucking code. At least one comment at the top of each block of code or function that says what it does (besides the obvious ones). I think eventually we are going to need to make real documentation, for which we can use javadocs so it'll be helpful to at least have basic descriptions for now.
