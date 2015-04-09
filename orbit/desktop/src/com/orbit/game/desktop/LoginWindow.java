@@ -1,9 +1,11 @@
-package orbit;
+package com.orbit.game.desktop;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import orbit.Orbit;
 
 public class LoginWindow extends Window{
 	
