@@ -1,6 +1,16 @@
 #Orbit
 READ THIS DOCUMENT! 
-Feel free to edit this with additional info or guidelines.
+The way of importing the project into Eclipse has changed.
+
+
+##How to Import the  into Eclipse
+1. Clone the git repo
+2. In the menubar under Help -> Install new software
+3. Enter in the "Work with" field:  http://dist.springsource.com/release/TOOLS/gradle
+4. Select All, click next, next, etc finish.
+5. In the project manager, right-click, Import - Gradle. Click next. Select the "orbit" folder in the repository (not the repository itself) and then click **Build Model**. Select the all the projects.  Next next etc. 
+6. Now there are two projects, core and desktop. Desktop is everything desktop specific, so all the Swing and GUI stuff will be here. Everything else is in orbit-core. 
+7. To test it works, right click on the orbit-desktop project and choose Run as -> Java Application and choose DesktopLauncher (because it has the main). It should pop up a window and not give any exceptions or anything weird.
 
 ##How to use GIT with Eclipse
 1. In the project manager, right-click, Import - Git - Projects from Git. Click next. Clone URI - Protocol - HTTPS - Copy paste the repo URL. Next next etc. 
