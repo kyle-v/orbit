@@ -3,7 +3,7 @@ package orbit;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class GameObject {
+public abstract class GameObject {
 	private Vector2 position; //Vector for position, velocity, acceleration (like Unity)
 	private Vector2 velocity;
 	private Vector2 acceleration;
@@ -28,6 +28,11 @@ public class GameObject {
 		mass = 0;
 	}
 	
+	//Setters
+	public void setPosition(float x, float y){
+		this.position = new Vector2(x,y);
+	}
+	
 	public void setVelocity(float x, float y){
 		this.velocity = new Vector2(x,y);
 	}
@@ -47,5 +52,31 @@ public class GameObject {
 	public void setBounds (float x, float y, float width, float height){
 		this.bounds = new Rectangle(x - width/2, y - height/2, width, height); 
 	}
-
+	
+	//Getters
+	public Vector2 getPosition(){
+		return this.position;
+	}
+	
+	public Vector2 getVelocity(){
+		return this.velocity;
+	}
+	
+	public Vector2 getAcceleration(){
+		return this.acceleration;
+	}
+	
+	public float getRotation(){
+		return this.rotation;
+	}
+	
+	public float getMass(){
+		return this.mass;
+	}
+	
+	public Rectangle getBounds(){
+		return this.bounds;
+	}
+	
+	abstract public void update(int deltaTime);
 }
