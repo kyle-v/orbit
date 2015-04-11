@@ -2,6 +2,8 @@ package orbit;
 
 import java.awt.Image;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public abstract class Weapon {
 	
 	//Weapon Properties
@@ -13,11 +15,11 @@ public abstract class Weapon {
 	
 	//Graphics
 	public Image weaponImage;
-	public Image projectileImage;
+	public Texture projectileImage;
 	
 	//Constructor
 	public Weapon(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Image weaponImage, Image projectileImage) {
+			float maxInitialSpeed, Image weaponImage, Texture projectileImage) {
 		super();
 		this.name = name;
 		this.damage = damage;

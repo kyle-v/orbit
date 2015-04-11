@@ -1,14 +1,13 @@
 package orbit;
 
-import java.awt.Image;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 
 public class Projectile extends GameObject {
-	Image projectileImage;
+	Texture projectileImage;
 	float mass;
-	Vector2 initialSpeed;
 	int damage;
 	
 	//Constructor
@@ -22,14 +21,19 @@ public class Projectile extends GameObject {
 		super(x, y, width, height);
 		this.projectileImage = owner.projectileImage;
 		this.mass = owner.projectileMass;
-		this.initialSpeed = initialSpeed;
+		this.velocity = initialSpeed;
 		this.damage = owner.damage;
 	}
 
 	@Override
 	public void update(int deltaTime) {
+		updateVelocityAndPosition();
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void draw(SpriteBatch batch){
+		batch.draw(projectileImage, position.x, position.y, 253, 178);
 	}
 
 }
