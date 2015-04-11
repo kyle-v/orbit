@@ -115,27 +115,48 @@ public class Database implements Serializable{
 		}
 	}
 	
+	
+	//DEBUG //deletes the user with the specified username
+	public void deleteUser(String username){
+		try{
+			String query = "delete from Usernames where username = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, username);
+			ps.execute();
+		} catch (SQLException e) {
+			System.out.println ("SQLException in Database.deleteUser(): " + e.getMessage());
+		}
+	}
+	
 	//DEBUG //query database for username
 	public static void main(String[] args){
 		Database d = new Database();
-//		Scanner in = new Scanner(System.in);	 
-//		
-//		System.out.print("Enter a username to search for: ");
-//		String username = in.nextLine();
-//		
-//		System.out.println("Searching for username \"" + username + "\'");
-//		int userID = d.queryUser(username);
-//		
-//		if(userID == -1){
-//			System.out.println("No result for username \"" + username + "\'");
-//			System.out.println("Adding new user: " + username);
-//			d.addUserToSQL(username);
-//		}
-//		else{
-//			System.out.println("Added new user: \"" + username + "\" with user number: " + userID);
-//		}
-//		System.out.println("userID username\n---------------");
-//		d.printAllUsernames();
+		Scanner in = new Scanner(System.in);	 
+		
+		System.out.print("Enter a username to search for: ");
+		String username = in.nextLine();
+		
+		System.out.println("Searching for username \"" + username + "\'");
+		int userID = d.queryUser(username);
+		
+		if(userID == -1){
+			System.out.println("No result for username \"" + username + "\'");
+			System.out.println("Adding new user: " + username);
+			d.addUserToSQL(username);
+		}
+		else{
+			System.out.println("Added new user: \"" + username + "\" with user number: " + userID);
+		}
+		System.out.println("userID username\n---------------");
+		d.printAllUsernames();
+		
+		System.out.print("Enter a username to delete: ");
+		username = in.nextLine();
+		System.out.println("Deleting user with username \"" + username + "\'");
+		d.deleteUser(username);
+		System.out.println("Deleted user \"" + username + "\"");
+		d.printAllUsernames();
+		
 		d.disconnectFromSQL();
 	}
 }
