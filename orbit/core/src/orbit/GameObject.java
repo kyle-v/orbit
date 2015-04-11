@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameObject {
-	private Vector2 position; //Vector for position, velocity, acceleration (like Unity)
-	private Vector2 velocity;
-	private Vector2 acceleration;
-	private Rectangle bounds; //Rectangle for checking collisions
-	private float rotation;
-	private float mass;
+	protected Vector2 position; //Vector for position, velocity, acceleration (like Unity)
+	protected Vector2 velocity;
+	protected Vector2 acceleration;
+	protected Rectangle bounds; //Rectangle for checking collisions
+	protected float rotation;
+	protected float mass;
 	
 	public GameObject (float x, float y, float width, float height){
 		/*
@@ -76,6 +76,11 @@ public abstract class GameObject {
 	
 	public Rectangle getBounds(){
 		return this.bounds;
+	}
+	
+	protected void updateVelocityAndPosition(){
+		velocity.add(acceleration);
+		position.add(velocity);
 	}
 	
 	abstract public void update(int deltaTime);

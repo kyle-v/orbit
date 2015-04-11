@@ -22,13 +22,13 @@ public class User implements Serializable{
 	Vector<Weapon> equippedWeapons;
 	
 	//Planet
-	//TO DO
+	private Planet planet;
 	
 	public User(String username, String newPass){
 		this.username = username;
 		encryptedPass = newPass;
-		int money = STARTING_MONEY;
-		
+		money = STARTING_MONEY;
+		planet = new Planet();
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
 		
@@ -58,6 +58,10 @@ public class User implements Serializable{
 
 	public int getMoney() {
 		return money;
+	}
+	
+	public Planet getPlanet(){
+		return planet;
 	}
 
 	public void addMoney(int amt) {
