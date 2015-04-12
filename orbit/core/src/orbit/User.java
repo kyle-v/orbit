@@ -55,7 +55,6 @@ public class User implements Serializable{
 		return false;
 	}
 
-
 	public int getMoney() {
 		return money;
 	}
@@ -102,8 +101,4 @@ class InvalidPassException extends Exception{
 	public String toString(){
 		return message;
 	}
-	
-	
-	
-	
 }

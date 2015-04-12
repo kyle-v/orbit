@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
+import java.util.HashMap;
 
 public class Database implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -16,6 +16,8 @@ public class Database implements Serializable{
 	Connection conn = null;
 	
 	//orbit data (to be stored)
+	HashMap<String, User> usernameToUserMap = new HashMap<String, User>();
+	
 
 	public Database(){
 		//establish connection to SQL database
@@ -51,7 +53,6 @@ public class Database implements Serializable{
 	
 	//returns true if the username/password combination is valid
 	public boolean authenticateLogin(String username, String password){
-		//SYNCHRONIZE SYNCRONIZE SYNCHRONIZE
 		return true;
 	}
 	
@@ -128,35 +129,37 @@ public class Database implements Serializable{
 		}
 	}
 	
-	//DEBUG //query database for username
-	public static void main(String[] args){
-		Database d = new Database();
-		Scanner in = new Scanner(System.in);	 
-		
-		System.out.print("Enter a username to search for: ");
-		String username = in.nextLine();
-		
-		System.out.println("Searching for username \"" + username + "\'");
-		int userID = d.queryUser(username);
-		
-		if(userID == -1){
-			System.out.println("No result for username \"" + username + "\'");
-			System.out.println("Adding new user: " + username);
-			d.addUserToSQL(username);
-		}
-		else{
-			System.out.println("Added new user: \"" + username + "\" with user number: " + userID);
-		}
-		System.out.println("userID username\n---------------");
-		d.printAllUsernames();
-		
-		System.out.print("Enter a username to delete: ");
-		username = in.nextLine();
-		System.out.println("Deleting user with username \"" + username + "\'");
-		d.deleteUser(username);
-		System.out.println("Deleted user \"" + username + "\"");
-		d.printAllUsernames();
-		
-		d.disconnectFromSQL();
-	}
+	
+	
+//	//DEBUG //query database for username
+//	public static void main(String[] args){
+//		Database d = new Database();
+//		Scanner in = new Scanner(System.in);	 
+//		
+//		System.out.print("Enter a username to search for: ");
+//		String username = in.nextLine();
+//		
+//		System.out.println("Searching for username \"" + username + "\"");
+//		int userID = d.queryUser(username);
+//		
+//		if(userID == -1){
+//			System.out.println("No result for username \"" + username + "\"");
+//			System.out.println("Adding new user: " + username);
+//			d.addUserToSQL(username);
+//		}
+//		else{
+//			System.out.println("Added new user: \"" + username + "\" with user number: " + userID);
+//		}
+//		System.out.println("userID username\n---------------");
+//		d.printAllUsernames();
+//		
+//		System.out.print("Enter a username to delete: ");
+//		username = in.nextLine();
+//		System.out.println("Deleting user with username \"" + username + "\'");
+//		d.deleteUser(username);
+//		System.out.println("Deleted user \"" + username + "\"");
+//		d.printAllUsernames();
+//		
+//		d.disconnectFromSQL();
+//	}
 }
