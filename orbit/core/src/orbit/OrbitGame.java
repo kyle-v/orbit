@@ -29,8 +29,10 @@ public class OrbitGame extends ApplicationAdapter {
 		playerPlanet.setPosition(100, 100);
 		opponents.get(0).getPlanet().setPosition(400, 400);
 		//Test projectile 
-		p = new Projectile(100, 100, 253, 178, new Vector2(10, 0), new Rocket("Rocket", 0, 0, 0,
+		p = new Projectile(100, 100, 253, 178, new Vector2(15, 15), 30f, new Rocket("Rocket", 0, 0, 0,
 			0, null, new Texture("missile.png")));
+		p.acceleration = new Vector2(0, -1f);
+		
 
 	}
 
