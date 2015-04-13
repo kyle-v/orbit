@@ -51,14 +51,14 @@ public class Projectile extends GameObject {
 		batch.draw(projectileImage,
 				position.x,
 				position.y,
-				 position.x - (width/2),
-				 position.y - (height/2),
+				(width/2), //pivot point for scaling and rotation
+				(height/2), // ^
                 width,
                 height,
+                0.5f, //scale
                 0.5f,
-                0.5f,
-                angle,
-                0,
+                this.velocity.angle(), //rotation
+                0, //From image file (for spritesheets)
                 0,
                 (int)width,
                 (int)height,

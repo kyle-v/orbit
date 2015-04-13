@@ -1,5 +1,6 @@
 package orbit;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -84,4 +85,6 @@ public abstract class GameObject {
 	}
 	
 	abstract public void update(int deltaTime);
+	
+	abstract public void draw(SpriteBatch b);
 }
