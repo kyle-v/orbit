@@ -13,7 +13,7 @@ public abstract class GameObject {
 	
 	public GameObject (float x, float y, float width, float height){
 		/*
-		 * WARNING: It seems that libgx, unlike most graphical libraries,
+		 * WARNING: It seems that libdgx, unlike most graphical libraries,
 		 * treats the screen as: x going left to right and y going down to up.
 		 * Most graphical libraries treat y as going from up to down, i.e. adding i to y will make y go down screen i pixels.
 		 * Just a heads up when messing with coordinate values.

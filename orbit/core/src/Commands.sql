@@ -1,0 +1,2 @@
+-- SELECT * FROM Usernames /*selects all values from table*/
+-- TRUNCATE TABLE Usernames /*resets table*/
