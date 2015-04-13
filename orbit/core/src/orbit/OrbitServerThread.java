@@ -24,31 +24,27 @@ public class OrbitServerThread extends Thread {
 	public void run(){
 		System.out.println("Starting to run OrbitServerThread");
 		try {
+			//acquire streams
 			ois = new ObjectInputStream(s.getInputStream());
 			oos = new ObjectOutputStream(s.getOutputStream());
 			
-			//read object
-			//<T> someObject = (<T>)ois.readObject();
+			//only ServerRequests are received (sent by client)
+			ServerRequest sr = (ServerRequest)ois.readObject();
+			fulfillRequest(sr);
 			
-			//write object
-			/* parse request
-			 * handle request and generate someResponseObject
-			 * oos.writeObject(someResponseObject);
-			 */
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
-		} 
-		//uncomment while readObject()/writeObject() are called in above try block
-		/*catch (ClassNotFoundException e) {
+		}catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());
-		} 
-		*/
+		} catch (UnidentifiedRequestException e) {
+			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
+		}
 		finally{
 			try {
 				oos.close();
 				ois.close();
 				s.close();
-				//someSemaphore.release() if using semaphores
 			} catch (IOException e) {
 				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
 			}
@@ -88,9 +84,9 @@ public class OrbitServerThread extends Thread {
 	}
 
 	//send response to client (writes response object to oos)
-	private void sendResponse(Object o){
+	private void sendResponse(Object responseObject){
 		try {
-			oos.writeObject(o);
+			oos.writeObject(responseObject);
 			oos.flush();
 		} catch (IOException e) {
 			System.out.println("IOException in OrbitServerThread.sendResponse(): " + e.getMessage());
@@ -111,6 +107,9 @@ public class OrbitServerThread extends Thread {
 		String username = strings.get(0);
 		String password = strings.get(1);
 		String response = "";
+		if(d == null){
+			System.out.println("Database is null");
+		}
 		if(d.authenticateLogin(username, password)){
 			response = "Valid";
 		}
