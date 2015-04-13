@@ -13,7 +13,7 @@ public class Database implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	//functional local data members
-	Connection conn = null;
+	transient Connection conn = null;
 	
 	//orbit data (to be stored)
 	HashMap<String, User> usernameToUserMap = new HashMap<String, User>();
@@ -53,6 +53,7 @@ public class Database implements Serializable{
 	
 	//returns true if the username/password combination is valid
 	public boolean authenticateLogin(String username, String password){
+		//TODO
 		return true;
 	}
 	
@@ -161,5 +162,35 @@ public class Database implements Serializable{
 //		d.printAllUsernames();
 //		
 //		d.disconnectFromSQL();
+//	}
+	
+	
+//	//DEBUG //test client connection functionality with server
+//	public static void main(String[] args){
+//		try {
+//			System.out.println("Starting Client");
+//			Socket s = new Socket("localhost", 6789);
+//			
+//			System.out.println("Writing to stream");
+//			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+//			Vector<String> o = new Vector<String>();
+//			o.add("username");
+//			o.add("password");
+//			oos.writeObject(new ServerRequest("Authenticate Login", o));
+//			oos.flush();
+//			
+//			System.out.println("Wrote to stream. Waiting for input...");
+//			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+//			String response = (String)ois.readObject();
+//			
+//			System.out.println("Received response: " + response + ". Done.");
+//			oos.close();
+//			ois.close();
+//			s.close();
+//		} catch (IOException ioe) {
+//			System.out.println("IOE: " + ioe.getMessage());
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("ClassNotFoundException in Database.main(): " + e.getMessage());
+//		}
 //	}
 }
