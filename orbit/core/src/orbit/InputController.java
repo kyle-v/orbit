@@ -28,6 +28,7 @@ public class InputController extends InputAdapter{
 				break;
 			case POWER: //Choosing power to shoot
 				game.gameState = GameState.WAITING;
+				AssetLibrary.playSound("explode.wav");
 				//System.out.println("Fired with angle: " + angle + " and power " + powerPercent + "%");
 				System.out.println("Begin WAITING state");
 				break;

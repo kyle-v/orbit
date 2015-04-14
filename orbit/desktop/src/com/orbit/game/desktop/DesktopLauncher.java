@@ -13,6 +13,7 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 
+		new LoginWindow();
 		new LwjglApplication(new OrbitGame(), config);
 	}
 }
