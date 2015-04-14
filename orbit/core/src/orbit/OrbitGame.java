@@ -105,6 +105,8 @@ public class OrbitGame extends ApplicationAdapter{
 
 			break;
 		case WAITING: // Turn over, waiting for other player
+			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects);
+			
 			gameState = GameState.WEAPON;
 			System.out.println("Begin WEAPON state");
 

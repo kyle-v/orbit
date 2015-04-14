@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.Serializable;
 import java.util.Vector;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public class User implements Serializable{
@@ -35,8 +36,8 @@ public class User implements Serializable{
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
 		
-		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10,
-				10, null, new Texture("missile.png"));
+		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,
+				10, null, new Texture(Gdx.files.internal("missile.png")));
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
 		

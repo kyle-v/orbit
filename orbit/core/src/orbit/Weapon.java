@@ -1,6 +1,7 @@
 package orbit;
 
 import java.awt.Image;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -30,7 +31,8 @@ public abstract class Weapon {
 		this.projectileImage = projectileImage;
 	}
 	
-	public abstract GameObject[] fire();
+	public abstract void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects);
+	//changed parameters since the angle and power need to be selected before a projectile can be created
 
 	
 	
