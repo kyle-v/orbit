@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Rocket extends Weapon{
 	
-	private int projectileWidth = 253;
-	private int projectileHeight = 178;
+	private int projectileWidth = 51;
+	private int projectileHeight = 36;
 	
 	public Rocket(String name, int damage, int cooldown, float projectileMass,
 			float maxInitialSpeed, Image weaponImage, String projectileImage) {
@@ -27,7 +27,7 @@ public class Rocket extends Weapon{
 		 * it by the selected angle
 		 */
 		
-		Projectile p = new Projectile(150, 150, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects);
+		Projectile p = new Projectile(175, 175, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects);
 		gameObjects.add(p);
 	}
 	

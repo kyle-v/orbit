@@ -67,6 +67,8 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		gameObjects.add(playerPlanet);
 		gameObjects.add(opponents.get(0).getPlanet());
+		
+		System.out.println("made the game");
 
 	}
 
@@ -78,11 +80,21 @@ public class OrbitGame extends ApplicationAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//Update
+		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
 			for(GameObject o : gameObjects){
-				o.update(1);
+				shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
+				o.update();
+				for (GameObject o2 : gameObjects){ //checks if the GameObject hit any of the other GameObjects
+					if (!o.equals(o2)){
+						if (o.checkCollision(o2)){ //removes the GameObject if there is a hit
+							//gameObjects.remove(o); don't uncomment this, crashes the game
+						}
+					}
+				}
 			}
 		}
+		shapeRenderer.end();
 
 
 		//Game loop
