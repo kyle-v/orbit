@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 
 public class Projectile extends GameObject {
-	Texture projectileImage;
+	String projectileImage;
 	int damage;
 	float width;
 	float height;
@@ -91,7 +91,7 @@ public class Projectile extends GameObject {
 	}
 
 	public void draw(SpriteBatch batch){
-		batch.draw(projectileImage,
+		batch.draw(AssetLibrary.getTexture(projectileImage),
 				position.x - width/2,
 				position.y - height/2,
 				(width/2), //pivot point for scaling and rotation

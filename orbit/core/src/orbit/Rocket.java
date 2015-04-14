@@ -8,8 +8,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class Rocket extends Weapon{
+	
+	private int projectileWidth = 253;
+	private int projectileHeight = 178;
+	
 	public Rocket(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Image weaponImage, Texture projectileImage) {
+			float maxInitialSpeed, Image weaponImage, String projectileImage) {
 		super(name, damage, cooldown, projectileMass, maxInitialSpeed, weaponImage,
 				projectileImage);
 	}
@@ -22,7 +26,8 @@ public class Rocket extends Weapon{
 		 * creates a new vector with the selected power in the x direction and then rotates
 		 * it by the selected angle
 		 */
-		Projectile p = new Projectile(150, 150, projectileImage.getWidth(), projectileImage.getHeight(), initSpeed, (float)angle, this, gameObjects);
+		
+		Projectile p = new Projectile(150, 150, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects);
 		gameObjects.add(p);
 	}
 	

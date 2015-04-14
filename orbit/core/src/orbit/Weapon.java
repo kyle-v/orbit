@@ -16,11 +16,11 @@ public abstract class Weapon {
 	
 	//Graphics
 	public Image weaponImage;
-	public Texture projectileImage;
+	public String projectileImage;
 	
 	//Constructor
 	public Weapon(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Image weaponImage, Texture projectileImage) {
+			float maxInitialSpeed, Image weaponImage, String projectileImage) {
 		super();
 		this.name = name;
 		this.damage = damage;

@@ -38,7 +38,7 @@ public class User implements Serializable{
 		
 	
 		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,
-				10f, null, new Texture(Gdx.files.internal("missile.png")));
+				10f, null, "missile.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
 		
