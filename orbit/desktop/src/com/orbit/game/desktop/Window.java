@@ -11,7 +11,10 @@ import orbit.Orbit;
 public class Window extends JFrame{
 	private Orbit parent; //parent class for sharing stuff to main game
 	
+	Window(){}
+	
 	Window(Orbit parent){
+		super("Orbit");
 		this.parent = parent;
 	}
 
