@@ -1,7 +1,10 @@
 package orbit;
 
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.Vector;
+
+import com.badlogic.gdx.graphics.Texture;
 
 public class User implements Serializable{
 
@@ -31,6 +34,12 @@ public class User implements Serializable{
 		planet = new Planet();
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
+		
+		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10,
+				10, null, new Texture("missile.png"));
+		weapons.add(defaultRocket);
+		equippedWeapons.add(defaultRocket);
+		
 		
 	}
 	

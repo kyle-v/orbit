@@ -6,6 +6,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,14 +28,13 @@ public class OrbitGame extends ApplicationAdapter{
 	private User player; 
 	private ArrayList<User> opponents;
 	private Planet playerPlanet;
-	
+	private FPSLogger fps;
 	private ArrayList<GameObject> gameObjects;
 
 
 	//Input control
 	private int powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
 	private double angle; // Angle to shoot the weapon at
-	//// QUESTION: SHOULD THE ANGLE BE RELATIVE TO THE PLANET'S ANGLE OR IS IT ABSOLUTE TO THE GAME SCREEN?
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
 	private double maxAngle = 2* Math.PI;
 	private double minAngle = 0;
@@ -45,6 +45,8 @@ public class OrbitGame extends ApplicationAdapter{
 	public void create () {
 		
 		//Initializing variables
+		//
+		fps = new FPSLogger();
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		gameState = GameState.WEAPON;
@@ -71,6 +73,7 @@ public class OrbitGame extends ApplicationAdapter{
 
 	@Override
 	public void render () {
+		//fps.log();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
