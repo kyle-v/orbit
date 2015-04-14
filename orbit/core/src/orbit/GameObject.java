@@ -103,7 +103,7 @@ public abstract class GameObject {
 	
 	abstract public void draw(SpriteBatch b);
 	
-	abstract public boolean checkCollision(GameObject other);
+	abstract public void checkCollision(GameObject other);
 	
 	abstract public String getName();
 }

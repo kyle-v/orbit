@@ -50,12 +50,11 @@ public class Planet extends GameObject implements Serializable{
 		batch.draw(planetSkin, position.x - radius, position.y - radius, radius*2, radius*2);
 	}
 	
-	public boolean checkCollision(GameObject other){
+	public void checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){
 			//deplete planet health
-			return true;
+			System.out.println("Planet is hit");
 		}
-		return false;
 	}
 	
 	public String getName(){

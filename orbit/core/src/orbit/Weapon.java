@@ -31,10 +31,7 @@ public abstract class Weapon {
 		this.projectileImage = projectileImage;
 	}
 	
-	public abstract void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects);
+	public abstract void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects, ArrayList<Projectile> projectiles);
 	//changed parameters since the angle and power need to be selected before a projectile can be created
-
-	
-	
-	
+	//added a projectile parameter
 }

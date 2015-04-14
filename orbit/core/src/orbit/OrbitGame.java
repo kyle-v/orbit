@@ -30,6 +30,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private Planet playerPlanet;
 	private FPSLogger fps;
 	private ArrayList<GameObject> gameObjects;
+	private ArrayList<Projectile> projectiles;
 
 
 	//Input control
@@ -51,6 +52,7 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer = new ShapeRenderer();
 		gameState = GameState.WEAPON;
 		gameObjects = new ArrayList<GameObject>();
+		projectiles = new ArrayList<Projectile>();
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -82,15 +84,22 @@ public class OrbitGame extends ApplicationAdapter{
 		//Update
 		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
+			
 			for(GameObject o : gameObjects){
 				shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
 				o.update();
-				for (GameObject o2 : gameObjects){ //checks if the GameObject hit any of the other GameObjects
-					if (!o.equals(o2)){
-						if (o.checkCollision(o2)){ //removes the GameObject if there is a hit
-							//gameObjects.remove(o); don't uncomment this, crashes the game
-						}
-					}
+				for (Projectile p : projectiles){ //checks if any of the projectiles hit the GameObject
+					o.checkCollision(p);
+					p.checkCollision(o);
+				}
+			}
+			
+			for (int i = 0; i < projectiles.size(); i++){ //goes through the projectiles, updates them, and checks if they are destroyed
+				Projectile p = projectiles.get(i);
+				shapeRenderer.rect(p.bounds.x,p.bounds.y,p.bounds.width,p.bounds.height);
+				p.update();
+				if (p.isDead()){
+					projectiles.remove(p);
 				}
 			}
 		}
@@ -116,7 +125,7 @@ public class OrbitGame extends ApplicationAdapter{
 			if (powerPercent == 0) increasing = true;
 			break;
 		case WAITING: // Turn over, waiting for other player
-			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects);
+			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects, projectiles);
 			
 			gameState = GameState.WEAPON;
 			System.out.println("Begin WEAPON state");
@@ -137,6 +146,10 @@ public class OrbitGame extends ApplicationAdapter{
 		//Draw opponent planets
 		for(GameObject o : gameObjects){
 			o.draw(batch);
+		}
+		
+		for(Projectile p : projectiles){
+			p.draw(batch);
 		}
 
 		batch.end();

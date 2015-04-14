@@ -15,6 +15,7 @@ public class Projectile extends GameObject {
 	static final float g = .1f;
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
+	private boolean isDead = false;
 	ArrayList<GameObject> gameObjects;
 	//Constructor
 	/*
@@ -105,16 +106,18 @@ public class Projectile extends GameObject {
 				false);
 	}
 	
-	public boolean checkCollision(GameObject other){
-		if (this.bounds.overlaps(other.bounds)){
+	public void checkCollision(GameObject other){
+		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
 			System.out.println(this.getName() + " hit " + other.getName());
-			//destroy rocket
-			return true;
+			isDead = true;
 		}
-		return false;
 	}
 	
 	public String getName(){
 		return "Projectile";
+	}
+	
+	public boolean isDead(){
+		return this.isDead;
 	}
 }
