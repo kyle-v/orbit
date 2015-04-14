@@ -14,7 +14,9 @@ public class Projectile extends GameObject {
 	float width;
 	float height;
 	float angle;
-	static final float g = 0.1f;
+	static final float g = 1f;
+	static final float MAXGRAVITY = 6f;
+	static final float MINDISTANCE = 0f;
 	ArrayList<GameObject> gameObjects;
 	//Constructor
 	/*
@@ -48,7 +50,11 @@ public class Projectile extends GameObject {
 		float directiony;
 		float gravity_x;
 		float gravity_y;
+		float distance;
 		Vector2 grav = new Vector2(0f,0f);
+		/*
+		 * We need to iterate through all the game objects to calculate the gravity
+		 */
 		for(GameObject o: gameObjects){
 			if(o != this){
 				if(o.position.x > this.position.x){
@@ -61,32 +67,41 @@ public class Projectile extends GameObject {
 				}
 				else 
 					directiony = -1f;
-				gravity_x = directionx * (float) ((o.mass * g)/Math.pow(o.position.x - this.position.x, 2f));
-				gravity_y = directiony * (float) ((o.mass * g)/Math.pow(o.position.y - this.position.y, 2f));
-				//System.out.println(" x " + (o.position.x - this.position.x));
-				//System.out.println(" y " + (o.position.y - this.position.y));
-				if(gravity_x > 1){
-					gravity_x = 1;
-				}
-				else if(gravity_x < -1){
-					gravity_x = -1;
-				}
 				
-				if(gravity_y > 1){
-					gravity_y = 1;
-				}
-				else if(gravity_y < -1){
-					gravity_y = -1;
-				}
+				/*
+				 * Figure out whether the acceleration is positive or negative
+				 */
 				
-					
-			
-				grav.add(new Vector2(gravity_x , gravity_y));
+				distance = Math.abs(o.position.dst(this.position));
+				if(distance > MINDISTANCE){
+					gravity_x = directionx * (float) ((o.mass * g)/(distance*distance));
+	
+					gravity_y = directiony * (float) ((o.mass * g)/(distance*distance));
+					grav.add(new Vector2(gravity_x , gravity_y));
+				}	
+				
+				// calculate Gravity
 			}
 
 		}
-		//System.out.println("Gravity y: "+ grav.x +" Gravity x: "+ grav.y);
-		//this.acceleration = grav;
+
+		if(grav.x > MAXGRAVITY){
+			grav.x = MAXGRAVITY;
+		}
+		else if(grav.x < -MAXGRAVITY){
+			grav.x = -MAXGRAVITY;
+		}
+		
+		if(grav.y > MAXGRAVITY){
+			grav.y = MAXGRAVITY;
+		}
+		else if(grav.y < -MAXGRAVITY){
+			grav.y = -MAXGRAVITY;
+		}
+		
+		//Limit the gravity since it can get very high 
+
+		this.acceleration = grav;
 	}
 	
 	public void draw(SpriteBatch batch){

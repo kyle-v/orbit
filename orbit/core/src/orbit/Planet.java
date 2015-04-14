@@ -16,7 +16,7 @@ public class Planet extends GameObject implements Serializable{
 	
 	public static final float DEFAULT_RADIUS = 40f;
 	
-	public static final float DEFAULT_MASS = 500f;
+	public static final float DEFAULT_MASS = 5000f;
 
 	private float radius;
 	private Texture planetSkin;

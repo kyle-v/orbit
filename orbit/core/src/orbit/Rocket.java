@@ -22,7 +22,7 @@ public class Rocket extends Weapon{
 		 * creates a new vector with the selected power in the x direction and then rotates
 		 * it by the selected angle
 		 */
-		Projectile p = new Projectile(0, 0, projectileImage.getWidth(), projectileImage.getHeight(), initSpeed, (float)angle, this, gameObjects);
+		Projectile p = new Projectile(100, 100, projectileImage.getWidth(), projectileImage.getHeight(), initSpeed, (float)angle, this, gameObjects);
 		gameObjects.add(p);
 	}
 	
