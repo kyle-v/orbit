@@ -45,7 +45,7 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	public void draw(SpriteBatch batch){
-		batch.draw(planetSkin, position.x, position.y, radius*2, radius*2);
+		batch.draw(planetSkin, position.x - radius, position.y - radius, radius*2, radius*2);
 	}
 
 }

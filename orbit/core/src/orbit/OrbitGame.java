@@ -36,7 +36,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private int powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
 	private double angle; // Angle to shoot the weapon at
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
-	private double maxAngle = 2* Math.PI;
+	private double maxAngle = Math.PI/2;
 	private double minAngle = 0;
 
 
@@ -102,7 +102,6 @@ public class OrbitGame extends ApplicationAdapter{
 			else powerPercent --;
 			if (powerPercent == 100) increasing = false;
 			if (powerPercent == 0) increasing = true;
-
 			break;
 		case WAITING: // Turn over, waiting for other player
 			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects);
@@ -122,7 +121,6 @@ public class OrbitGame extends ApplicationAdapter{
 
 		batch.begin();
 		//Draw player planet
-		playerPlanet.draw(batch);
 
 		//Draw opponent planets
 		for(GameObject o : gameObjects){

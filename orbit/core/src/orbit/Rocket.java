@@ -15,14 +15,14 @@ public class Rocket extends Weapon{
 	}
 
 	public void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects) {
-		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "at an angle " + angle);
+		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
 		Vector2 initSpeed = new Vector2(maxInitialSpeed*(float)(powerPercent)/100f, 0f);
 		initSpeed.rotateRad((float)angle);
 		/*
 		 * creates a new vector with the selected power in the x direction and then rotates
 		 * it by the selected angle
 		 */
-		Projectile p = new Projectile(100, 100, projectileImage.getWidth(), projectileImage.getHeight(), initSpeed, (float)angle, this, gameObjects);
+		Projectile p = new Projectile(150, 150, projectileImage.getWidth(), projectileImage.getHeight(), initSpeed, (float)angle, this, gameObjects);
 		gameObjects.add(p);
 	}
 	
