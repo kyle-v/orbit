@@ -15,7 +15,6 @@ public class Projectile extends GameObject {
 	static final float g = .1f;
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
-	private boolean isDead = false;
 	ArrayList<GameObject> gameObjects;
 	//Constructor
 	/*
@@ -38,6 +37,13 @@ public class Projectile extends GameObject {
 	public void update() {
 		calculateGravity();
 		updateVelocityAndPosition();
+		for (GameObject o : gameObjects){
+			if(o != this){
+				if (checkCollision(o)){
+					isDead = true;
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 
 	}
@@ -106,11 +112,12 @@ public class Projectile extends GameObject {
 				false);
 	}
 	
-	public void checkCollision(GameObject other){
+	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
 			System.out.println(this.getName() + " hit " + other.getName());
-			isDead = true;
+			return true;
 		}
+		return false;
 	}
 	
 	public String getName(){

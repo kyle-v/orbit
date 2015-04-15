@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.Input.Keys;
 
@@ -30,7 +31,6 @@ public class OrbitGame extends ApplicationAdapter{
 	private Planet playerPlanet;
 	private FPSLogger fps;
 	private ArrayList<GameObject> gameObjects;
-	private ArrayList<Projectile> projectiles;
 
 
 	//Input control
@@ -52,7 +52,6 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer = new ShapeRenderer();
 		gameState = GameState.WEAPON;
 		gameObjects = new ArrayList<GameObject>();
-		projectiles = new ArrayList<Projectile>();
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -64,8 +63,8 @@ public class OrbitGame extends ApplicationAdapter{
 		this.opponents = new ArrayList<User>();
 		this.opponents.add(new User("steven", "lol"));
 		playerPlanet = player.getPlanet();
-		playerPlanet.setPosition(100, 100);
-		opponents.get(0).getPlanet().setPosition(400, 400);
+		playerPlanet.position = new Vector2(100, 100);
+		opponents.get(0).getPlanet().position = new Vector2(400, 400);
 		
 		gameObjects.add(playerPlanet);
 		gameObjects.add(opponents.get(0).getPlanet());
@@ -85,21 +84,13 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
 			
-			for(GameObject o : gameObjects){
-				shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
-				o.update();
-				for (Projectile p : projectiles){ //checks if any of the projectiles hit the GameObject
-					o.checkCollision(p);
-					p.checkCollision(o);
-				}
-			}
-			
-			for (int i = 0; i < projectiles.size(); i++){ //goes through the projectiles, updates them, and checks if they are destroyed
-				Projectile p = projectiles.get(i);
-				shapeRenderer.rect(p.bounds.x,p.bounds.y,p.bounds.width,p.bounds.height);
-				p.update();
-				if (p.isDead()){
-					projectiles.remove(p);
+			for(int i = 0; i < gameObjects.size(); i++){
+				GameObject o = gameObjects.get(i);
+				if (!o.isDead){
+					shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
+					o.update();
+				} else {
+					gameObjects.remove(o);
 				}
 			}
 		}
@@ -125,7 +116,7 @@ public class OrbitGame extends ApplicationAdapter{
 			if (powerPercent == 0) increasing = true;
 			break;
 		case WAITING: // Turn over, waiting for other player
-			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects, projectiles);
+			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects);
 			
 			gameState = GameState.WEAPON;
 			System.out.println("Begin WEAPON state");
@@ -146,10 +137,6 @@ public class OrbitGame extends ApplicationAdapter{
 		//Draw opponent planets
 		for(GameObject o : gameObjects){
 			o.draw(batch);
-		}
-		
-		for(Projectile p : projectiles){
-			p.draw(batch);
 		}
 
 		batch.end();

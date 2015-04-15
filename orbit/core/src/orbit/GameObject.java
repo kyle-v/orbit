@@ -13,6 +13,7 @@ public abstract class GameObject {
 	protected float mass;
 	protected float width;
 	protected float height;
+	protected boolean isDead;
 	
 	public GameObject (float x, float y, float width, float height){
 		/*
@@ -33,65 +34,6 @@ public abstract class GameObject {
 		mass = 0;
 	}
 	
-	//Setters
-	public void setPosition(float x, float y){
-		this.position = new Vector2(x,y);
-	}
-	
-	public void setVelocity(float x, float y){
-		this.velocity = new Vector2(x,y);
-	}
-	
-	public void setAcceleration(float x, float y){
-		this.acceleration = new Vector2(x,y);
-	}
-	
-	public void setRotation(float degrees){
-		this.rotation = degrees;
-	}
-	
-	public void setMass(float mass){
-		this.mass = mass;
-	}
-	
-	public void setBounds (float x, float y){
-		bounds.x = position.x - width/2;
-		bounds.y = position.y - height/2;
-	}
-	
-	//Getters
-	public Vector2 getPosition(){
-		return this.position;
-	}
-	
-	public Vector2 getVelocity(){
-		return this.velocity;
-	}
-	
-	public Vector2 getAcceleration(){
-		return this.acceleration;
-	}
-	
-	public float getRotation(){
-		return this.rotation;
-	}
-	
-	public float getMass(){
-		return this.mass;
-	}
-	
-	public Rectangle getBounds(){
-		return this.bounds;
-	}
-	
-	public float getHeight(){
-		return this.height;
-	}
-	
-	public float getWidth(){
-		return this.width;
-	}
-	
 	protected void updateVelocityAndPosition(){
 		velocity.add(acceleration);
 		position.add(velocity);
@@ -103,7 +45,7 @@ public abstract class GameObject {
 	
 	abstract public void draw(SpriteBatch b);
 	
-	abstract public void checkCollision(GameObject other);
+	abstract public boolean checkCollision(GameObject other);
 	
 	abstract public String getName();
 }

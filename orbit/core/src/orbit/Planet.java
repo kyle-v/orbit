@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class Planet extends GameObject implements Serializable{
 	
@@ -35,8 +36,6 @@ public class Planet extends GameObject implements Serializable{
 		this.mass = DEFAULT_MASS;
 		this.radius = radius;
 		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
-		this.setVelocity(0,0);
-		this.setAcceleration(0,0);
 	}
 
 	@Override
@@ -50,11 +49,13 @@ public class Planet extends GameObject implements Serializable{
 		batch.draw(planetSkin, position.x - radius, position.y - radius, radius*2, radius*2);
 	}
 	
-	public void checkCollision(GameObject other){
+	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){
 			//deplete planet health
 			System.out.println("Planet is hit");
+			return true;
 		}
+		return false;
 	}
 	
 	public String getName(){
