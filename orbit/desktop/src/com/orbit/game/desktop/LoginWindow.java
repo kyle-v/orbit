@@ -1,9 +1,11 @@
 package com.orbit.game.desktop;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -41,23 +43,30 @@ public class LoginWindow extends Window{
 		newUserButton = new JButton("Create User");
 		mainPanel = new JOrbitPanel();	
 		JPanel container = new JPanel();
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));	//a container for all JComps
 		mainPanel.setSize(1024, 600);
 
 		titleLabel.setSize(200, 200);
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		titleLabel.setFont(new Font("Serif", Font.BOLD, 30));
 		container.add(titleLabel);			//adds logo
 		
 		
-		JPanel usernamePanel = new JPanel(new GridLayout(1,2));			//username info
-		usernamePanel.add(usernameLabel);
-		usernamePanel.add(usernameTextField);
+		GridBagConstraints textFieldConstraints = new GridBagConstraints();		//constraints for inner panels
+		textFieldConstraints.gridx = GridBagConstraints.RELATIVE;
+		textFieldConstraints.gridy = 1;
 		
-		JPanel passwordPanel = new JPanel(new GridLayout(1,2));			//password info
-		passwordPanel.add(passwordLabel);
-		passwordPanel.add(passwordTextField);
+		JPanel usernamePanel = new JPanel(new GridBagLayout());			//username info
+		usernamePanel.add(usernameLabel, textFieldConstraints);
+		usernamePanel.add(usernameTextField, textFieldConstraints);
+		
+		JPanel passwordPanel = new JPanel(new GridBagLayout());			//password info
+		passwordPanel.add(passwordLabel, textFieldConstraints);
+		passwordPanel.add(passwordTextField, textFieldConstraints);
 		
 		
+		usernamePanel.setBackground(Color.LIGHT_GRAY);
+		passwordPanel.setBackground(Color.LIGHT_GRAY);
 		container.add(usernamePanel);
 		container.add(passwordPanel);
 		
@@ -70,9 +79,15 @@ public class LoginWindow extends Window{
 		buttonContainer.add(Box.createHorizontalGlue());
 		buttonContainer.add(newUserButton);
 		
+		buttonContainer.setBackground(Color.LIGHT_GRAY);
 		container.add(buttonContainer);					//adds buttons, then adds panel to frame
+		container.setBackground(Color.LIGHT_GRAY);
+		container.setSize(600,600);
 		
-		mainPanel.add(container, BorderLayout.CENTER);
+		GridBagConstraints centerConstraints = new GridBagConstraints();
+		centerConstraints.gridx = 1;
+		centerConstraints.gridy = GridBagConstraints.RELATIVE;
+		mainPanel.add(container, centerConstraints);
 		
 		add(mainPanel);
 		setSize(1024,600);
@@ -98,7 +113,7 @@ public class LoginWindow extends Window{
 		private static final long serialVersionUID = 1L;
 		
 		JOrbitPanel(){
-			//this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+			this.setLayout(new GridBagLayout());
 
 		}
 		
