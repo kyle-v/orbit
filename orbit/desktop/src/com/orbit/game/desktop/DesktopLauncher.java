@@ -1,8 +1,6 @@
 package com.orbit.game.desktop;
 
 import orbit.OrbitGame;
-import orbit.User;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -13,7 +11,8 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 
-		new LoginWindow(); //  uncomment to see login window
+		new LoginWindow(); //both windows are shown for debugging
+		new LobbyWindow(); 
 		new LwjglApplication(new OrbitGame(), config);
 	}
 }

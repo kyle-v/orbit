@@ -99,7 +99,7 @@ public class LoginWindow extends Window{
 		
 	}
 	
-	public void createUser(String username, String password){ //adds username and password to databaseb
+	public void createUser(String username, String password){ //adds username and password to database
 		
 	}
 	
