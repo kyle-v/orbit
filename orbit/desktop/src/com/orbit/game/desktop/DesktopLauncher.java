@@ -11,8 +11,9 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 
-		new LoginWindow(); //both windows are shown for debugging
-		new LobbyWindow(); 
+		//new LoginWindow(); //uncomment to see the gui windows
+		//new LobbyWindow(); 
+		//new ProfileWindow();
 		new LwjglApplication(new OrbitGame(), config);
 	}
 }
