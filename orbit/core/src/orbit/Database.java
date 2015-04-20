@@ -53,13 +53,30 @@ public class Database implements Serializable{
 	
 	//returns true if the username/password combination is valid
 	public boolean authenticateLogin(String username, String password){
-		//TODO
-		return true;
+		if(queryUser(username) == -1 || usernameToUserMap.isEmpty()){
+			return false;
+		}
+		else{
+			if(usernameToUserMap.get(username).getPass().equals(password)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
 	}
 	
+	//returns true if new user has been created and added to database
 	public boolean createUser(String username, String password){
-		//TODO
-		return true;
+		User newUser = new User(username, password);
+		if(queryUser(username) == -1 || usernameToUserMap.isEmpty()){
+			usernameToUserMap.put(username, newUser);
+			addUserToSQL(username);
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
 	//queries sql database for ID (int) corresponding to unique username

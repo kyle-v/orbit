@@ -1,17 +1,17 @@
 package com.orbit.game.desktop;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,12 +20,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField; 
+import javax.swing.JTextField;
 
+import orbit.Orbit;
 import orbit.ServerRequest;
 
 public class LoginWindow extends Window{
-
+	private Orbit orbit;
 	private static final long serialVersionUID = 6765474456932332037L;
 	private JTextField usernameTextField;
 	private JPasswordField passwordTextField;
@@ -46,7 +47,8 @@ public class LoginWindow extends Window{
 	
 	
 	//need to pass in an orbit ref. will temporarily use blank constructor
-	LoginWindow(){
+	LoginWindow(Orbit orbit){
+		this.orbit = orbit;
 		
 		//initialize all the shit
 		titleLabel = new JLabel("Orbit");
@@ -138,7 +140,6 @@ public class LoginWindow extends Window{
 		}
 	}
 
-	
 	public static synchronized Object sendRequest(ServerRequest sr){
 		Socket s = null;
 		try {
