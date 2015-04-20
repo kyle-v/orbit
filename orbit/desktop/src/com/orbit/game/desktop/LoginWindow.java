@@ -6,6 +6,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -105,12 +109,65 @@ public class LoginWindow extends Window{
 		centerConstraints.gridy = GridBagConstraints.RELATIVE;
 		mainPanel.add(container, centerConstraints);
 		
+		addActionListeners();
 		add(mainPanel);
 		setSize(1024,600);
 		setVisible(true);
 
 	}
+
+	//add action listeners to components
+	private void addActionListeners(){
+		//validate text fields and authenticate login
+		userLoginButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String username = usernameTextField.getText();
+				String password = new String(passwordTextField.getPassword());
+				if(username.equals("") || password.equals("")){
+					//report error
+					System.out.println("Invalid username and password combination.");
+				}
+				else{
+					System.out.println("username: " + username + ", password: " + password);
+					//authenticate(username, password);
+				}
+			}
+		});
+		
+		//log in as guest
+		guestLoginButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		//create new user
+		newUserButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
+		
+		//login as user if enter key is pressed
+		usernameTextField.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                    userLoginButton.doClick();
+                }       
+            }
+        });
+		
+		//login as user if enter key is pressed
+		passwordTextField.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                    userLoginButton.doClick();
+                }       
+            }
+        });
+	}
 	
+	//verify username/password combo with server and allows or denies login based on server response
 	public void authenticate(String username, String password){ //checks if username and password are in database, and logins in
 		Vector<String> strings = new Vector<String>();
 		strings.add(username);
@@ -126,6 +183,7 @@ public class LoginWindow extends Window{
 		}
 	}
 	
+	//signals server to create a new user. indicates whether new user was created
 	public void createUser(String username, String password){ //adds username and password to databaseb
 		Vector<String> strings = new Vector<String>();
 		strings.add(username);
@@ -140,6 +198,7 @@ public class LoginWindow extends Window{
 		}
 	}
 
+	//sends object to server and returns for response received from server
 	public static synchronized Object sendRequest(ServerRequest sr){
 		Socket s = null;
 		try {

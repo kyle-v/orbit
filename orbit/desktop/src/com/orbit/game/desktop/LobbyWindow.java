@@ -7,6 +7,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -52,11 +56,35 @@ public class LobbyWindow extends Window{
 		mainContainer.add(leftSideContainer, BorderLayout.CENTER);		//main container adds chat to east
 		mainContainer.add(chatContainer, BorderLayout.EAST);
 		
+		addActionListeners();
 		add(mainContainer);
 		setSize(1024,600);
 		setVisible(true);
 	}
 	
+	//adds action listeners to components
+	private void addActionListeners(){
+		//opens profile window
+		profileButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		//start's matchmaking
+		findGameButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		//quits back to login window
+		quitButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+	}
 	
 	private JPanel createButtonContainer(){
 		
@@ -72,7 +100,6 @@ public class LobbyWindow extends Window{
 		return tempPanel;
 	}
 
-	
 	private JPanel createChatContainer(){
 		
 		JPanel tempPanel = new JPanel(new BorderLayout());
@@ -96,6 +123,25 @@ public class LobbyWindow extends Window{
 		tempPanel.add(innerButtonContainer, BorderLayout.SOUTH);
 		
 	
+		sendMessageButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String message = messageTextField.getText();
+				if(message.equals("")){
+					return;
+				}
+				messageTextField.setText("");
+				//send message to server
+			}
+		});
+		
+		//send message to server if enter is pressed
+		messageTextField.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                	sendMessageButton.doClick();
+                }       
+            }
+        });
 		return tempPanel;
 	}
 	

@@ -2,6 +2,9 @@ package com.orbit.game.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -48,6 +51,26 @@ public class ProfileWindow extends Window{
 		
 		setSize(1024,600);
 		setVisible(true);
+	}
+	
+	private void addActionListeners(){
+		profileButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
+		
+		inventoryButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
+		
+		planetButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//TODO
+			}
+		});
 	}
 	
 	class JProfilePanel extends JPanel{				//custom Lobby panel with overridden paint component
