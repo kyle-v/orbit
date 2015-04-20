@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.Input.Keys;
 
@@ -62,11 +63,13 @@ public class OrbitGame extends ApplicationAdapter{
 		this.opponents = new ArrayList<User>();
 		this.opponents.add(new User("steven", "lol"));
 		playerPlanet = player.getPlanet();
-		playerPlanet.setPosition(100, 100);
-		opponents.get(0).getPlanet().setPosition(400, 400);
+		playerPlanet.position = new Vector2(100, 100);
+		opponents.get(0).getPlanet().position = new Vector2(400, 400);
 		
 		gameObjects.add(playerPlanet);
 		gameObjects.add(opponents.get(0).getPlanet());
+		
+		System.out.println("made the game");
 
 	}
 
@@ -78,11 +81,20 @@ public class OrbitGame extends ApplicationAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//Update
+		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
-			for(GameObject o : gameObjects){
-				o.update(1);
+			
+			for(int i = 0; i < gameObjects.size(); i++){
+				GameObject o = gameObjects.get(i);
+				if (!o.isDead){
+					shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
+					o.update();
+				} else {
+					gameObjects.remove(o);
+				}
 			}
 		}
+		shapeRenderer.end();
 
 
 		//Game loop

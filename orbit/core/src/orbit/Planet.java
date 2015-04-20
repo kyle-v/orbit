@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class Planet extends GameObject implements Serializable{
 	
@@ -38,7 +39,7 @@ public class Planet extends GameObject implements Serializable{
 	}
 
 	@Override
-	public void update(int deltaTime) {
+	public void update() {
 		updateVelocityAndPosition();
 		// TODO Auto-generated method stub
 		
@@ -46,6 +47,19 @@ public class Planet extends GameObject implements Serializable{
 	
 	public void draw(SpriteBatch batch){
 		batch.draw(planetSkin, position.x - radius, position.y - radius, radius*2, radius*2);
+	}
+	
+	public boolean checkCollision(GameObject other){
+		if (this.bounds.overlaps(other.bounds)){
+			//deplete planet health
+			System.out.println("Planet is hit");
+			return true;
+		}
+		return false;
+	}
+	
+	public String getName(){
+		return "Planet";
 	}
 
 }

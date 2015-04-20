@@ -33,8 +33,5 @@ public abstract class Weapon {
 	
 	public abstract void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects);
 	//changed parameters since the angle and power need to be selected before a projectile can be created
-
-	
-	
-	
+	//added a projectile parameter
 }

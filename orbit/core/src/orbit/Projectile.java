@@ -11,8 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 public class Projectile extends GameObject {
 	String projectileImage;
 	int damage;
-	float width;
-	float height;
 	float angle;
 	static final float g = .1f;
 	static final float MAXGRAVITY = 2f;
@@ -27,8 +25,6 @@ public class Projectile extends GameObject {
 	 */
 	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, ArrayList<GameObject> gameObjects) {
 		super(x, y, width, height);
-		this.width = width;
-		this.height = height;
 		this.projectileImage = owner.projectileImage;
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
@@ -38,9 +34,16 @@ public class Projectile extends GameObject {
 	}
 
 	@Override
-	public void update(int deltaTime) {
+	public void update() {
 		calculateGravity();
 		updateVelocityAndPosition();
+		for (GameObject o : gameObjects){
+			if(o != this){
+				if (checkCollision(o)){
+					isDead = true;
+				}
+			}
+		}
 		// TODO Auto-generated method stub
 
 	}
@@ -94,12 +97,12 @@ public class Projectile extends GameObject {
 		batch.draw(AssetLibrary.getTexture(projectileImage),
 				position.x - width/2,
 				position.y - height/2,
-				(width/2), //pivot point for scaling and rotation
-				(height/2), // ^
+				width/2, //pivot point for scaling and rotation
+				height/2, // ^
 				width,
 				height,
-				0.2f, //scale
-				0.2f,
+				1 , //scale
+				1,
 				this.velocity.angle(), //rotation
 				0, //From image file (for spritesheets)
 				0,
@@ -108,5 +111,20 @@ public class Projectile extends GameObject {
 				false,
 				false);
 	}
-
+	
+	public boolean checkCollision(GameObject other){
+		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
+			System.out.println(this.getName() + " hit " + other.getName());
+			return true;
+		}
+		return false;
+	}
+	
+	public String getName(){
+		return "Projectile";
+	}
+	
+	public boolean isDead(){
+		return this.isDead;
+	}
 }
