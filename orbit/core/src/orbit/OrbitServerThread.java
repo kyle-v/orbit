@@ -71,11 +71,11 @@ public class OrbitServerThread extends Thread {
 		 * etc.
 		 */
 
-		if(request.equals("Authenticate Login")){
+		if(request.equalsIgnoreCase("Authenticate Login")){
 			authenticateLogin(o);
 		}
-		else if(request.equals("some other request")){
-			//someOtherRequest(o);
+		else if(request.equals("Create New User")){
+			createUser(o);
 		}
 		else{
 			//request does not match an existing request. unable to fulfill request
@@ -102,7 +102,6 @@ public class OrbitServerThread extends Thread {
 	
 	//sends username and password to database for verification and sends appropriate response to client
 	private void authenticateLogin(Object o){
-		//change implementation as needed
 		Vector<String> strings = (Vector<String>)o;
 		String username = strings.get(0);
 		String password = strings.get(1);
@@ -111,6 +110,24 @@ public class OrbitServerThread extends Thread {
 			System.out.println("Database is null");
 		}
 		if(d.authenticateLogin(username, password)){
+			response = "Valid";
+		}
+		else{
+			response = "Invalid";
+		}
+		sendResponse(response);
+	}
+	
+	//sends username and password to database to check if new user would collide with existing user
+	private void createUser(Object o){
+		Vector<String> strings = (Vector<String>)o;
+		String username = strings.get(0);
+		String password = strings.get(1);
+		String response = "";
+		if(d == null){
+			System.out.println("Database is null");
+		}
+		if(d.createUser(username, password)){
 			response = "Valid";
 		}
 		else{

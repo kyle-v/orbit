@@ -57,6 +57,11 @@ public class Database implements Serializable{
 		return true;
 	}
 	
+	public boolean createUser(String username, String password){
+		//TODO
+		return true;
+	}
+	
 	//queries sql database for ID (int) corresponding to unique username
 	public int queryUser(String username){
 		//defaults to user not found case (userID = -1)
@@ -79,11 +84,11 @@ public class Database implements Serializable{
 	}
 	
 	//adds new user to the database
-	public void addUserToSQL(String username){
+	public boolean addUserToSQL(String username){
 		//only unique usernames will be added to the database
 		if(queryUser(username) != -1){
 			System.out.println("User already exists. Did not add new user.");
-			return;
+			return false;
 		}
 		Statement st = null;
 		try {
@@ -91,9 +96,11 @@ public class Database implements Serializable{
 			String sql = "INSERT INTO Usernames (username) VALUES ('" + username + "')";
 			st.executeUpdate(sql);
 			st.close();
+			return true;
 		} catch (SQLException e) {
 			System.out.println ("SQLException in Database.addUser(): " + e.getMessage());
 		}
+		return false;
 	}
 	
 	//DEBUG //prints all usernames put in two columns (userID, username)
