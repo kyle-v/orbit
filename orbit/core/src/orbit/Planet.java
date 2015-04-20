@@ -27,7 +27,12 @@ public class Planet extends GameObject implements Serializable{
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
-		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
+		if(Gdx.files == null){
+			System.out.println("files is null");
+		}
+		//TODO someone who understands openGL please fix this. files is null, throws nullpointerexception
+		//http://badlogicgames.com/forum/viewtopic.php?f=11&t=5668
+		//planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
 	}
 	
 	

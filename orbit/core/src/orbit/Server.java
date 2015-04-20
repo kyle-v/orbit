@@ -29,6 +29,7 @@ public class Server extends JFrame{
 	//member variables
 	ServerSocket ss = null;
 	private Socket s;
+	public static final int portNumber = 6789;
 	
 	//access to the database
 	private Database d;
@@ -125,7 +126,7 @@ public class Server extends JFrame{
 	private void startServer(){
 		serverStatus.setText("Server Started");
 		try{
-			ss = new ServerSocket(6789);
+			ss = new ServerSocket(portNumber);
 			ClientListenerThread cl = new ClientListenerThread(this, d, ss);
 			cl.start();	//listens for client connections while user has not terminated
 		}catch(IOException ioe){
@@ -160,6 +161,7 @@ public class Server extends JFrame{
 			System.out.println("IOException in Server.destruct(): " + ioe.getMessage());
 			System.out.println("Could not write database to file.");
 		}finally{
+			d.disconnectFromSQL();
 			if(oos != null){
 				try {
 					oos.close();

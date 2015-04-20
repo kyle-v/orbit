@@ -13,9 +13,9 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 
-		//new LoginWindow(new Orbit()); //uncomment to see the gui windows
+		new LoginWindow(new Orbit()); //uncomment to see the gui windows
 		//new LobbyWindow(); 
 		//new ProfileWindow();
-		new LwjglApplication(new OrbitGame(), config);
+		//new LwjglApplication(new OrbitGame(), config);
 	}
 }
