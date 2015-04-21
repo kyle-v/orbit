@@ -6,13 +6,17 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.Input.Keys;
 
@@ -39,8 +43,9 @@ public class OrbitGame extends ApplicationAdapter{
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
 	private double maxAngle = Math.PI/2;
 	private double minAngle = 0;
-
-
+	World world;
+	Box2DDebugRenderer debugRenderer;
+	Camera camera;
 
 	@Override
 	public void create () {
@@ -56,6 +61,12 @@ public class OrbitGame extends ApplicationAdapter{
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
 
+		//create a world for the physics simulation
+		world = GameplayStatics.getWorld();
+		//create a camera that renders our world, the size here isn't how large the frame is, its basically just an aspect ratio
+		camera = new OrthographicCamera(1920,1080);
+		//this will be used to render where our colliders are
+		debugRenderer = new Box2DDebugRenderer();
 		
 		
 		//This is where we would get the user from Orbit and the opponent user from server
@@ -63,14 +74,13 @@ public class OrbitGame extends ApplicationAdapter{
 		this.opponents = new ArrayList<User>();
 		this.opponents.add(new User("steven", "lol"));
 		playerPlanet = player.getPlanet();
-		playerPlanet.position = new Vector2(100, 100);
-		opponents.get(0).getPlanet().position = new Vector2(400, 400);
+		playerPlanet.SetPosition(new Vector2(-400, -400));
+		opponents.get(0).getPlanet().SetPosition(new Vector2(400, 400));
 		
 		gameObjects.add(playerPlanet);
 		gameObjects.add(opponents.get(0).getPlanet());
 		
-		System.out.println("made the game");
-
+		
 	}
 
 
@@ -79,7 +89,8 @@ public class OrbitGame extends ApplicationAdapter{
 		//fps.log();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		debugRenderer.render(GameplayStatics.getWorld(), camera.combined);
+		world.step(1f/60f, 6, 2);
 		//Update
 		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
@@ -87,7 +98,7 @@ public class OrbitGame extends ApplicationAdapter{
 			for(int i = 0; i < gameObjects.size(); i++){
 				GameObject o = gameObjects.get(i);
 				if (!o.isDead){
-					shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
+					//shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
 					o.update();
 				} else {
 					gameObjects.remove(o);
@@ -130,11 +141,9 @@ public class OrbitGame extends ApplicationAdapter{
 
 
 		//Drawing everything
-
+		//tell it to draw from our current camera's point of view
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		//Draw player planet
-
-		//Draw opponent planets
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
@@ -145,7 +154,7 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.setColor(1, 1, 0, 1);
 		shapeRenderer.rect(10, 10, 10, powerPercent);
 		shapeRenderer.setColor(1, 1, 0, 1);
-		shapeRenderer.line(20f, 10f, 20+(float)Math.cos(angle) * 100 , 10+(float)Math.sin(angle) * 100 );
+		shapeRenderer.line(20, 20, 20+(float)Math.cos(angle) * 100 ,  10+(float)Math.sin(angle) * 100 );
 		shapeRenderer.end();
 
 

@@ -3,6 +3,9 @@ package orbit;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class GameObject {
 	protected Vector2 position; //Vector for position, velocity, acceleration (like Unity)
@@ -40,6 +43,12 @@ public abstract class GameObject {
 		bounds.x = position.x - width/2;
 		bounds.y = position.y - height/2;
 	}
+	
+	//functions that will be called when a collision happens
+	//because contact has info for both A and B and does not distinguish the bool tells you which object to look at for the gameobject collided with
+	abstract public void OnCollisionEnter(Contact contact, boolean isA);
+	
+	abstract public void OnCollisionExit(Contact contact, boolean isA);
 	
 	abstract public void update();
 	

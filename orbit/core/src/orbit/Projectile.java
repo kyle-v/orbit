@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Contact;
 
 
 public class Projectile extends GameObject {
@@ -16,6 +18,7 @@ public class Projectile extends GameObject {
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
 	ArrayList<GameObject> gameObjects;
+	Sprite sprite;
 	//Constructor
 	/*
 	 * The weapon should pass the initial speed, 
@@ -25,7 +28,11 @@ public class Projectile extends GameObject {
 	 */
 	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, ArrayList<GameObject> gameObjects) {
 		super(x, y, width, height);
+		
+		
 		this.projectileImage = owner.projectileImage;
+		sprite = new Sprite(AssetLibrary.getTexture(projectileImage));
+		sprite.setPosition(x, y);
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
 		this.damage = owner.damage;
@@ -94,6 +101,11 @@ public class Projectile extends GameObject {
 	}
 
 	public void draw(SpriteBatch batch){
+		//--------------WE'RE USING SPRITES NOW MOTHERFUCKERS
+		sprite.setPosition(position.x - width/2, position.y - height/2);
+		sprite.setRotation(velocity.angle());
+		sprite.draw(batch);
+		/*
 		batch.draw(AssetLibrary.getTexture(projectileImage),
 				position.x - width/2,
 				position.y - height/2,
@@ -109,7 +121,7 @@ public class Projectile extends GameObject {
 				(int)width,
 				(int)height,
 				false,
-				false);
+				false);*/
 	}
 	
 	public boolean checkCollision(GameObject other){
@@ -126,5 +138,17 @@ public class Projectile extends GameObject {
 	
 	public boolean isDead(){
 		return this.isDead;
+	}
+
+	@Override
+	public void OnCollisionEnter(Contact contact, boolean isA) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void OnCollisionExit(Contact contact, boolean isA) {
+		// TODO Auto-generated method stub
+		
 	}
 }
