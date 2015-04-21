@@ -16,7 +16,7 @@ public class Database implements Serializable{
 	transient Connection conn = null;
 	
 	//orbit data (to be stored)
-	HashMap<String, User> usernameToUserMap = new HashMap<String, User>();
+	HashMap<String, User> usernameToUserMap;
 	
 
 	public Database(){
@@ -24,6 +24,8 @@ public class Database implements Serializable{
 		connectToSQL();
 		
 		//initialize all variables to default values
+		usernameToUserMap = new HashMap<String, User>();
+		
 		//only called the first time a Database is constructed
 		//subsequent database initializations read the Database object from database.txt (hence no constructor)
 	}
@@ -33,6 +35,7 @@ public class Database implements Serializable{
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/Users?user=root");
+			System.out.println("After get connection, conn = " + conn);
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException in Database.connectToSQL(): " + sqle.getMessage());
 		} catch (ClassNotFoundException cnfe) {
@@ -84,6 +87,10 @@ public class Database implements Serializable{
 		//defaults to user not found case (userID = -1)
 		int userID = -1;
 		try {
+			if(conn == null){
+				System.out.println("CONNECTION IS NULL: " + conn);
+				connectToSQL();
+			}
 			Statement st = conn.createStatement();
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Usernames WHERE username=?");
 			ps.setString(1, username); // set first variable in prepared statement
@@ -156,9 +163,9 @@ public class Database implements Serializable{
 	
 	
 	
-//	//DEBUG //query database for username
-//	public static void main(String[] args){
-//		Database d = new Database();
+	//DEBUG //query database for username
+	public static void main(String[] args){
+		Database d = new Database();
 //		Scanner in = new Scanner(System.in);	 
 //		
 //		System.out.print("Enter a username to search for: ");
@@ -183,10 +190,10 @@ public class Database implements Serializable{
 //		System.out.println("Deleting user with username \"" + username + "\'");
 //		d.deleteUser(username);
 //		System.out.println("Deleted user \"" + username + "\"");
-//		d.printAllUsernames();
-//		
-//		d.disconnectFromSQL();
-//	}
+		d.printAllUsernames();
+		
+		d.disconnectFromSQL();
+	}
 	
 	
 //	//DEBUG //test client connection functionality with server

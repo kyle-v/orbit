@@ -129,7 +129,7 @@ public class LoginWindow extends Window{
 				}
 				else{
 					System.out.println("username: " + username + ", password: " + password);
-					//authenticate(username, password);
+					authenticate(username, password);
 				}
 			}
 		});
@@ -144,7 +144,16 @@ public class LoginWindow extends Window{
 		//create new user
 		newUserButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				//TODO
+				String username = usernameTextField.getText();
+				String password = new String(passwordTextField.getPassword());
+				if(username.equals("") || password.equals("")){
+					//report error
+					System.out.println("Invalid username and password combination.");
+				}
+				else{
+					System.out.println("Creating new user: username: " + username + ", password: " + password);
+					createUser(username, password);
+				}
 			}
 		});
 		
@@ -177,9 +186,11 @@ public class LoginWindow extends Window{
 		if(response.equalsIgnoreCase("Valid")){
 			//Login as user
 			//start new server listener thread
+			System.out.println("Valid login");
 		}
 		else{
 			//Deny login
+			System.out.println("Invalid login");
 		}
 	}
 	
@@ -192,9 +203,11 @@ public class LoginWindow extends Window{
 		//DEBUG System.out.println("Received response: " + response);
 		if(response.equalsIgnoreCase("Valid")){
 			//Signal that new user has been created
+			System.out.println("New user created! username: " + username + ", password: " + password);
 		}
 		else{
 			//Signal that new user has not been created
+			System.out.println("Username taken. Try again.");
 		}
 	}
 
