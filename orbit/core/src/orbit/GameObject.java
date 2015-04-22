@@ -1,5 +1,7 @@
 package orbit;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,7 +13,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public abstract class GameObject {
+public abstract class GameObject implements Serializable{
+	/**
+	 * 
+	 */
+	protected static final long serialVersionUID = 1L;
 	protected Vector2 position; //Vector for position, velocity, acceleration (like Unity)
 	protected Vector2 velocity;
 	protected Vector2 acceleration;
@@ -21,10 +27,10 @@ public abstract class GameObject {
 	protected float width;
 	protected float height;
 	protected boolean isDead;
-	protected Body body;
+	transient protected Body body;
 	protected Sprite sprite;
 	
-	public GameObject (float x, float y, float width, float height){
+	public GameObject (float x, float y, float width, float height) {
 		/*
 		 * WARNING: It seems that libdgx, unlike most graphical libraries,
 		 * treats the screen as: x going left to right and y going down to up.

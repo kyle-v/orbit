@@ -27,14 +27,14 @@ public class InputController extends InputAdapter{
 				System.out.println("Begin POWER state");
 				break;
 			case POWER: //Choosing power to shoot
-				game.gameState = GameState.WAITING;
+				game.gameState = GameState.FIRE;
 				//AssetLibrary.playSound("explode.wav");
 				//System.out.println("Fired with angle: " + angle + " and power " + powerPercent + "%");
 				System.out.println("Begin WAITING state");
 				break;
 			case WAITING: // Turn over, waiting for other player
-				game.gameState = GameState.WEAPON;
-				System.out.println("Begin WEAPON state");
+				//game.gameState = GameState.WEAPON;
+				//System.out.println("Begin WEAPON state");
 				//When opponent's turn is over move back to WEAPON state
 				break;
 			default:
