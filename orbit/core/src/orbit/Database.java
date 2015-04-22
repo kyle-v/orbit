@@ -56,10 +56,13 @@ public class Database implements Serializable{
 	
 	//returns true if the username/password combination is valid
 	public boolean authenticateLogin(String username, String password){
+		System.out.println("QUERY: " + (queryUser(username) == -1));
+		System.out.println("EMPTY: " + usernameToUserMap.isEmpty());
 		if(queryUser(username) == -1 || usernameToUserMap.isEmpty()){
 			return false;
 		}
 		else{
+			System.out.println("PASSWORD: " + usernameToUserMap.get(username).getPass() + ", input: " + password);
 			if(usernameToUserMap.get(username).getPass().equals(password)){
 				return true;
 			}
@@ -72,9 +75,11 @@ public class Database implements Serializable{
 	//returns true if new user has been created and added to database
 	public boolean createUser(String username, String password){
 		User newUser = new User(username, password);
-		if(queryUser(username) == -1 || usernameToUserMap.isEmpty()){
+		if(addUserToSQL(username)){
+			if(usernameToUserMap == null){
+				usernameToUserMap = new HashMap<String, User>();
+			}
 			usernameToUserMap.put(username, newUser);
-			addUserToSQL(username);
 			return true;
 		}
 		else{
@@ -161,7 +166,18 @@ public class Database implements Serializable{
 		}
 	}
 	
-	
+	public void resetSQL(){
+		try{
+			String sql = "TRUNCATE Usernames";
+			if(conn == null){
+				connectToSQL();
+			}
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.execute();
+		} catch (SQLException e) {
+			System.out.println ("SQLException in Database.deleteUser(): " + e.getMessage());
+		}
+	}
 	
 	//DEBUG //query database for username
 	public static void main(String[] args){

@@ -27,10 +27,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import orbit.Orbit;
+import orbit.ServerListenerThread;
 import orbit.ServerRequest;
 
 public class LoginWindow extends Window{
 	private Orbit orbit;
+	ServerListenerThread  slt;
+	
 	private static final long serialVersionUID = 6765474456932332037L;
 	private JTextField usernameTextField;
 	private JPasswordField passwordTextField;
@@ -186,6 +189,9 @@ public class LoginWindow extends Window{
 		if(response.equalsIgnoreCase("Valid")){
 			//Login as user
 			//start new server listener thread
+//			slt = new ServerListenerThread();
+//			slt.start();
+			this.setVisible(false);
 			System.out.println("Valid login");
 		}
 		else{
