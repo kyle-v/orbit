@@ -162,17 +162,12 @@ public class OrbitGame extends ApplicationAdapter{
 
 		//Game loop
 		switch(gameState){
-<<<<<<< HEAD
 		case WEAPON: //Start of turn  - choosing weapon
 			if (currentWeapon < 0){
 				currentWeapon = player.equippedWeapons.size() - 1;
 			} else if (currentWeapon > player.equippedWeapons.size() - 1){
 				currentWeapon = 0;
 			}
-=======
-		case WEAPON: //Start of turn  - choosing weapon 
-			
->>>>>>> origin/master
 			break;
 		case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
 			angle += 3 * DeltaTime;
@@ -185,13 +180,8 @@ public class OrbitGame extends ApplicationAdapter{
 			if (powerPercent > 100) increasing = false;
 			if (powerPercent < 0) increasing = true;
 			break;
-<<<<<<< HEAD
-		case WAITING: // Turn over, waiting for other player
-			player.setWeapon(currentWeapon);
-			player.fire((int)powerPercent, angle, gameObjects);
-			gameState = GameState.WEAPON;
-=======
 		case FIRE:
+			player.setWeapon(currentWeapon);
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WAITING;
 			playerTurnOver();
@@ -199,7 +189,6 @@ public class OrbitGame extends ApplicationAdapter{
 		case WAITING: // Turn over, waiting for other player
 			if(currentPlayer == playerIndex)
 				gameState = GameState.WEAPON;
->>>>>>> origin/master
 			//When opponent's turn is over move back to WEAPON state
 			break;
 		default:
