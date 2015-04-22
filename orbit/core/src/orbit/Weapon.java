@@ -1,12 +1,17 @@
 package orbit;
 
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public abstract class Weapon {
+public abstract class Weapon implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//Weapon Properties
 	protected String name;
 	protected int damage;
