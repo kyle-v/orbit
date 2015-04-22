@@ -93,7 +93,7 @@ public class Orbit {
 
 	}
 
-	public static synchronized Object sendRequest(ServerRequest sr){
+	public static Object sendRequest(ServerRequest sr){
 
 		Object response = null;
 		try {

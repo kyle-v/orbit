@@ -13,6 +13,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javafx.util.Pair;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -73,7 +77,21 @@ public class LobbyWindow extends Window{
 		//start's matchmaking
 		findGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				Orbit.sendRequest(new ServerRequest("FindGame", null));
+				Orbit.sendRequest(new ServerRequest("Find Game", null));
+				Timer checkForGame = new Timer();
+				checkForGame.schedule(new TimerTask(){
+					public void run() {
+						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
+						if(response != null){
+							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
+
+							System.out.println("Client has opponents!" + opponents.getValue().toString());
+							this.cancel();
+							
+						}
+					}
+					
+				}, 100l);
 			}
 		});
 		
