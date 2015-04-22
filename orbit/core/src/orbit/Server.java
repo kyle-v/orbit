@@ -115,7 +115,10 @@ public class Server extends JFrame{
 			database = (Database)ois.readObject();
 			System.out.println("Read database from file successfully");
 			System.out.println("HASHMAP SIZE: " + database.usernameToUserMap.size());
-			System.out.println("YELI: " + database.usernameToUserMap.get("yeli").getUsername());
+//			if(usernameToUserMap == null){
+//				usernameToUserMap = new 
+//			}
+			System.out.println("YELI: " + database.usernameToUserMap);//.get("yeli").getUsername());
 		} catch (FileNotFoundException e) {
 			//could not find the file. initialize default database
 			System.out.println("File not found. Creating default");

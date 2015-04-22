@@ -92,6 +92,7 @@ public class OrbitServerThread extends Thread {
 		}else if(request.equalsIgnoreCase("Get Opponents")){
 			//ip addresses
 			//opponents vector should be the same in all clients that are in the same game
+			System.out.println("Getting opponents: " + opponents);
 			sendResponse(opponents);
 		}else{
 			//request does not match an existing request. unable to fulfill request

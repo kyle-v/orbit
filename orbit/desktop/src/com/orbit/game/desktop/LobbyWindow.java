@@ -81,17 +81,17 @@ public class LobbyWindow extends Window{
 				Timer checkForGame = new Timer();
 				checkForGame.schedule(new TimerTask(){
 					public void run() {
+						System.out.println("Checking for opponents...");
 						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
 						if(response != null){
 							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
 
 							System.out.println("Client has opponents!" + opponents.getValue().toString());
 							this.cancel();
-							
 						}
 					}
 					
-				}, 100l);
+				},0, 100);
 			}
 		});
 		
