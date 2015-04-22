@@ -71,6 +71,10 @@ public abstract class GameObject {
 		bounds.y = position.y - height/2;
 	}
 	
+	public void Destroy(){
+		GameplayStatics.getWorld().destroyBody(body);
+	}
+	
 	//functions that will be called when a collision happens
 	//because contact has info for both A and B and does not distinguish the bool tells you which object to look at for the gameobject collided with
 	abstract public void OnCollisionEnter(Contact contact, boolean isA);

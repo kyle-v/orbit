@@ -141,7 +141,18 @@ public class Projectile extends GameObject {
 
 	@Override
 	public void OnCollisionEnter(Contact contact, boolean isA) {
-		System.out.println("e");
+		GameObject collided;
+		if(isA){
+			collided = (GameObject)contact.getFixtureB().getBody().getUserData();
+		}
+		else{
+			collided = (GameObject)contact.getFixtureA().getBody().getUserData();
+		}
+		if(collided instanceof Planet){
+			Planet p = (Planet)collided;
+			p.health -= damage;
+			isDead = true;
+		}
 	}
 
 	@Override
