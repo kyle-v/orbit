@@ -37,6 +37,8 @@ public class Server extends JFrame{
 	private Socket s;
 	public static final int portNumber = 6789;
 	
+	public ChatServer chatServer;
+	
 	//access to the database
 	private Database d;
 	
@@ -148,6 +150,8 @@ public class Server extends JFrame{
 		}catch(IOException ioe){
 			System.out.println("IOE Exception in Server constructor " + ioe.getMessage());
 		}
+		chatServer = new ChatServer();
+		chatServer.start();
 	}
 	
 	//serialize database to file and close streams and sockets

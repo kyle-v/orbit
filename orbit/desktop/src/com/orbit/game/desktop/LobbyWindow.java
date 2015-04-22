@@ -141,8 +141,9 @@ public class LobbyWindow extends Window{
 		tempPanel.add(chatArea, BorderLayout.CENTER);
 		tempPanel.add(innerButtonContainer, BorderLayout.SOUTH);
 		
-		this.chatClient = new ChatClient(chatArea);
-		
+		System.out.println("Starting chat client");
+		chatClient = new ChatClient(chatArea);
+		chatClient.start();
 		sendMessageButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String message = messageTextField.getText();
@@ -151,7 +152,7 @@ public class LobbyWindow extends Window{
 				}
 				messageTextField.setText("");
 				//send message to server
-				chatClient.sendMessage(message);
+				chatClient.sendMessage("\n" + message);
 			}
 		});
 		

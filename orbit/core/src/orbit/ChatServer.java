@@ -7,11 +7,26 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
-public class ChatServer {
+public class ChatServer extends Thread{
 	
 	private static final int chatSocket = 9000;
 	private Vector<ChatThread> ctVector = new Vector<ChatThread>();
 	public ChatServer() {
+		
+	}
+	public void removeChatThread(ChatThread ct) {
+		ctVector.remove(ct);
+	}
+	public synchronized void sendMessageToClients(ChatThread ct, String str) {
+		System.out.println("Sending messages to clients");
+		for (ChatThread ct1 : ctVector) {
+			//if (!ct.equals(ct1)) {
+				ct1.sendMessage(str);
+			//}
+		}
+	}
+	
+	public void run(){
 		ServerSocket ss = null;
 		try {
 			System.out.println("Starting Chat Server");
@@ -35,20 +50,6 @@ public class ChatServer {
 				}
 			}
 		}
-	}
-	public void removeChatThread(ChatThread ct) {
-		ctVector.remove(ct);
-	}
-	public void sendMessageToClients(ChatThread ct, String str) {
-		for (ChatThread ct1 : ctVector) {
-			if (!ct.equals(ct1)) {
-				ct1.sendMessage(str);
-			}
-		}
-	}
-
-	public static void main(String [] args) {
-		new ChatServer();
 	}
 }
 
