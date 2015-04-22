@@ -44,6 +44,8 @@ public class LobbyWindow extends Window{
 	private JTextArea chatArea;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
 	
+	private ChatClient chatClient;
+	
 	LobbyWindow(){
 		super();
 		currentUsers = new ArrayList<User>();
@@ -81,17 +83,17 @@ public class LobbyWindow extends Window{
 				Timer checkForGame = new Timer();
 				checkForGame.schedule(new TimerTask(){
 					public void run() {
-						System.out.println("Checking for opponents...");
 						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
 						if(response != null){
 							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
 
 							System.out.println("Client has opponents!" + opponents.getValue().toString());
 							this.cancel();
+							
 						}
 					}
 					
-				},0, 100);
+				}, 0, 100);
 			}
 		});
 		
@@ -139,7 +141,8 @@ public class LobbyWindow extends Window{
 		tempPanel.add(chatArea, BorderLayout.CENTER);
 		tempPanel.add(innerButtonContainer, BorderLayout.SOUTH);
 		
-	
+		this.chatClient = new ChatClient(chatArea);
+		
 		sendMessageButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String message = messageTextField.getText();
@@ -148,6 +151,7 @@ public class LobbyWindow extends Window{
 				}
 				messageTextField.setText("");
 				//send message to server
+				chatClient.sendMessage(message);
 			}
 		});
 		
@@ -159,6 +163,8 @@ public class LobbyWindow extends Window{
                 }       
             }
         });
+		
+		
 		return tempPanel;
 	}
 	
