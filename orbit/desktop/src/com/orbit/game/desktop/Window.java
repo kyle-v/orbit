@@ -21,5 +21,4 @@ public class Window extends JFrame{
 		super("Orbit");
 		this.parent = parent;
 	}
-
 }

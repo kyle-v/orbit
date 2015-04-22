@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Vector;
 
+//server-side thread reads and fulfills requests to be sent back to client
 public class OrbitServerThread extends Thread {
 	//member variables
 	private Database d = null;

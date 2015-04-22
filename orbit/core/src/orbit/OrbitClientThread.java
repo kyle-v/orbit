@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+//client-side thread fulfills requests and responds to sender
 public class OrbitClientThread extends Thread{
 	private Socket s = null;
 	private ObjectInputStream ois = null;
