@@ -26,12 +26,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import orbit.Orbit;
 import orbit.ServerListenerThread;
 import orbit.ServerRequest;
 
 public class LoginWindow extends Window{
-	private Orbit orbit;
 	ServerListenerThread  slt;
 	
 	private static final long serialVersionUID = 6765474456932332037L;
@@ -42,9 +40,6 @@ public class LoginWindow extends Window{
 	private JButton newUserButton;
 	private JLabel titleLabel; 
 	
-	private static final String ipAddress = "localhost";
-	private static final int portNumber = 6789;
-
 
 	private JOrbitPanel mainPanel;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/LoginWallpaper.jpg");
@@ -55,7 +50,7 @@ public class LoginWindow extends Window{
 	
 	//need to pass in an orbit ref. will temporarily use blank constructor
 	LoginWindow(Orbit orbit){
-		this.orbit = orbit;
+		super(orbit);
 		
 		//initialize all the shit
 		titleLabel = new JLabel("Orbit");
@@ -115,8 +110,7 @@ public class LoginWindow extends Window{
 		addActionListeners();
 		add(mainPanel);
 		setSize(1024,600);
-		setVisible(true);
-
+ 
 	}
 
 	//add action listeners to components
@@ -184,13 +178,14 @@ public class LoginWindow extends Window{
 		Vector<String> strings = new Vector<String>();
 		strings.add(username);
 		strings.add(password);
-		String response = (String)sendRequest(new ServerRequest("Authenticate Login", strings));
+		String response = (String)Orbit.sendRequest(new ServerRequest("Authenticate Login", strings));
 		//DEBUG System.out.println("Received response: " + response);
 		if(response.equalsIgnoreCase("Valid")){
 			//Login as user
 			//start new server listener thread
 //			slt = new ServerListenerThread();
 //			slt.start();
+			orbit.openLobby();
 			this.setVisible(false);
 			System.out.println("Valid login");
 		}
@@ -205,7 +200,7 @@ public class LoginWindow extends Window{
 		Vector<String> strings = new Vector<String>();
 		strings.add(username);
 		strings.add(password);
-		String response = (String)sendRequest(new ServerRequest("Create New User", strings));
+		String response = (String)Orbit.sendRequest(new ServerRequest("Create New User", strings));
 		//DEBUG System.out.println("Received response: " + response);
 		if(response.equalsIgnoreCase("Valid")){
 			//Signal that new user has been created
@@ -218,40 +213,7 @@ public class LoginWindow extends Window{
 	}
 
 	//sends object to server and returns for response received from server
-	public static synchronized Object sendRequest(ServerRequest sr){
-		Socket s = null;
-		try {
-			s = new Socket(ipAddress, portNumber);
-		} catch (UnknownHostException e1) { e1.printStackTrace(); return null;
-		} catch (IOException e1) { e1.printStackTrace(); return null;
-		}
-		ObjectOutputStream oos = null;
-		ObjectInputStream ois = null;
-		Object response = null;
-		try {
-			System.out.println("Sending ServerRequest...");
-			oos = new ObjectOutputStream(s.getOutputStream());
-			oos.writeObject(sr);
-			oos.flush();
-			System.out.println("ServerRequest sent. Waiting for response...");
-			ois = new ObjectInputStream(s.getInputStream());
-			response = ois.readObject();
-			System.out.println("Got response. Returned.");
-		} catch (IOException e) { e.printStackTrace();
-		} catch (ClassNotFoundException e) { e.printStackTrace();
-		} finally{
-			try {
-				if(oos != null){ oos.close(); }
-				if(ois != null){ ois.close(); }
-				if(s != null){
-					s.close();
-					s = null;
-				}
-			} catch (IOException e) { e.printStackTrace();
-			}
-		}
-		return response;
-	}
+
 
 	class JOrbitPanel extends JPanel{				//custom JPanel with overridden paint component
 
