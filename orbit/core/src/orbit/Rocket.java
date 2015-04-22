@@ -1,14 +1,15 @@
 package orbit;
 
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-public class Rocket extends Weapon{
-	
+public class Rocket extends Weapon implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int projectileWidth = 51;
 	private int projectileHeight = 36;
 	

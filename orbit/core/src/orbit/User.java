@@ -32,13 +32,14 @@ public class User implements Serializable{
 		this.username = username;
 		encryptedPass = newPass;
 		money = STARTING_MONEY;
-		planet = new Planet();
+		//planet = new Planet();		//Planet() throws many NullPointerExeptions. Fix before uncommenting
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
 		
 	
-		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,
-				10f, null, "missile.png");
+		//Rocket() not defined, throws IOException in server. Fix before uncommenting
+		//Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,10f, null, "missile.png");
+		Weapon defaultRocket = null;
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
 		

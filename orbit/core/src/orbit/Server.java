@@ -108,14 +108,21 @@ public class Server extends JFrame{
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename));
 			database = (Database)ois.readObject();
 			System.out.println("Read database from file successfully");
+			System.out.println("HASHMAP SIZE: " + database.usernameToUserMap.size());
+			System.out.println("YELI: " + database.usernameToUserMap.get("yeli").getUsername());
 		} catch (FileNotFoundException e) {
 			//could not find the file. initialize default database
-			database = new Database();
 			System.out.println("File not found. Creating default");
+			database = new Database();
+			database.resetSQL();
 		} catch (IOException e) {
 			System.out.println("IOException in Server.initializeDatabase(): " + e.getMessage());
+			database =  new Database();
+			database.resetSQL();
 		} catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException in Server.initializeDatabase(): " + e.getMessage());
+			database =  new Database();
+			database.resetSQL();
 		} 
 		
 		System.out.println("Database initialized");
@@ -175,40 +182,5 @@ public class Server extends JFrame{
 	
 	public static void main (String[] args){
 		new Server();
-	}
-}
-
-//thread that listens for new connections
-class ClientListenerThread extends Thread{
-	private Server server;
-	private Database d;
-	private ServerSocket ss;
-	private Socket s;
-	
-	public ClientListenerThread(Server server, Database d, ServerSocket ss){
-		this.server = server;
-		this.d = d;
-		this.ss = ss;
-	}
-	
-	public void run(){
-		try {
-			while(true){
-				//accept connections and update status labels
-				server.connectionStatus.setText("Waiting for connection...");
-				s = ss.accept();
-				server.connectionStatus.setText("Got connection...");
-				server.lastConnection.setText(s.getInetAddress() + " : " + s.getPort());
-				
-				//start new thread to handle client requests
-				OrbitServerThread ost = new OrbitServerThread(server, s, d);
-				server.clients.add(ost);
-				server.numConnections.setText(new Integer(server.clients.size()).toString());
-				ost.start();
-			}
-		} catch (IOException e) { //closing s to interrupt blocking ss.accept() call throws IOException. ignore exception.
-			System.out.println("Terminated ClientListenerThread");
-//			System.out.println("IOException in ClientListenerThread.run(): " + e.getMessage());
-		}
 	}
 }
