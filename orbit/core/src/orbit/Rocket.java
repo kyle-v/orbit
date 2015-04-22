@@ -13,12 +13,12 @@ public class Rocket extends Weapon{
 	private int projectileHeight = 36;
 	
 	public Rocket(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Texture weaponImage, String projectileImage) {
+			float maxInitialSpeed, Texture weaponImage, Texture projectileImage) {
 		super(name, damage, cooldown, projectileMass, maxInitialSpeed, weaponImage,
 				projectileImage);
 	}
 
-	public void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects) {
+	public void fire(float xPosition, float yPosition, int powerPercent, double angle, ArrayList<GameObject> gameObjects) {
 		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
 		Vector2 initSpeed = new Vector2(maxInitialSpeed*(float)(powerPercent)/100f, 0f);
 		initSpeed.rotateRad((float)angle);
@@ -27,7 +27,7 @@ public class Rocket extends Weapon{
 		 * it by the selected angle
 		 */
 		
-		Projectile p = new Projectile(175, 175, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects);
+		Projectile p = new Projectile(xPosition, yPosition, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects);
 		gameObjects.add(p);
 	}
 	

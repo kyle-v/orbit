@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 
 
@@ -14,11 +15,12 @@ public class Projectile extends GameObject {
 	String projectileImage;
 	int damage;
 	float angle;
-	static final float g = .1f;
+	static final float g = 5f;
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
 	ArrayList<GameObject> gameObjects;
 	Sprite sprite;
+	
 	//Constructor
 	/*
 	 * The weapon should pass the initial speed, 
@@ -28,31 +30,28 @@ public class Projectile extends GameObject {
 	 */
 	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, ArrayList<GameObject> gameObjects) {
 		super(x, y, width, height);
-		
-		
-		this.projectileImage = owner.projectileImage;
-		sprite = new Sprite(AssetLibrary.getTexture(projectileImage));
+		sprite = new Sprite(owner.projectileImage);
 		sprite.setPosition(x, y);
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
 		this.damage = owner.damage;
 		this.gameObjects = gameObjects;
-
+		createPhysicsBody();
+		body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
-	public void update() {
+	public void update(float DeltaTime) {
 		calculateGravity();
-		updateVelocityAndPosition();
+		updateVelocityAndPosition(DeltaTime);
 		for (GameObject o : gameObjects){
 			if(o != this){
 				if (checkCollision(o)){
-					isDead = true;
+					//isDead = true;
 				}
 			}
 		}
 		// TODO Auto-generated method stub
-
 	}
 
 	public void calculateGravity(){
@@ -96,14 +95,14 @@ public class Projectile extends GameObject {
 		}
 
 		//Limit the gravity since it can get very high 
-
 		this.acceleration = grav;
 	}
 
 	public void draw(SpriteBatch batch){
 		//--------------WE'RE USING SPRITES NOW MOTHERFUCKERS
-		sprite.setPosition(position.x - width/2, position.y - height/2);
-		sprite.setRotation(velocity.angle());
+		sprite.setPosition(body.getPosition().x * GameplayStatics.pixelsToMeters() - width/2, 
+				body.getPosition().y * GameplayStatics.pixelsToMeters() - height/2);
+		sprite.setRotation(body.getLinearVelocity().angle());
 		sprite.draw(batch);
 		/*
 		batch.draw(AssetLibrary.getTexture(projectileImage),
@@ -142,8 +141,7 @@ public class Projectile extends GameObject {
 
 	@Override
 	public void OnCollisionEnter(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("e");
 	}
 
 	@Override

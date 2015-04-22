@@ -9,6 +9,11 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class GameplayStatics {
 	private static World world;
+	private static final float PIXELS_TO_METERS = 50;
+	
+	public static float pixelsToMeters(){
+		return PIXELS_TO_METERS;
+	}
 	
 	public static World getWorld(){
 		if(world == null)

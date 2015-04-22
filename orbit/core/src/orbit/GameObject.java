@@ -1,10 +1,14 @@
 package orbit;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class GameObject {
@@ -17,6 +21,8 @@ public abstract class GameObject {
 	protected float width;
 	protected float height;
 	protected boolean isDead;
+	protected Body body;
+	protected Sprite sprite;
 	
 	public GameObject (float x, float y, float width, float height){
 		/*
@@ -37,7 +43,28 @@ public abstract class GameObject {
 		mass = 0;
 	}
 	
-	protected void updateVelocityAndPosition(){
+	public void createPhysicsBody(){
+		BodyDef bodyDef = new BodyDef();
+	     bodyDef.type = BodyDef.BodyType.DynamicBody;
+	     bodyDef.position.set((position.x + width/2) /
+	                        GameplayStatics.pixelsToMeters(),
+	                (position.y + height/2) / GameplayStatics.pixelsToMeters());
+	     body = GameplayStatics.getWorld().createBody(bodyDef);
+	     PolygonShape shape = new PolygonShape();
+	     shape.setAsBox(width/2/GameplayStatics.pixelsToMeters(), height/2/GameplayStatics.pixelsToMeters());
+	     FixtureDef fixtureDef = new FixtureDef();
+	     fixtureDef.shape = shape;
+	     fixtureDef.density = 0.1f;
+	     fixtureDef.restitution = 0.5f;
+	     body.createFixture(fixtureDef);
+	     body.setUserData(this);
+	     shape.dispose();
+	}
+	
+	protected void updateVelocityAndPosition(float DeltaTime){
+		body.setLinearVelocity(body.getLinearVelocity().add(acceleration.setLength(DeltaTime)));
+		//body.setTransform(body.getPosition(), body.getLinearVelocity().angle());
+		body.setAngularVelocity(0);
 		velocity.add(acceleration);
 		position.add(velocity);
 		bounds.x = position.x - width/2;
@@ -50,9 +77,12 @@ public abstract class GameObject {
 	
 	abstract public void OnCollisionExit(Contact contact, boolean isA);
 	
-	abstract public void update();
+	abstract public void update(float DeltaTime);
 	
-	abstract public void draw(SpriteBatch b);
+	public void draw(SpriteBatch b){
+		sprite.setPosition(body.getPosition().x * GameplayStatics.pixelsToMeters() - width/2, body.getPosition().y * GameplayStatics.pixelsToMeters() - height/2);
+		sprite.draw(b);
+	}
 	
 	abstract public boolean checkCollision(GameObject other);
 	

@@ -1,6 +1,7 @@
 package orbit;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,25 +27,24 @@ public class Planet extends GameObject implements Serializable{
 	public static final float DEFAULT_RADIUS = 40f;
 	
 	public static final float DEFAULT_MASS = 5000f;
-
-	public static final float PIXELS_TO_METERS = 100;
 	
 	private float radius;
 	private Texture planetSkin;
 	private Sprite sprite;
-	Body body;
+	private Weapon equippedWeapon;
 
-	public Planet() {
+	public Planet(Weapon weapon) {
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
 		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
 		sprite = new Sprite(planetSkin);
 		createPhysicsBody();
+		equippedWeapon = weapon;
 	}
 	
 	
-	public Planet(float x, float y, float radius) {
+	public Planet(float x, float y, float radius, Weapon weapon) {
 		super(x, y, radius*2, radius*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = radius;
@@ -52,19 +52,20 @@ public class Planet extends GameObject implements Serializable{
 		sprite = new Sprite(planetSkin);
 		sprite.setPosition(position.x - radius, position.y - radius);
 		createPhysicsBody();
+		equippedWeapon = weapon;
 	}
 	
 	//function to generate the physics body that this sprite is paired to
 	public void createPhysicsBody(){
 		BodyDef bodyDef = new BodyDef();
-	     bodyDef.type = BodyDef.BodyType.DynamicBody;
+	     bodyDef.type = BodyDef.BodyType.StaticBody;
 	     bodyDef.position.set((sprite.getX() + radius) /
-	                        PIXELS_TO_METERS,
-	                (sprite.getY() + radius) / PIXELS_TO_METERS);
+	                        GameplayStatics.pixelsToMeters(),
+	                (sprite.getY() + radius) / GameplayStatics.pixelsToMeters());
 	     body = GameplayStatics.getWorld().createBody(bodyDef);
 	     PolygonShape shape = new PolygonShape();
-	     shape.setRadius(radius/ PIXELS_TO_METERS);
-	     shape.setAsBox(radius/PIXELS_TO_METERS, radius/PIXELS_TO_METERS);
+	     shape.setRadius(radius/ GameplayStatics.pixelsToMeters());
+	     shape.setAsBox(radius/2/GameplayStatics.pixelsToMeters(), radius/2/GameplayStatics.pixelsToMeters());
 	     FixtureDef fixtureDef = new FixtureDef();
 	     fixtureDef.shape = shape;
 	     fixtureDef.density = 0.1f;
@@ -74,22 +75,30 @@ public class Planet extends GameObject implements Serializable{
 	     shape.dispose();
 	}
 	
+	public void FireWeapon(int powerPercent, double angle, ArrayList<GameObject> gameObjects){
+		int buffer = equippedWeapon.projectileImage.getWidth() + 10;
+		buffer += radius;
+		float xPosition = (float) Math.cos(angle) * buffer;
+		float yPosition = (float) Math.sin(angle) * buffer;
+		equippedWeapon.fire(sprite.getX() + xPosition, sprite.getY() + yPosition, powerPercent, angle, gameObjects);
+	}
+	
 	//should use set position to change a game objects position now because it updates the physics body as well
 	public void SetPosition(Vector2 pos){
 		position = pos;
 		sprite.setPosition(pos.x - radius, pos.y - radius);
 		body.setTransform((sprite.getX() + radius) /
-                PIXELS_TO_METERS,
-                (sprite.getY() + radius) / PIXELS_TO_METERS, 0);
+                GameplayStatics.pixelsToMeters(),
+                (sprite.getY() + radius) / GameplayStatics.pixelsToMeters(), 0);
 	}
 
 	@Override
-	public void update() {
-		updateVelocityAndPosition();
+	public void update(float DeltaTime) {
+		updateVelocityAndPosition(DeltaTime);
 		//set the sprites position to the same as 
-		sprite.setPosition((body.getPosition().x * PIXELS_TO_METERS) - 
+		sprite.setPosition((body.getPosition().x * GameplayStatics.pixelsToMeters()) - 
                 radius,
-        (body.getPosition().y * PIXELS_TO_METERS) - radius);
+        (body.getPosition().y * GameplayStatics.pixelsToMeters()) - radius);
 		// TODO Auto-generated method stub
 		
 	}

@@ -16,11 +16,11 @@ public abstract class Weapon {
 	
 	//Graphics
 	public Texture weaponImage;
-	public String projectileImage;
+	public Texture projectileImage;
 	
 	//Constructor
 	public Weapon(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Texture weaponImage, String projectileImage) {
+			float maxInitialSpeed, Texture weaponImage, Texture projectileImage) {
 		super();
 		this.name = name;
 		this.damage = damage;
@@ -31,7 +31,7 @@ public abstract class Weapon {
 		this.projectileImage = projectileImage;
 	}
 	
-	public abstract void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects);
+	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, ArrayList<GameObject> gameObjects);
 	//changed parameters since the angle and power need to be selected before a projectile can be created
 	//added a projectile parameter
 }

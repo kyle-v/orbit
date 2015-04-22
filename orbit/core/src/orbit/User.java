@@ -2,6 +2,7 @@ package orbit;
 
 import java.awt.Image;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -32,17 +33,22 @@ public class User implements Serializable{
 		this.username = username;
 		encryptedPass = newPass;
 		money = STARTING_MONEY;
-		planet = new Planet();
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
-		
+	}
 	
+	//we need this because now users are going to be created prior to being in game
+	//this we way call initialize to make all the gdx object only once the game has started
+	public void initialize(){
 		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,
-				10f, null, "missile.png");
+				10f, null, AssetLibrary.getTexture("missile.png"));
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		
-		
+	}
+	
+	//this is how we fire our weapons, it goes through the players currently equipped weapon and the planet automaticlly fires it in the correct spot
+	public void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects){
+		planet.FireWeapon(powerPercent, angle, gameObjects);
 	}
 	
 	public String getUsername() {
@@ -70,6 +76,8 @@ public class User implements Serializable{
 	}
 	
 	public Planet getPlanet(){
+		if(planet==null)
+			planet = new Planet(equippedWeapons.get(0));
 		return planet;
 	}
 

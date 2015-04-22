@@ -1,6 +1,7 @@
 package orbit;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -27,6 +29,8 @@ public class OrbitGame extends ApplicationAdapter{
 	public static enum GameState {WEAPON, AIMING, POWER, WAITING};
 	public GameState gameState; 
 
+	private final float SPAWN_RADIUS = 400;
+	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
@@ -36,17 +40,27 @@ public class OrbitGame extends ApplicationAdapter{
 	private FPSLogger fps;
 	private ArrayList<GameObject> gameObjects;
 
-
 	//Input control
-	private int powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
+	private float powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
 	private double angle; // Angle to shoot the weapon at
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
-	private double maxAngle = Math.PI/2;
-	private double minAngle = 0;
 	World world;
 	Box2DDebugRenderer debugRenderer;
 	Camera camera;
+	//this magical stuff that converts our pixels coordinates to our box2d world coordinates
+	Matrix4 debugMatrix;
+	
+	//ok im adding stuff that should allow this to actually scale for players
+	//an array of all players that will be in the game
+	ArrayList<User> players;
+	//int that indicates which index we are playing as
+	int playerIndex;
 
+	public OrbitGame(ArrayList<User> players, int playerIndex){
+		this.players = players;
+		this.playerIndex = playerIndex;
+	}
+	
 	@Override
 	public void create () {
 		
@@ -54,7 +68,6 @@ public class OrbitGame extends ApplicationAdapter{
 		//
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
 		gameState = GameState.WEAPON;
 		gameObjects = new ArrayList<GameObject>();
 		
@@ -67,9 +80,35 @@ public class OrbitGame extends ApplicationAdapter{
 		camera = new OrthographicCamera(1920,1080);
 		//this will be used to render where our colliders are
 		debugRenderer = new Box2DDebugRenderer();
+		debugMatrix=new Matrix4(camera.combined);
+		 
+		//this thing renders shapes, duh
+		shapeRenderer = new ShapeRenderer();
+		//setting the projection matrix means its rendering based on the camera's pixels
+		//rather then the screen's
+		shapeRenderer.setProjectionMatrix(camera.combined); 
 		
+		//BoxObjectManager.BOX_TO_WORLD = 100f
+		//Scale it by 100 as our box physics bodies are scaled down by 100
+		debugMatrix.scale(GameplayStatics.pixelsToMeters(), GameplayStatics.pixelsToMeters(), 1f);
+		 
 		
 		//This is where we would get the user from Orbit and the opponent user from server
+		
+		player = players.get(playerIndex);
+		float increment = 360/players.size();
+		Random randy = new Random();
+		float start = randy.nextFloat() * 360;
+		for(int k=0;k<players.size();k++){
+			User u = players.get(k);
+			u.initialize();
+			double radians = Math.toRadians(start + increment*k);
+			u.getPlanet().SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
+			gameObjects.add(u.getPlanet());
+		}
+		playerPlanet = player.getPlanet();
+
+		/*
 		this.player = new User("kyle", "p");
 		this.opponents = new ArrayList<User>();
 		this.opponents.add(new User("steven", "lol"));
@@ -79,7 +118,7 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		gameObjects.add(playerPlanet);
 		gameObjects.add(opponents.get(0).getPlanet());
-		
+		*/
 		
 	}
 
@@ -87,26 +126,22 @@ public class OrbitGame extends ApplicationAdapter{
 	@Override
 	public void render () {
 		//fps.log();
+		float DeltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		debugRenderer.render(GameplayStatics.getWorld(), camera.combined);
 		world.step(1f/60f, 6, 2);
 		//Update
-		shapeRenderer.begin(ShapeType.Filled); 
 		if(!gamePaused){
-			
 			for(int i = 0; i < gameObjects.size(); i++){
 				GameObject o = gameObjects.get(i);
 				if (!o.isDead){
 					//shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
-					o.update();
+					o.update(DeltaTime);
 				} else {
 					gameObjects.remove(o);
 				}
 			}
 		}
-		shapeRenderer.end();
-
 
 		//Game loop
 		switch(gameState){
@@ -114,21 +149,18 @@ public class OrbitGame extends ApplicationAdapter{
 
 			break;
 		case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
-			if(increasing) angle += .01f;
-			else angle -= .01f;
-			if (angle >= maxAngle) increasing = false;
-			if (angle <= minAngle) increasing = true;
-
+			angle += 3 * DeltaTime;
+			if(angle > 2 * Math.PI)
+				angle -= 2* Math.PI;
 			break;
 		case POWER: //Choosing power to shoot
-			if(increasing) powerPercent ++;
-			else powerPercent --;
+			if(increasing) powerPercent += 50 * DeltaTime;
+			else powerPercent -= 50 * DeltaTime;
 			if (powerPercent == 100) increasing = false;
 			if (powerPercent == 0) increasing = true;
 			break;
 		case WAITING: // Turn over, waiting for other player
-			player.equippedWeapons.get(0).fire(powerPercent, angle, gameObjects);
-			
+			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WEAPON;
 			System.out.println("Begin WEAPON state");
 
@@ -152,11 +184,13 @@ public class OrbitGame extends ApplicationAdapter{
 
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1, 1, 0, 1);
-		shapeRenderer.rect(10, 10, 10, powerPercent);
+		Vector2 playerPos = playerPlanet.position;
+		shapeRenderer.rect(playerPos.x - 80, playerPos.y, 10, powerPercent);
 		shapeRenderer.setColor(1, 1, 0, 1);
-		shapeRenderer.line(20, 20, 20+(float)Math.cos(angle) * 100 ,  10+(float)Math.sin(angle) * 100 );
+		shapeRenderer.line(playerPos.x, playerPos.y, playerPos.x+(float)Math.cos(angle) * 100 ,  playerPos.y+(float)Math.sin(angle) * 100 );
 		shapeRenderer.end();
 
+		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
 
 
 	}

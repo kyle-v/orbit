@@ -1,7 +1,10 @@
 package com.orbit.game.desktop;
 
+import java.util.ArrayList;
+
 import orbit.Orbit;
 import orbit.OrbitGame;
+import orbit.User;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -16,6 +19,10 @@ public class DesktopLauncher {
 		//new LoginWindow(new Orbit()); //uncomment to see the gui windows
 		//new LobbyWindow(); 
 		//new ProfileWindow();
-		new LwjglApplication(new OrbitGame(), config);
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User("Kyle","P"));
+		users.add(new User("Steven", "LJK"));
+		users.add(new User("Buts", "Mcbuts"));
+		new LwjglApplication(new OrbitGame(users,0), config);
 	}
 }
