@@ -152,7 +152,7 @@ public class LobbyWindow extends Window{
 				}
 				messageTextField.setText("");
 				//send message to server
-				chatClient.sendMessage("\n" + message);
+				chatClient.sendMessage(message);
 			}
 		});
 		
