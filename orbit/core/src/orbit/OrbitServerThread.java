@@ -30,8 +30,10 @@ public class OrbitServerThread extends Thread {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			
 			//only ServerRequests are received (sent by client)
-			ServerRequest sr = (ServerRequest)ois.readObject();
-			fulfillRequest(sr);
+			while(true){
+				ServerRequest sr = (ServerRequest)ois.readObject();
+				fulfillRequest(sr);
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -41,15 +43,15 @@ public class OrbitServerThread extends Thread {
 		} catch (UnidentifiedRequestException e) {
 			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
 		}
-		finally{
-			try {
-				oos.close();
-				ois.close();
-				s.close();
-			} catch (IOException e) {
-				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
-			}
-		}
+//		finally{
+//			try {
+//				oos.close();
+//				ois.close();
+//				s.close();
+//			} catch (IOException e) {
+//				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
+//			}
+//		}
 	}
 
 	//reads the request received and performs the appropriate action
