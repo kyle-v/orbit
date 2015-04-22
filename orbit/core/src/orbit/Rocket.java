@@ -2,6 +2,7 @@ package orbit;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +19,7 @@ public class Rocket extends Weapon{
 				projectileImage);
 	}
 
-	public void fire(float xPosition, float yPosition, int powerPercent, double angle, ArrayList<GameObject> gameObjects) {
+	public void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects) {
 		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
 		Vector2 initSpeed = new Vector2(maxInitialSpeed*(float)(powerPercent)/100f, 0f);
 		initSpeed.rotateRad((float)angle);

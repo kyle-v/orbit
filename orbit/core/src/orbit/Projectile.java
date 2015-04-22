@@ -1,6 +1,7 @@
 package orbit;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +19,7 @@ public class Projectile extends GameObject {
 	static final float g = 5f;
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
-	ArrayList<GameObject> gameObjects;
+	List<GameObject> gameObjects;
 	Sprite sprite;
 	
 	//Constructor
@@ -28,14 +29,14 @@ public class Projectile extends GameObject {
 	 *  every time it creates a new projectile in
 	 *  addition to the x and y coords and height, width
 	 */
-	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, ArrayList<GameObject> gameObjects) {
+	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, List<GameObject> gameObjects2) {
 		super(x, y, width, height);
 		sprite = new Sprite(owner.projectileImage);
 		sprite.setPosition(x, y);
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
 		this.damage = owner.damage;
-		this.gameObjects = gameObjects;
+		this.gameObjects = gameObjects2;
 		createPhysicsBody();
 		body.setLinearVelocity(initialSpeed);
 	}

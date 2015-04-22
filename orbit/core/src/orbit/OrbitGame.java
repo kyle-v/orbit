@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -47,7 +49,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private ArrayList<User> opponents;
 	private Planet playerPlanet;
 	private FPSLogger fps;
-	private ArrayList<GameObject> gameObjects;
+	private List<GameObject> gameObjects;
 
 	//Input control
 	public int currentWeapon; // Weapon currently selected
@@ -83,7 +85,7 @@ public class OrbitGame extends ApplicationAdapter{
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
 		gameState = GameState.WEAPON;
-		gameObjects = new ArrayList<GameObject>();
+		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -184,7 +186,11 @@ public class OrbitGame extends ApplicationAdapter{
 			player.setWeapon(currentWeapon);
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WAITING;
-			playerTurnOver();
+			currentPlayer ++;
+			if(currentPlayer > players.size()){
+				currentPlayer = 0;
+			}
+			playerTurnOver(powerPercent, (float)angle);
 			break;
 		case WAITING: // Turn over, waiting for other player
 			if(currentPlayer == playerIndex)
@@ -248,6 +254,7 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		
 		public void run(){
+			System.out.println("Port opened on port " + port);
 			ServerSocketHints socketHint = new ServerSocketHints();
 			socketHint.acceptTimeout = 0;
 			ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
@@ -256,10 +263,10 @@ public class OrbitGame extends ApplicationAdapter{
 				try {
 					ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
 					Object obj = reader.readObject();
-					currentPlayer ++;
 					if(currentPlayer >= players.size())
 						currentPlayer = 0;
-					GameplayStatics.game.gameObjects = (ArrayList<GameObject>)obj;
+					 Vector2 fireInfo = (Vector2)obj;
+					 GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -271,16 +278,18 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 	}
 	
-	public void playerTurnOver(){
+	public void playerTurnOver(float powerPercent, float angle){
 		currentPlayer++;
 		for(int k=0;k<players.size();k++){
 			if(k!=playerIndex){
 				SocketHints socketHint = new SocketHints();
 				socketHint.connectTimeout = 3000;
-				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + k, socketHint);
+				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+				System.out.println("Sending object to port " + (basePort + k));
+				Vector2 fireInfo = new Vector2(powerPercent,angle);
 				try {
 					ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-					stream.writeObject(gameObjects);
+					stream.writeObject(fireInfo);
 					stream.flush();
 					
 				} catch (IOException e) {

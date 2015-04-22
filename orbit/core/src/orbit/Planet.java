@@ -2,6 +2,7 @@ package orbit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -90,7 +91,7 @@ public class Planet extends GameObject implements Serializable{
 		equippedWeapon = weapons.get(weaponIndex);
 	}
 	
-	public void FireWeapon(int powerPercent, double angle, ArrayList<GameObject> gameObjects){
+	public void FireWeapon(int powerPercent, double angle, List<GameObject> gameObjects){
 		int buffer = equippedWeapon.projectileImage.getWidth() + 50;
 		buffer += radius;
 		float xPosition = (float) Math.cos(angle) * buffer;

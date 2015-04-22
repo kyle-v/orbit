@@ -3,6 +3,7 @@ package orbit;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -57,7 +58,7 @@ public class User implements Serializable{
 	}
 	
 	//this is how we fire our weapons, it goes through the players currently equipped weapon and the planet automaticlly fires it in the correct spot
-	public void fire(int powerPercent, double angle, ArrayList<GameObject> gameObjects){
+	public void fire(int powerPercent, double angle, List<GameObject> gameObjects){
 		planet.FireWeapon(powerPercent, angle, gameObjects);
 	}
 	

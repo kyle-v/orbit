@@ -22,13 +22,9 @@ public class DesktopLauncher {
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User("Kyle","P"));
 		users.add(new User("Steven", "LJK"));
-		users.add(new User("Buts", "Mcbuts"));
-		users.add(new User("Loser","L"));
-		users.add(new User("Winner", "W"));
-		users.add(new User("Cuts", "Cbuts"));
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		new LwjglApplication(new OrbitGame(users,IPs,0), config);
+		new LwjglApplication(new OrbitGame(users,IPs,1), config);
 	}
 }

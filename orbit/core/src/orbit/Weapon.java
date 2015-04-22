@@ -3,6 +3,7 @@ package orbit;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -41,7 +42,7 @@ public abstract class Weapon implements Serializable{
 		this.sprite = new Sprite(weaponImage);
 	}
 	
-	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, ArrayList<GameObject> gameObjects);
+	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects);
 	//changed parameters since the angle and power need to be selected before a projectile can be created
 	//added a projectile parameter
 }
