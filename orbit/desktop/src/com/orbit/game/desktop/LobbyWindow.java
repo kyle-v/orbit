@@ -1,6 +1,7 @@
 
 package com.orbit.game.desktop;
 
+import orbit.ServerRequest;
 import orbit.User;
 
 import java.awt.BorderLayout;
@@ -22,7 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class LobbyWindow extends Window{
-
 	private static final long serialVersionUID = 3030799455712427080L;
 	
 	private ArrayList<User> currentUsers;	//list of users that still needs to be set users from Orbit object
@@ -59,7 +59,6 @@ public class LobbyWindow extends Window{
 		addActionListeners();
 		add(mainContainer);
 		setSize(1024,600);
-		setVisible(true);
 	}
 	
 	//adds action listeners to components
@@ -74,7 +73,7 @@ public class LobbyWindow extends Window{
 		//start's matchmaking
 		findGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				Orbit.sendRequest(new ServerRequest("FindGame", null));
 			}
 		});
 		

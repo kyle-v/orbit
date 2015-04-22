@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -87,7 +88,7 @@ public class OrbitGame extends ApplicationAdapter{
 		//setting the projection matrix means its rendering based on the camera's pixels
 		//rather then the screen's
 		shapeRenderer.setProjectionMatrix(camera.combined); 
-		
+		GameplayStatics.setShapeRenderer(shapeRenderer);
 		//BoxObjectManager.BOX_TO_WORLD = 100f
 		//Scale it by 100 as our box physics bodies are scaled down by 100
 		debugMatrix.scale(GameplayStatics.pixelsToMeters(), GameplayStatics.pixelsToMeters(), 1f);
@@ -138,6 +139,7 @@ public class OrbitGame extends ApplicationAdapter{
 					//shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
 					o.update(DeltaTime);
 				} else {
+					o.Destroy();
 					gameObjects.remove(o);
 				}
 			}
@@ -156,8 +158,8 @@ public class OrbitGame extends ApplicationAdapter{
 		case POWER: //Choosing power to shoot
 			if(increasing) powerPercent += 50 * DeltaTime;
 			else powerPercent -= 50 * DeltaTime;
-			if (powerPercent == 100) increasing = false;
-			if (powerPercent == 0) increasing = true;
+			if (powerPercent > 100) increasing = false;
+			if (powerPercent < 0) increasing = true;
 			break;
 		case WAITING: // Turn over, waiting for other player
 			player.fire((int)powerPercent, angle, gameObjects);
@@ -179,17 +181,22 @@ public class OrbitGame extends ApplicationAdapter{
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
-
 		batch.end();
 
 		shapeRenderer.begin(ShapeType.Filled);
+		for(User u : players){
+			Planet p = u.getPlanet();
+			Vector2 pos = p.position;
+			shapeRenderer.setColor(Color.RED);
+			shapeRenderer.rect(pos.x - 50,pos.y + 80, p.health, 10);
+		}
 		shapeRenderer.setColor(1, 1, 0, 1);
 		Vector2 playerPos = playerPlanet.position;
 		shapeRenderer.rect(playerPos.x - 80, playerPos.y, 10, powerPercent);
 		shapeRenderer.setColor(1, 1, 0, 1);
 		shapeRenderer.line(playerPos.x, playerPos.y, playerPos.x+(float)Math.cos(angle) * 100 ,  playerPos.y+(float)Math.sin(angle) * 100 );
 		shapeRenderer.end();
-
+		
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
 
 

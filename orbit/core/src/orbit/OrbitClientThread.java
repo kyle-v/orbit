@@ -15,7 +15,7 @@ public class OrbitClientThread extends Thread{
 		
 	}
 	public void run(){
-		System.out.println("Starting to run OrbitServerThread");
+		System.out.println("Starting to run OrbitClientThread");
 		try {
 			//acquire streams
 			ois = new ObjectInputStream(s.getInputStream());
@@ -27,11 +27,11 @@ public class OrbitClientThread extends Thread{
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
+			System.out.println("IOE in OrbitClientThread.run(): " + e.getMessage());
 		}catch (ClassNotFoundException e) {
-			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());
+			System.out.println("ClassNotFoundException in OrbitClientThread.run(): " + e.getMessage());
 		} catch (UnidentifiedRequestException e) {
-			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
+			System.out.println("UnidentifiedRequestException in OrbitClientThread.run(): " + e.getMessage());
 		}
 		finally{
 			try {
@@ -39,7 +39,7 @@ public class OrbitClientThread extends Thread{
 				ois.close();
 				s.close();
 			} catch (IOException e) {
-				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
+				System.out.println("IOE in OrbitClientThread.run() - finally: " + e.getMessage());
 			}
 		}
 	}
@@ -82,7 +82,7 @@ public class OrbitClientThread extends Thread{
 			oos.writeObject(responseObject);
 			oos.flush();
 		} catch (IOException e) {
-			System.out.println("IOException in OrbitServerThread.sendResponse(): " + e.getMessage());
+			System.out.println("IOException in OrbitClientThread.sendResponse(): " + e.getMessage());
 		}
 	}
 }

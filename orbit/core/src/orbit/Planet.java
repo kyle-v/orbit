@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -28,6 +30,9 @@ public class Planet extends GameObject implements Serializable{
 	
 	public static final float DEFAULT_MASS = 5000f;
 	
+	public static final float DEFAULT_STARTING_HEALTH = 100;
+	
+	public float health;
 	private float radius;
 	private Texture planetSkin;
 	private Sprite sprite;
@@ -37,6 +42,7 @@ public class Planet extends GameObject implements Serializable{
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
+		this.health = DEFAULT_STARTING_HEALTH;
 		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
 		sprite = new Sprite(planetSkin);
 		createPhysicsBody();
@@ -44,10 +50,11 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	
-	public Planet(float x, float y, float radius, Weapon weapon) {
+	public Planet(float x, float y, float radius, float startingHealth, Weapon weapon) {
 		super(x, y, radius*2, radius*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = radius;
+		health = startingHealth;
 		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
 		sprite = new Sprite(planetSkin);
 		sprite.setPosition(position.x - radius, position.y - radius);
@@ -76,7 +83,7 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, ArrayList<GameObject> gameObjects){
-		int buffer = equippedWeapon.projectileImage.getWidth() + 10;
+		int buffer = equippedWeapon.projectileImage.getWidth() + 50;
 		buffer += radius;
 		float xPosition = (float) Math.cos(angle) * buffer;
 		float yPosition = (float) Math.sin(angle) * buffer;
