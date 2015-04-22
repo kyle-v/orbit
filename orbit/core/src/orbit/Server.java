@@ -15,14 +15,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
+
+import javafx.util.Pair;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
 
 
 public class Server extends JFrame{
@@ -37,7 +43,7 @@ public class Server extends JFrame{
 	//Connected client threads
 	public Vector<OrbitServerThread> clients = new Vector<OrbitServerThread>();
 	private HashMap<String, OrbitServerThread> usernameToThreadMap = new HashMap<String, OrbitServerThread>();
-	
+	private Queue<OrbitServerThread> readyClients = new LinkedList<OrbitServerThread>();
 	
 	//GUI members
 	JLabel serverStatus;
@@ -109,7 +115,10 @@ public class Server extends JFrame{
 			database = (Database)ois.readObject();
 			System.out.println("Read database from file successfully");
 			System.out.println("HASHMAP SIZE: " + database.usernameToUserMap.size());
-			System.out.println("YELI: " + database.usernameToUserMap.get("yeli").getUsername());
+//			if(usernameToUserMap == null){
+//				usernameToUserMap = new 
+//			}
+			System.out.println("YELI: " + database.usernameToUserMap);//.get("yeli").getUsername());
 		} catch (FileNotFoundException e) {
 			//could not find the file. initialize default database
 			System.out.println("File not found. Creating default");
@@ -178,6 +187,24 @@ public class Server extends JFrame{
 			}
 		}
 		System.out.println("Server stopped");
+	}
+	
+	public synchronized void addToReady(OrbitServerThread ost){
+		if(!readyClients.contains(ost)){
+			readyClients.add(ost);
+			if(readyClients.size() >= 2){
+				ArrayList<User> users = new ArrayList<User>();
+				ArrayList<String> ips = new ArrayList<String>();
+				Pair<ArrayList<User>, ArrayList<String>> opponents = new Pair<ArrayList<User>, ArrayList<String>>(users, ips);
+
+				for(OrbitServerThread c : readyClients){
+					users.add(c.getUser());
+					ips.add(c.s.getInetAddress().toString());
+					c.opponents = opponents;
+				}
+
+			}
+		}
 	}
 	
 	public static void main (String[] args){

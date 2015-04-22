@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//thread that listens for new connections
+//server-side thread that listens for new connections
 class ClientListenerThread extends Thread{
 	private Server server;
 	private Database d;

@@ -6,12 +6,11 @@ package com.orbit.game.desktop;
 
 import javax.swing.JFrame;
 
-import orbit.Orbit;
 
 public class Window extends JFrame{
 
 	private static final long serialVersionUID = -3265727502097532460L;
-	private Orbit parent; //parent class for sharing stuff to main game
+	protected Orbit orbit; //parent class for sharing stuff to main game
 	
 	Window(){
 		super("Orbit");
@@ -19,7 +18,6 @@ public class Window extends JFrame{
 	
 	Window(Orbit parent){
 		super("Orbit");
-		this.parent = parent;
+		this.orbit = parent;
 	}
-
 }

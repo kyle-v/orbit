@@ -152,6 +152,7 @@ public class Projectile extends GameObject {
 			Planet p = (Planet)collided;
 			p.health -= damage;
 			isDead = true;
+			GameplayStatics.game.checkWinCondition();
 		}
 	}
 

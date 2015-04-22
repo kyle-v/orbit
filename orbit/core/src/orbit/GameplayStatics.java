@@ -13,6 +13,7 @@ public class GameplayStatics {
 	private static World world;
 	private static final float PIXELS_TO_METERS = 50;
 	private static ShapeRenderer renderer;
+	public static OrbitGame game;
 	
 	public static void setShapeRenderer(ShapeRenderer srenderer){
 		renderer = srenderer;

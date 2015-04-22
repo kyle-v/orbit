@@ -1,5 +1,8 @@
 package orbit;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,16 +21,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.net.ServerSocket;
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Net.Protocol;
 
 public class OrbitGame extends ApplicationAdapter{
 
 
 	//Game goes through 4 states: Choosing weapon, choosing angle, choosing power, and waiting for the other player's move.
-	public static enum GameState {WEAPON, AIMING, POWER, WAITING};
+	public static enum GameState {WEAPON, AIMING, POWER, FIRE, WAITING};
 	public GameState gameState; 
 
 	private final float SPAWN_RADIUS = 400;
@@ -55,12 +63,16 @@ public class OrbitGame extends ApplicationAdapter{
 	//ok im adding stuff that should allow this to actually scale for players
 	//an array of all players that will be in the game
 	ArrayList<User> players;
+	ArrayList<String> playerIPAddresses;
+	int basePort = 9020;
 	//int that indicates which index we are playing as
 	int playerIndex;
+	int currentPlayer;
 
-	public OrbitGame(ArrayList<User> players, int playerIndex){
+	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex){
 		this.players = players;
 		this.playerIndex = playerIndex;
+		playerIPAddresses = ipaddresses;
 	}
 	
 	@Override
@@ -100,27 +112,29 @@ public class OrbitGame extends ApplicationAdapter{
 		player = players.get(playerIndex);
 		float increment = 360/players.size();
 		Random randy = new Random();
-		float start = randy.nextFloat() * 360;
+		float start = 20;
+		
+
+		GameplayStatics.game = this;
+		
+		//setup game state
+		currentPlayer = 0;
+		if(currentPlayer != 0)
+			gameState = GameState.WAITING;
+		
 		for(int k=0;k<players.size();k++){
 			User u = players.get(k);
 			u.initialize();
 			double radians = Math.toRadians(start + increment*k);
 			u.getPlanet().SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
 			gameObjects.add(u.getPlanet());
+			if(k!=playerIndex){ 
+				NetworkingListenerThread thread = new NetworkingListenerThread(basePort + k);
+				thread.start();
+			}
 		}
 		playerPlanet = player.getPlanet();
-
-		/*
-		this.player = new User("kyle", "p");
-		this.opponents = new ArrayList<User>();
-		this.opponents.add(new User("steven", "lol"));
-		playerPlanet = player.getPlanet();
-		playerPlanet.SetPosition(new Vector2(-400, -400));
-		opponents.get(0).getPlanet().SetPosition(new Vector2(400, 400));
 		
-		gameObjects.add(playerPlanet);
-		gameObjects.add(opponents.get(0).getPlanet());
-		*/
 		
 	}
 
@@ -148,12 +162,17 @@ public class OrbitGame extends ApplicationAdapter{
 
 		//Game loop
 		switch(gameState){
+<<<<<<< HEAD
 		case WEAPON: //Start of turn  - choosing weapon
 			if (currentWeapon < 0){
 				currentWeapon = player.equippedWeapons.size() - 1;
 			} else if (currentWeapon > player.equippedWeapons.size() - 1){
 				currentWeapon = 0;
 			}
+=======
+		case WEAPON: //Start of turn  - choosing weapon 
+			
+>>>>>>> origin/master
 			break;
 		case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
 			angle += 3 * DeltaTime;
@@ -166,10 +185,21 @@ public class OrbitGame extends ApplicationAdapter{
 			if (powerPercent > 100) increasing = false;
 			if (powerPercent < 0) increasing = true;
 			break;
+<<<<<<< HEAD
 		case WAITING: // Turn over, waiting for other player
 			player.setWeapon(currentWeapon);
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WEAPON;
+=======
+		case FIRE:
+			player.fire((int)powerPercent, angle, gameObjects);
+			gameState = GameState.WAITING;
+			playerTurnOver();
+			break;
+		case WAITING: // Turn over, waiting for other player
+			if(currentPlayer == playerIndex)
+				gameState = GameState.WEAPON;
+>>>>>>> origin/master
 			//When opponent's turn is over move back to WEAPON state
 			break;
 		default:
@@ -198,9 +228,11 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.begin(ShapeType.Filled);
 		for(User u : players){
 			Planet p = u.getPlanet();
-			Vector2 pos = p.position;
-			shapeRenderer.setColor(Color.RED);
-			shapeRenderer.rect(pos.x - 50,pos.y + 80, p.health, 10);
+			if(p.health>0){
+				Vector2 pos = p.position;
+				shapeRenderer.setColor(Color.RED);
+				shapeRenderer.rect(pos.x - 50,pos.y + 80, p.health, 10);
+			}
 		}
 		shapeRenderer.setColor(1, 1, 0, 1);
 		Vector2 playerPos = playerPlanet.position;
@@ -217,9 +249,76 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.end();
 		
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
-
-
 	}
 
+	public class NetworkingListenerThread extends Thread{
+		int port;
+		
+		public NetworkingListenerThread(int port){
+			this.port = port;
+		}
+		
+		public void run(){
+			ServerSocketHints socketHint = new ServerSocketHints();
+			socketHint.acceptTimeout = 0;
+			ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
+			while(true){
+				Socket socket = serverSocket.accept(null);
+				try {
+					ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
+					Object obj = reader.readObject();
+					currentPlayer ++;
+					if(currentPlayer >= players.size())
+						currentPlayer = 0;
+					GameplayStatics.game.gameObjects = (ArrayList<GameObject>)obj;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void playerTurnOver(){
+		currentPlayer++;
+		for(int k=0;k<players.size();k++){
+			if(k!=playerIndex){
+				SocketHints socketHint = new SocketHints();
+				socketHint.connectTimeout = 3000;
+				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + k, socketHint);
+				try {
+					ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+					stream.writeObject(gameObjects);
+					stream.flush();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void checkWinCondition(){
+		int possibleWinnerIndex = -1;
+		for(int k=0;k<players.size();k++){
+			User u = players.get(k);
+			Planet p = u.getPlanet();
+			if(p.health>0){
+				if(possibleWinnerIndex == -1)
+					possibleWinnerIndex = k;
+				else
+					return;
+			}	
+		}
+		reportWinsAndLosses(possibleWinnerIndex);
+	}
+	
+	public void reportWinsAndLosses(int winner){
+		System.out.println(winner);
+	}
 
 }

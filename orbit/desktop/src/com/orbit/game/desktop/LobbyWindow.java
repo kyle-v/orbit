@@ -1,6 +1,7 @@
 
 package com.orbit.game.desktop;
 
+import orbit.ServerRequest;
 import orbit.User;
 
 import java.awt.BorderLayout;
@@ -12,6 +13,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javafx.util.Pair;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -22,7 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class LobbyWindow extends Window{
-
 	private static final long serialVersionUID = 3030799455712427080L;
 	
 	private ArrayList<User> currentUsers;	//list of users that still needs to be set users from Orbit object
@@ -59,7 +63,6 @@ public class LobbyWindow extends Window{
 		addActionListeners();
 		add(mainContainer);
 		setSize(1024,600);
-		setVisible(true);
 	}
 	
 	//adds action listeners to components
@@ -74,7 +77,21 @@ public class LobbyWindow extends Window{
 		//start's matchmaking
 		findGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				Orbit.sendRequest(new ServerRequest("Find Game", null));
+				Timer checkForGame = new Timer();
+				checkForGame.schedule(new TimerTask(){
+					public void run() {
+						System.out.println("Checking for opponents...");
+						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
+						if(response != null){
+							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
+
+							System.out.println("Client has opponents!" + opponents.getValue().toString());
+							this.cancel();
+						}
+					}
+					
+				},0, 100);
 			}
 		});
 		
