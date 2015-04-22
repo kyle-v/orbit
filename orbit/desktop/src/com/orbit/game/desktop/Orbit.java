@@ -5,13 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
-import orbit.OrbitGame;
+import javax.swing.JOptionPane;
+
 import orbit.ServerRequest;
-import orbit.User;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class Orbit {
@@ -43,11 +41,7 @@ public class Orbit {
 		config.width = 1024;
 		config.height = 600;
 
-		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User("Kyle","P"));
-		users.add(new User("Steven", "LJK"));
-		users.add(new User("Buts", "Mcbuts"));
-		new LwjglApplication(new OrbitGame(users,0), config);
+//		new LwjglApplication(new OrbitGame(users,0), config);
 
 	}
 
@@ -84,7 +78,14 @@ public class Orbit {
 
 
 		} catch (UnknownHostException e1) { e1.printStackTrace();
-		} catch (IOException e1) { e1.printStackTrace(); 
+			System.out.println("UnknownHostException");
+		} catch (IOException e1) { //e1.printStackTrace();
+			System.out.println("Could not connect to server.");
+			JOptionPane.showMessageDialog(null,
+					"ERROR: Could not connect to server.",
+					"Connection Error",
+					JOptionPane.ERROR_MESSAGE);
+			//quit game
 		}
 
 
