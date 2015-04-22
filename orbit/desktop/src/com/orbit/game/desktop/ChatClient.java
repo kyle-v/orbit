@@ -55,7 +55,7 @@ public class ChatClient extends Thread{
 
 			while(line != null){
 				System.out.println("From Server: " + line);
-				textArea.append(line);
+				textArea.append(line + "\n");
 				line = br.readLine();
 			}
 		} catch (IOException e) {
