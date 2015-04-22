@@ -62,7 +62,7 @@ public class Database implements Serializable{
 			return false;
 		}
 		else{
-			System.out.println("PASSWORD: " + usernameToUserMap.get(username).getPass() + ", input: " + password);
+			//System.out.println("PASSWORD: " + usernameToUserMap.get(username).getPass() + ", input: " + password);
 			if(usernameToUserMap.get(username).getPass().equals(password)){
 				return true;
 			}
