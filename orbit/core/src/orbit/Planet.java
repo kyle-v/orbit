@@ -2,6 +2,7 @@ package orbit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,9 +37,11 @@ public class Planet extends GameObject implements Serializable{
 	private float radius;
 	private Texture planetSkin;
 	private Sprite sprite;
+	
+	private Vector<Weapon> weapons;
 	private Weapon equippedWeapon;
 
-	public Planet(Weapon weapon) {
+	public Planet(Vector<Weapon> weapons) {
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
@@ -46,7 +49,8 @@ public class Planet extends GameObject implements Serializable{
 		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
 		sprite = new Sprite(planetSkin);
 		createPhysicsBody();
-		equippedWeapon = weapon;
+		this.weapons = weapons;
+		equippedWeapon = this.weapons.get(1);
 	}
 	
 	
@@ -80,6 +84,10 @@ public class Planet extends GameObject implements Serializable{
 	     body.createFixture(fixtureDef);
 	     body.setUserData(this);
 	     shape.dispose();
+	}
+	
+	public void setWeapon(int weaponIndex){
+		equippedWeapon = weapons.get(weaponIndex);
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, ArrayList<GameObject> gameObjects){

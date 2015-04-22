@@ -42,6 +42,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private ArrayList<GameObject> gameObjects;
 
 	//Input control
+	public int currentWeapon; // Weapon currently selected
 	private float powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
 	private double angle; // Angle to shoot the weapon at
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
@@ -147,8 +148,12 @@ public class OrbitGame extends ApplicationAdapter{
 
 		//Game loop
 		switch(gameState){
-		case WEAPON: //Start of turn  - choosing weapon 
-
+		case WEAPON: //Start of turn  - choosing weapon
+			if (currentWeapon < 0){
+				currentWeapon = player.equippedWeapons.size() - 1;
+			} else if (currentWeapon > player.equippedWeapons.size() - 1){
+				currentWeapon = 0;
+			}
 			break;
 		case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
 			angle += 3 * DeltaTime;
@@ -162,10 +167,9 @@ public class OrbitGame extends ApplicationAdapter{
 			if (powerPercent < 0) increasing = true;
 			break;
 		case WAITING: // Turn over, waiting for other player
+			player.setWeapon(currentWeapon);
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WEAPON;
-			System.out.println("Begin WEAPON state");
-
 			//When opponent's turn is over move back to WEAPON state
 			break;
 		default:
@@ -181,6 +185,14 @@ public class OrbitGame extends ApplicationAdapter{
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
+		//shitty weapon gui code
+		int weaponGUIX = 800;
+		int weaponGUIY = 200;
+		for(int i = 0; i < player.equippedWeapons.size(); i++){
+			player.equippedWeapons.get(i).sprite.setPosition(weaponGUIX,weaponGUIY);
+			player.equippedWeapons.get(i).sprite.draw(batch);
+			weaponGUIY -= 100;
+		}
 		batch.end();
 
 		shapeRenderer.begin(ShapeType.Filled);
@@ -195,6 +207,13 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.rect(playerPos.x - 80, playerPos.y, 10, powerPercent);
 		shapeRenderer.setColor(1, 1, 0, 1);
 		shapeRenderer.line(playerPos.x, playerPos.y, playerPos.x+(float)Math.cos(angle) * 100 ,  playerPos.y+(float)Math.sin(angle) * 100 );
+		shapeRenderer.end();
+		//shitty weapon selection display
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.rect(weaponGUIX, 200 - currentWeapon * 100, 100, 100);
+		
+		
 		shapeRenderer.end();
 		
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);

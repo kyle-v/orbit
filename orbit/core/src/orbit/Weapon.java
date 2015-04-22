@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Weapon {
 	
@@ -18,6 +20,8 @@ public abstract class Weapon {
 	public Texture weaponImage;
 	public Texture projectileImage;
 	
+	public Sprite sprite;
+	
 	//Constructor
 	public Weapon(String name, int damage, int cooldown, float projectileMass,
 			float maxInitialSpeed, Texture weaponImage, Texture projectileImage) {
@@ -29,6 +33,7 @@ public abstract class Weapon {
 		this.maxInitialSpeed = maxInitialSpeed;
 		this.weaponImage = weaponImage;
 		this.projectileImage = projectileImage;
+		this.sprite = new Sprite(weaponImage);
 	}
 	
 	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, ArrayList<GameObject> gameObjects);

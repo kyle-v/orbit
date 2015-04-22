@@ -15,9 +15,16 @@ public class InputController extends InputAdapter{
 
 	@Override
 	public boolean keyUp(int keycode) {
+		//change users weapons
+		if(keycode == Keys.UP && game.gameState == GameState.WEAPON){ //Switch weapon if in weapon state
+			game.currentWeapon--;
+		}
+		if(keycode == Keys.DOWN && game.gameState == GameState.WEAPON){
+			game.currentWeapon++;
+		}
 		if(keycode == Keys.SPACE){
 			switch(game.gameState){
-			case WEAPON: //Start of turn  - choosing weapon 
+			case WEAPON: //Start of turn  - choosing weapon
 				//If space bar is pressed - go to AIMING state
 				game.gameState = GameState.AIMING;
 				System.out.println("Begin AIMING state");
