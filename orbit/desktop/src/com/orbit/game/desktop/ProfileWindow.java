@@ -50,7 +50,6 @@ public class ProfileWindow extends Window{
 		add(containerPanel);
 		
 		setSize(1024,600);
-		setVisible(true);
 	}
 	
 	private void addActionListeners(){

@@ -4,15 +4,23 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 
+import javafx.util.Pair;
+
+//server-side thread reads and fulfills requests to be sent back to client
 public class OrbitServerThread extends Thread {
 	//member variables
 	private Database d = null;
 	private Server server = null;
-	private Socket s = null;
+	Socket s = null;
 	private ObjectInputStream ois = null;
 	private ObjectOutputStream oos = null;
+	private User user = null;
+	
+	public Pair<ArrayList<User>, ArrayList<String>> opponents = null;
+	public boolean inGame = false;
 	
 	public OrbitServerThread(Server server, Socket s, Database d){
 		System.out.println("New Orbit Client has connected to server: " + s.getInetAddress() + " : " + s.getPort());
@@ -29,8 +37,10 @@ public class OrbitServerThread extends Thread {
 			oos = new ObjectOutputStream(s.getOutputStream());
 			
 			//only ServerRequests are received (sent by client)
-			ServerRequest sr = (ServerRequest)ois.readObject();
-			fulfillRequest(sr);
+			while(true){
+				ServerRequest sr = (ServerRequest)ois.readObject();
+				fulfillRequest(sr);
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -40,15 +50,15 @@ public class OrbitServerThread extends Thread {
 		} catch (UnidentifiedRequestException e) {
 			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
 		}
-		finally{
-			try {
-				oos.close();
-				ois.close();
-				s.close();
-			} catch (IOException e) {
-				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
-			}
-		}
+//		finally{
+//			try {
+//				oos.close();
+//				ois.close();
+//				s.close();
+//			} catch (IOException e) {
+//				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
+//			}
+//		}
 	}
 
 	//reads the request received and performs the appropriate action
@@ -76,11 +86,21 @@ public class OrbitServerThread extends Thread {
 		}
 		else if(request.equals("Create New User")){
 			createUser(o);
-		}
-		else{
+		}else if(request.equalsIgnoreCase("Find Game")){
+			server.addToReady(this);
+			sendResponse(true);
+		}else if(request.equalsIgnoreCase("Get Opponents")){
+			//ip addresses
+			//opponents vector should be the same in all clients that are in the same game
+			sendResponse(opponents);
+		}else{
 			//request does not match an existing request. unable to fulfill request
 			throw new UnidentifiedRequestException(request);
 		}
+	}
+	
+	public User getUser(){
+		return user;
 	}
 
 	//send response to client (writes response object to oos)
@@ -111,6 +131,7 @@ public class OrbitServerThread extends Thread {
 		}
 		if(d.authenticateLogin(username, password)){
 			response = "Valid";
+			this.user = d.usernameToUserMap.get(username);
 		}
 		else{
 			response = "Invalid";
