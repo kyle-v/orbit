@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 
 import orbit.ServerRequest;
+import orbit.User;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -17,19 +18,20 @@ public class Orbit {
 	Window login; 
 	Window lobby;
 
-
 	private static final String ipAddress = "localhost";
 	private static final int portNumber = 6789;
 	private static Socket s = null;
 	private static ObjectOutputStream oos = null;
 	private static ObjectInputStream ois = null;
 
+	public User currentUser = null;
 
 
 	public Orbit(){
 		login = new LoginWindow(this); //uncomment to see the gui windows
-		lobby = new LobbyWindow(); 
+		lobby = new LobbyWindow(this); 
 		//new ProfileWindow();
+		lobby.setVisible(true);
 		login.setVisible(true);
 
 
@@ -51,6 +53,7 @@ public class Orbit {
 	}
 
 	public void openLobby(){
+		System.out.println("Opening lobby as " + currentUser.getUsername());
 
 		login.setVisible(false);
 		lobby.setVisible(true);

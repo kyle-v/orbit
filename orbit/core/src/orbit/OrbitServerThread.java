@@ -86,6 +86,8 @@ public class OrbitServerThread extends Thread {
 		}
 		else if(request.equals("Create New User")){
 			createUser(o);
+		}else if(request.equals("Get User")){
+			sendResponse(user);
 		}else if(request.equalsIgnoreCase("Find Game")){
 			server.addToReady(this);
 			sendResponse(true);

@@ -18,7 +18,7 @@ public class ChatServer extends Thread{
 		ctVector.remove(ct);
 	}
 	public synchronized void sendMessageToClients(ChatThread ct, String str) {
-		System.out.println("Sending messages to clients");
+		System.out.println("Sending messages to clients: " + str);
 		for (ChatThread ct1 : ctVector) {
 			//if (!ct.equals(ct1)) {
 				ct1.sendMessage(str);

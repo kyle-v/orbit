@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 
 import orbit.ServerListenerThread;
 import orbit.ServerRequest;
+import orbit.User;
 
 public class LoginWindow extends Window{
 	ServerListenerThread  slt;
@@ -185,14 +186,20 @@ public class LoginWindow extends Window{
 			//start new server listener thread
 //			slt = new ServerListenerThread();
 //			slt.start();
+			orbit.currentUser = (User)Orbit.sendRequest(new ServerRequest("Get User", null));
 			orbit.openLobby();
+			
 			this.setVisible(false);
 			System.out.println("Valid login");
+			
+			
 		}
 		else{
 			//Deny login
 			System.out.println("Invalid login");
 		}
+		
+		
 	}
 	
 	//signals server to create a new user. indicates whether new user was created

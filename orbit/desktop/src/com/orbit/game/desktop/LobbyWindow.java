@@ -46,8 +46,8 @@ public class LobbyWindow extends Window{
 	
 	private ChatClient chatClient;
 	
-	LobbyWindow(){
-		super();
+	LobbyWindow(Orbit orbit){
+		super(orbit);
 		currentUsers = new ArrayList<User>();
 		mainContainer = new JPanel(new BorderLayout());
 		buttonContainer = createButtonContainer();
@@ -85,6 +85,7 @@ public class LobbyWindow extends Window{
 					public void run() {
 						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
 						if(response != null){
+							@SuppressWarnings("unchecked")
 							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
 
 							System.out.println("Client has opponents!" + opponents.getValue().toString());
@@ -100,7 +101,9 @@ public class LobbyWindow extends Window{
 		//quits back to login window
 		quitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				orbit.currentUser = null;
+				orbit.login.setVisible(true);
+				setVisible(false);
 			}
 		});
 	}
@@ -152,7 +155,7 @@ public class LobbyWindow extends Window{
 				}
 				messageTextField.setText("");
 				//send message to server
-				chatClient.sendMessage(message);
+				chatClient.sendMessage(orbit.currentUser.getUsername() + ": " + message);
 			}
 		});
 		
