@@ -29,6 +29,6 @@ public class DesktopLauncher {
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		new LwjglApplication(new OrbitGame(users,IPs,1), config);
+		new LwjglApplication(new OrbitGame(users,IPs,0), config);
 	}
 }

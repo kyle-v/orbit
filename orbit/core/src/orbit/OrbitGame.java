@@ -74,6 +74,9 @@ public class OrbitGame extends ApplicationAdapter{
 	int currentPlayer;
 	//Fonts are how we write text to the screen so that's what this is for
 	BitmapFont writer;
+	
+	private Texture backgroundImage;
+
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex){
 		this.players = players;
@@ -128,11 +131,13 @@ public class OrbitGame extends ApplicationAdapter{
 		if(playerIndex != 0)
 			gameState = GameState.WAITING;
 		
+		//create all the planets
 		for(int k=0;k<players.size();k++){
 			User u = players.get(k);
 			u.initialize();
 			double radians = Math.toRadians(start + increment*k);
 			u.getPlanet().SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
+			u.getPlanet().setDegreePosition((float)radians);
 			gameObjects.add(u.getPlanet());
 			if(k!=playerIndex){ 
 				NetworkingListenerThread thread = new NetworkingListenerThread(basePort + k);
@@ -140,6 +145,9 @@ public class OrbitGame extends ApplicationAdapter{
 			}
 		}
 		playerPlanet = player.getPlanet();
+		
+		//this is a texture that gets displayed as the background image
+		backgroundImage = AssetLibrary.getTexture("SpaceBackground.jpg");
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
@@ -152,9 +160,10 @@ public class OrbitGame extends ApplicationAdapter{
 		float DeltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.step(1f/60f, 6, 2);
+		
 		//Update
 		if(!gamePaused){
+			world.step(1f/60f, 6, 2);
 			for(int i = 0; i < gameObjects.size(); i++){
 				GameObject o = gameObjects.get(i);
 				if (!o.isDead){
@@ -212,6 +221,9 @@ public class OrbitGame extends ApplicationAdapter{
 		//tell it to draw from our current camera's point of view
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		
+		batch.draw(backgroundImage, -965, -650);
+		
 		writer.draw(batch, Integer.toString(playerIndex) +  " " + Integer.toString(currentPlayer), 0, 0);
 		for(GameObject o : gameObjects){
 			o.draw(batch);
@@ -226,6 +238,7 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		batch.end();
 
+		//display health bars
 		shapeRenderer.begin(ShapeType.Filled);
 		for(User u : players){
 			Planet p = u.getPlanet();
@@ -252,6 +265,7 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.end();
 		
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
+		
 	}
 
 	public class NetworkingListenerThread extends Thread{
