@@ -6,8 +6,12 @@ import orbit.User;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -22,6 +26,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -183,11 +188,53 @@ public class LobbyWindow extends Window{
 		private static final long serialVersionUID = 2L;
 		
 		JLobbyPanel(){					//constructor needs to populate users from array list
+			this.setLayout(new GridLayout(4,3,20,20)); 
 
+			for(int i = 0; i < 6; i++){						//temporary user panels. need to be pulled from user array
+				this.add(new JAviPanel());
+			}
+			for(int i = 0; i < 8; i++){					//must fill with empty labels
+				this.add(new JLabel());
+			}
+			
 		}
 		
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
 		}
+	}
+	
+	class JAviPanel extends JPanel{
+
+		private static final long serialVersionUID = 3L;
+		
+		JButton playGame;
+		JButton trade;
+		JPanel buttonContainer;
+		JPanel avi;
+		
+		JAviPanel(){
+			this.setLayout(new BorderLayout());
+			
+			buttonContainer = new JPanel();			//container for bottom button panel
+			playGame = new JButton("Play");
+			trade = new JButton("Trade");
+			buttonContainer.add(playGame);
+			buttonContainer.add(trade);
+			Dimension d = new Dimension(170, 32);
+			buttonContainer.setPreferredSize(d);
+	
+			avi = new JPanel();							//panel to hold image avi
+			avi.setBackground(Color.BLUE);
+			d = new Dimension(170, 140);
+			avi.setPreferredSize(d);
+			
+			this.add(avi, BorderLayout.CENTER);				//creates panel
+			this.add(buttonContainer, BorderLayout.SOUTH);
+			d = new Dimension(170, 172);
+			this.setPreferredSize(d);
+		}
+		
+		
 	}
 }

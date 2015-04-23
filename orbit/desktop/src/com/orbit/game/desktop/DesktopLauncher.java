@@ -16,9 +16,13 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 
-		//new LoginWindow(new Orbit()); //uncomment to see the gui windows
-		//new LobbyWindow(); 
-		//new ProfileWindow();
+	
+		
+//		LobbyWindow lw = new LobbyWindow(null);
+//		lw.setVisible(true);
+//		ProfileWindow pw = new ProfileWindow(null);
+//		pw.setVisible(true);
+		
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User("Kyle","P"));
 		users.add(new User("Steven", "LJK"));
