@@ -155,8 +155,10 @@ public class OrbitGame extends ApplicationAdapter{
 		int numAsteroids = (int) (randy.nextFloat() * (upperAsteroidAmount - lowerAsteroidAmount) + lowerAsteroidAmount);
 		for(int k=0;k<numAsteroids;k++){
 			float asteroidSpawnRange = SPAWN_RADIUS - 50;
-			float randX = randy.nextFloat() * asteroidSpawnRange * 2 - asteroidSpawnRange;
-			float randY = randy.nextFloat() * asteroidSpawnRange * 2 - asteroidSpawnRange;
+			double randAngle = (randy.nextFloat() * 2 * Math.PI);
+			float randDistance = randy.nextFloat() * asteroidSpawnRange;
+			float randX = (float) (Math.cos(randAngle) * randDistance);
+			float randY = (float) (Math.sin(randAngle) * randDistance);
 			Asteroid a = new Asteroid(randX, randY, new Vector2(0,0),0);
 			gameObjects.add(a);
 		}
