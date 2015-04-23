@@ -49,9 +49,6 @@ public class ChatClient extends Thread{
 		String line;
 		try {
 			line = br.readLine();
-			if(line == null){
-				System.out.println("line is null");
-			}
 
 			while(line != null){
 				System.out.println("From Server: " + line);

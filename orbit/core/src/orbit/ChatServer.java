@@ -76,8 +76,9 @@ class ChatThread extends Thread {
 
 	public void run() {
 		try {
-			while (true) {
-				String line = br.readLine();
+			String line = "";
+			while (line != null) {
+				line = br.readLine();
 				cs.sendMessageToClients(this, line);
 			}
 		} catch (IOException ioe) {

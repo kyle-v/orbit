@@ -15,8 +15,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class Orbit {
 
-	Window login; 
-	Window lobby;
+	Window login = null; 
+	Window lobby = null;
+	Window profile = null;
 
 	private static final String ipAddress = "localhost";
 	private static final int portNumber = 6789;
@@ -29,9 +30,8 @@ public class Orbit {
 
 	public Orbit(){
 		login = new LoginWindow(this); //uncomment to see the gui windows
-		lobby = new LobbyWindow(this); 
 		//new ProfileWindow();
-		lobby.setVisible(true);
+		//lobby.setVisible(true);
 		login.setVisible(true);
 
 
@@ -54,6 +54,7 @@ public class Orbit {
 
 	public void openLobby(){
 		System.out.println("Opening lobby as " + currentUser.getUsername());
+		lobby = new LobbyWindow(this); 
 
 		login.setVisible(false);
 		lobby.setVisible(true);

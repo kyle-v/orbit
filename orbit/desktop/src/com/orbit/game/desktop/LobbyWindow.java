@@ -72,7 +72,11 @@ public class LobbyWindow extends Window{
 		//opens profile window
 		profileButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				if(orbit.profile == null){
+					orbit.profile = new ProfileWindow(orbit);
+					orbit.lobby.setVisible(false);
+					orbit.profile.setVisible(true);
+				}
 			}
 		});
 		
@@ -103,7 +107,8 @@ public class LobbyWindow extends Window{
 			public void actionPerformed(ActionEvent e) {
 				orbit.currentUser = null;
 				orbit.login.setVisible(true);
-				setVisible(false);
+				orbit.lobby.setVisible(false);
+				orbit.lobby.dispose();
 			}
 		});
 	}

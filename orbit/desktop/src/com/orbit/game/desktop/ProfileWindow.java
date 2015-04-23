@@ -24,9 +24,9 @@ public class ProfileWindow extends Window{
 	private JButton profileButton;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
 	
-	ProfileWindow(){
+	ProfileWindow(Orbit orbit){
 		
-		super();
+		super(orbit);
 		
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		currentPanel = new JProfilePanel();
