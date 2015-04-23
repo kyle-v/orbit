@@ -156,6 +156,9 @@ public class Projectile extends GameObject {
 			isDead = true;
 			GameplayStatics.game.checkWinCondition();
 		}
+		if(collided instanceof Asteroid){
+			isDead = true;
+		}
 	}
 
 	@Override
