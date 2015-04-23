@@ -41,6 +41,7 @@ public class Planet extends GameObject implements Serializable{
 	
 	private Vector<Weapon> weapons;
 	private Weapon equippedWeapon;
+	private int equippedWeaponIndex;
 
 	public Planet(Vector<Weapon> weapons) {
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
@@ -51,7 +52,8 @@ public class Planet extends GameObject implements Serializable{
 		sprite = new Sprite(planetSkin);
 		createPhysicsBody();
 		this.weapons = weapons;
-		equippedWeapon = this.weapons.get(1);
+		equippedWeapon = this.weapons.get(0);
+		equippedWeaponIndex = 0;
 	}
 	
 	
@@ -89,6 +91,14 @@ public class Planet extends GameObject implements Serializable{
 	
 	public void setWeapon(int weaponIndex){
 		equippedWeapon = weapons.get(weaponIndex);
+	}
+	
+	public void setWeapon(Weapon weapon){
+		equippedWeapon = weapon;
+	}
+	
+	public int getWeaponIndex(){
+		return equippedWeaponIndex;
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, List<GameObject> gameObjects){

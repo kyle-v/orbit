@@ -126,7 +126,7 @@ public class Projectile extends GameObject {
 	
 	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
-			System.out.println(this.getName() + " hit " + other.getName());
+			//System.out.println(this.getName() + " hit " + other.getName());
 			return true;
 		}
 		return false;
@@ -149,6 +149,7 @@ public class Projectile extends GameObject {
 		else{
 			collided = (GameObject)contact.getFixtureA().getBody().getUserData();
 		}
+		System.out.println("test");
 		if(collided instanceof Planet){
 			Planet p = (Planet)collided;
 			p.health -= damage;

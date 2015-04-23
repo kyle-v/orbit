@@ -18,11 +18,13 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
@@ -70,6 +72,8 @@ public class OrbitGame extends ApplicationAdapter{
 	//int that indicates which index we are playing as
 	int playerIndex;
 	int currentPlayer;
+	//Fonts are how we write text to the screen so that's what this is for
+	BitmapFont writer;
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex){
 		this.players = players;
@@ -121,7 +125,7 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		//setup game state
 		currentPlayer = 0;
-		if(currentPlayer != 0)
+		if(playerIndex != 0)
 			gameState = GameState.WAITING;
 		
 		for(int k=0;k<players.size();k++){
@@ -137,7 +141,8 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		playerPlanet = player.getPlanet();
 		
-		
+		writer = new BitmapFont();
+		writer.setColor(Color.YELLOW);
 	}
 
 
@@ -187,7 +192,7 @@ public class OrbitGame extends ApplicationAdapter{
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WAITING;
 			currentPlayer ++;
-			if(currentPlayer > players.size()){
+			if(currentPlayer >= players.size()){
 				currentPlayer = 0;
 			}
 			playerTurnOver(powerPercent, (float)angle);
@@ -207,6 +212,7 @@ public class OrbitGame extends ApplicationAdapter{
 		//tell it to draw from our current camera's point of view
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		writer.draw(batch, Integer.toString(playerIndex) +  " " + Integer.toString(currentPlayer), 0, 0);
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
@@ -229,6 +235,8 @@ public class OrbitGame extends ApplicationAdapter{
 				shapeRenderer.rect(pos.x - 50,pos.y + 80, p.health, 10);
 			}
 		}
+		
+		
 		shapeRenderer.setColor(1, 1, 0, 1);
 		Vector2 playerPos = playerPlanet.position;
 		shapeRenderer.rect(playerPos.x - 80, playerPos.y, 10, powerPercent);
@@ -265,8 +273,13 @@ public class OrbitGame extends ApplicationAdapter{
 					Object obj = reader.readObject();
 					if(currentPlayer >= players.size())
 						currentPlayer = 0;
-					 Vector2 fireInfo = (Vector2)obj;
+					 Vector3 fireInfo = (Vector3)obj;
+					 //go to our current player and set their weapon to the one that the other player fired with
+					 GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 					 GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
+					 currentPlayer ++;
+					 if(currentPlayer >= players.size())
+						 currentPlayer = 0;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -279,14 +292,14 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 	
 	public void playerTurnOver(float powerPercent, float angle){
-		currentPlayer++;
 		for(int k=0;k<players.size();k++){
 			if(k!=playerIndex){
 				SocketHints socketHint = new SocketHints();
 				socketHint.connectTimeout = 3000;
 				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
 				System.out.println("Sending object to port " + (basePort + k));
-				Vector2 fireInfo = new Vector2(powerPercent,angle);
+				//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
+				Vector3 fireInfo = new Vector3(powerPercent,angle, players.get(currentPlayer).getPlanet().getWeaponIndex());
 				try {
 					ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
 					stream.writeObject(fireInfo);

@@ -46,7 +46,7 @@ public class User implements Serializable{
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
 		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f,
-				100f, AssetLibrary.getTexture("weaponTexture2.png"), AssetLibrary.getTexture("missile.png"));
+				10f, AssetLibrary.getTexture("weaponTexture2.png"), AssetLibrary.getTexture("missile.png"));
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);
 		
