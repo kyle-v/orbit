@@ -72,6 +72,7 @@ public class OrbitGame extends ApplicationAdapter{
 	//int that indicates which index we are playing as
 	int playerIndex;
 	int currentPlayer;
+	
 	//Fonts are how we write text to the screen so that's what this is for
 	BitmapFont writer;
 
@@ -85,7 +86,6 @@ public class OrbitGame extends ApplicationAdapter{
 	public void create () {
 		
 		//Initializing variables
-		//
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
 		gameState = GameState.WEAPON;
@@ -140,6 +140,19 @@ public class OrbitGame extends ApplicationAdapter{
 			}
 		}
 		playerPlanet = player.getPlanet();
+		
+		//test asteroids
+		Asteroid a = new Asteroid(0,0,new Vector2(0,0),0);
+		//Asteroid a1 = new Asteroid(-250,0,new Vector2(0,0),0);
+		//Asteroid a2 = new Asteroid(0,250,new Vector2(0,0),0);
+		//Asteroid a3 = new Asteroid(250,0,new Vector2(0,0),0);
+		//Asteroid a4 = new Asteroid(0,-250,new Vector2(0,0),0);
+		
+		gameObjects.add(a);
+		//gameObjects.add(a1);
+		//gameObjects.add(a2);
+		//gameObjects.add(a3);
+		//gameObjects.add(a4);
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
