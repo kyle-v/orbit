@@ -44,6 +44,9 @@ public class OrbitGame extends ApplicationAdapter{
 
 	private final float SPAWN_RADIUS = 400;
 	
+	private final int lowerAsteroidAmount = 5;
+	private final int upperAsteroidAmount = 15;
+	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
@@ -146,11 +149,18 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		playerPlanet = player.getPlanet();
 		
-<<<<<<< HEAD
 		//this is a texture that gets displayed as the background image
 		backgroundImage = AssetLibrary.getTexture("SpaceBackground.jpg");
-=======
 		//test asteroids
+		int numAsteroids = (int) (randy.nextFloat() * (upperAsteroidAmount - lowerAsteroidAmount) + lowerAsteroidAmount);
+		for(int k=0;k<numAsteroids;k++){
+			float asteroidSpawnRange = SPAWN_RADIUS - 50;
+			float randX = randy.nextFloat() * asteroidSpawnRange * 2 - asteroidSpawnRange;
+			float randY = randy.nextFloat() * asteroidSpawnRange * 2 - asteroidSpawnRange;
+			Asteroid a = new Asteroid(randX, randY, new Vector2(0,0),0);
+			gameObjects.add(a);
+		}
+		
 		Asteroid a = new Asteroid(0,0,new Vector2(0,0),0);
 		//Asteroid a1 = new Asteroid(-250,0,new Vector2(0,0),0);
 		//Asteroid a2 = new Asteroid(0,250,new Vector2(0,0),0);
@@ -162,7 +172,6 @@ public class OrbitGame extends ApplicationAdapter{
 		//gameObjects.add(a2);
 		//gameObjects.add(a3);
 		//gameObjects.add(a4);
->>>>>>> origin/master
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
