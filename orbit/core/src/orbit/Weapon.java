@@ -45,4 +45,24 @@ public abstract class Weapon implements Serializable{
 	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects);
 	//changed parameters since the angle and power need to be selected before a projectile can be created
 	//added a projectile parameter
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	public int getDamage(){
+		return this.damage;
+	}
+	
+	public int getCooldown(){
+		return this.cooldown;
+	}
+	
+	public float getMass(){
+		return this.projectileMass;
+	}
+	
+	public float getSpeed(){
+		return this.maxInitialSpeed;
+	}
 }
