@@ -478,7 +478,7 @@ public class OrbitGame extends ApplicationAdapter{
 				randX =  width * randy.nextFloat() - width/2;
 			}
 			Vector2 vel = new Vector2(randX, randY).nor();
-			vel.scl(MAX_ASTEROID_VELOCITY);
+			vel = vel.scl(MAX_ASTEROID_VELOCITY);
 			Asteroid a = new Asteroid(randX, randY, vel.X, vel.y);
 			gameObjects.add(a);
 		}

@@ -16,7 +16,7 @@ public class Asteroid extends GameObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final float DEFAULT_MASS = 7500f;
 	public static final float DEFAULT_RADIUS = 30f;
-	public static final float DEFAULT_DRAG = .05f;
+	public static final float DEFAULT_DRAG = .0f;
 	private static final float MAX_ROTATION = 5f;
 	private static final float MIN_ROTATION = -5f;
 	private float drag;
@@ -34,9 +34,10 @@ public class Asteroid extends GameObject implements Serializable {
 		createPhysicsBody();
 		
 		//sets a random rotation direction for the asteroid
-		Random randomizer = new Random();
+		Random randomizer = GameplayStatics.randy;
 		rotationDirection = randomizer.nextFloat() * (MAX_ROTATION - MIN_ROTATION + 1) + MIN_ROTATION;
 		body.setAngularVelocity(rotationDirection);
+		body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
