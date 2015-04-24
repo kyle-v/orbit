@@ -52,6 +52,7 @@ public class LobbyWindow extends Window{
 	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
 	
 	private ChatClient chatClient;
+	private Vector<JAviPanel> aviPanels = new Vector<JAviPanel>();
 	
 	LobbyWindow(Orbit orbit){
 		super(orbit);
@@ -83,19 +84,28 @@ public class LobbyWindow extends Window{
 		updateTimer.schedule(new TimerTask(){
 			@SuppressWarnings("unchecked")
 			public void run(){
-				System.out.println((Vector<User>)Orbit.sendRequest(new ServerRequest("Ping Count", null)));
-//				Vector<User> response = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
-//				if(response != null){
-//					System.out.println(response);
-//					for(User u: response){
-//						System.out.println(u.getUsername());
-//					}
-//					
-//				}
+				//System.out.println((Vector<User>)Orbit.sendRequest(new ServerRequest("Ping Count", null)));
+				currentUsers = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
+				if(currentUsers != null){
+					updateLobbyAvis();
+				}
 			}
-		}, 0, 3000);
-		
-		
+		}, 0, 3000);	
+	}
+	
+	private void updateLobbyAvis(){
+		System.out.println("Updating avis");
+//		for(JAviPanel jap : aviPanels){
+			userContainer.removeAll();
+//		}
+		aviPanels.removeAllElements();
+		for(User u : currentUsers){
+			JAviPanel temp = new JAviPanel(u);
+			userContainer.add(temp);
+			aviPanels.add(temp);
+		}
+		userContainer.revalidate();
+		userContainer.repaint();
 	}
 	
 	//adds action listeners to components
@@ -139,6 +149,8 @@ public class LobbyWindow extends Window{
 				orbit.currentUser = null;
 				orbit.login.setVisible(true);
 				orbit.lobby.setVisible(false);
+				//send server a quit signal
+				Orbit.sendRequest(new ServerRequest("User Quit", orbit.currentUser.getUsername()));
 				orbit.lobby.dispose();
 			}
 		});
@@ -216,12 +228,12 @@ public class LobbyWindow extends Window{
 		JLobbyPanel(){					//constructor needs to populate users from array list
 			this.setLayout(new GridLayout(4,3,20,20)); 
 
-			for(int i = 0; i < 6; i++){						//temporary user panels. need to be pulled from user array
-				this.add(new JAviPanel());
-			}
-			for(int i = 0; i < 8; i++){					//must fill with empty labels
-				this.add(new JLabel());
-			}
+//			for(int i = 0; i < 6; i++){						//temporary user panels. need to be pulled from user array
+//				this.add(new JAviPanel());
+//			}
+//			for(int i = 0; i < 8; i++){					//must fill with empty labels
+//				this.add(new JLabel());
+//			}
 			
 		}
 		
@@ -245,8 +257,9 @@ public class LobbyWindow extends Window{
 		
 		
 		
-		JAviPanel(){
+		JAviPanel(User user){
 			this.setLayout(new BorderLayout());
+			this.user = user;
 			
 			buttonContainer = new JPanel();			//container for bottom button panel
 			playGame = new JButton("Play");

@@ -93,16 +93,16 @@ public class OrbitServerThread extends Thread {
 		}else if(request.equals("Get User")){
 			sendResponse(user);
 		}else if(request.equals("Get User List")){
-			System.out.println("ACTIVE USERS: " + Server.activeUsers);
 			sendResponse(Server.activeUsers);
-		}else if(request.equals("Ping Count")){
-			System.out.println("PING COUNT: " + server.getActiveUsers());
-			Vector<Integer> v = new Vector<Integer>();
-			Server.pingCount.add(new Integer(1));
-			v = Server.pingCount;
-			sendResponse(v);
 		}else if(request.equalsIgnoreCase("Find Game")){
 			server.addToReady(this);
+			sendResponse(true);
+		}else if(request.equalsIgnoreCase("User Quit")){
+			String username = (String)o;
+			server.clients.remove(this);
+			server.activeUsers.remove(this);
+			server.usernameToThreadMap.remove(username);
+			server.readyClients.remove(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("Get Opponents")){
 			//ip addresses
