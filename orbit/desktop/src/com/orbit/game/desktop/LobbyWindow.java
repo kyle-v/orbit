@@ -81,17 +81,17 @@ public class LobbyWindow extends Window{
 	private void startUpdateThread(){
 		Timer updateTimer = new Timer("Ping for lobby updates");
 		updateTimer.schedule(new TimerTask(){
-			Object response;
 			@SuppressWarnings("unchecked")
 			public void run(){
-				response = Orbit.sendRequest(new ServerRequest("Get User List", null));
-				if(response != null){
-					currentUsers = (Vector<User>) response;
-					for(User u: currentUsers){
-						System.out.println(u.getUsername());
-					}
-					
-				}
+				System.out.println((Vector<User>)Orbit.sendRequest(new ServerRequest("Ping Count", null)));
+//				Vector<User> response = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
+//				if(response != null){
+//					System.out.println(response);
+//					for(User u: response){
+//						System.out.println(u.getUsername());
+//					}
+//					
+//				}
 			}
 		}, 0, 3000);
 		

@@ -44,9 +44,13 @@ public class Server extends JFrame{
 	
 	//Connected client threads
 	public Vector<OrbitServerThread> clients = new Vector<OrbitServerThread>();
-	public Vector<User> activeUsers = new Vector<User>();
+	public static Vector<User> activeUsers = new Vector<User>();
 	private HashMap<String, OrbitServerThread> usernameToThreadMap = new HashMap<String, OrbitServerThread>();
 	private Queue<OrbitServerThread> readyClients = new LinkedList<OrbitServerThread>();
+	public static Vector<Integer> pingCount = new Vector<Integer>();
+	public synchronized Vector<Integer> getActiveUsers(){
+		return pingCount;
+	}
 	
 	//GUI members
 	JLabel serverStatus;

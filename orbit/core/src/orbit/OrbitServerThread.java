@@ -52,7 +52,7 @@ public class OrbitServerThread extends Thread {
 		}
 		finally{
 			System.out.println("Client disconnected");
-			if(user!= null)server.activeUsers.remove(user);
+			if(user!= null)Server.activeUsers.remove(user);
 			server.clients.remove(this);
 			server.numConnections.setText(new Integer(server.clients.size()).toString());
 			try {
@@ -66,7 +66,7 @@ public class OrbitServerThread extends Thread {
 	}
 
 	//reads the request received and performs the appropriate action
-	private void fulfillRequest(ServerRequest sr) throws UnidentifiedRequestException{
+	private  synchronized void fulfillRequest(ServerRequest sr) throws UnidentifiedRequestException{
 		String request = sr.getRequest();
 		Object o = sr.getObject();
 		
@@ -93,7 +93,14 @@ public class OrbitServerThread extends Thread {
 		}else if(request.equals("Get User")){
 			sendResponse(user);
 		}else if(request.equals("Get User List")){
-			sendResponse(server.activeUsers);
+			System.out.println("ACTIVE USERS: " + Server.activeUsers);
+			sendResponse(Server.activeUsers);
+		}else if(request.equals("Ping Count")){
+			System.out.println("PING COUNT: " + server.getActiveUsers());
+			Vector<Integer> v = new Vector<Integer>();
+			Server.pingCount.add(new Integer(1));
+			v = Server.pingCount;
+			sendResponse(v);
 		}else if(request.equalsIgnoreCase("Find Game")){
 			server.addToReady(this);
 			sendResponse(true);
@@ -115,6 +122,7 @@ public class OrbitServerThread extends Thread {
 	//send response to client (writes response object to oos)
 	private void sendResponse(Object responseObject){
 		try {
+			oos.reset();
 			oos.writeObject(responseObject);
 			oos.flush();
 		} catch (IOException e) {
@@ -141,7 +149,7 @@ public class OrbitServerThread extends Thread {
 		if(d.authenticateLogin(username, password)){
 			response = "Valid";
 			this.user = d.usernameToUserMap.get(username);
-			server.activeUsers.add(user);
+			Server.activeUsers.add(user);
 		}
 		else{
 			response = "Invalid";
