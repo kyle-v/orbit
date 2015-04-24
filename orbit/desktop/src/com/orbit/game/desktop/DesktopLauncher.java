@@ -13,8 +13,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Interplanet Orbit";
-		config.width = 1920;
-		config.height = 1080;
+		config.width = 1000;
+		config.height = 700;
 
 	
 		
@@ -29,6 +29,6 @@ public class DesktopLauncher {
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		new LwjglApplication(new OrbitGame(users,IPs,0), config);
+		new LwjglApplication(new OrbitGame(users,IPs,1), config);
 	}
 }

@@ -1,5 +1,6 @@
 package orbit;
 
+import java.awt.Font;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -31,7 +33,11 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Net.Protocol;
 
@@ -39,7 +45,7 @@ public class OrbitGame extends ApplicationAdapter{
 
 
 	//Game goes through 4 states: Choosing weapon, choosing angle, choosing power, and waiting for the other player's move.
-	public static enum GameState {WEAPON, AIMING, POWER, FIRE, WAITING};
+	public static enum GameState {WEAPON, AIMING, POWER, FIRE, WAITING, CONNECTING};
 	public GameState gameState; 
 
 	private final float SPAWN_RADIUS = 400;
@@ -87,6 +93,11 @@ public class OrbitGame extends ApplicationAdapter{
 	//Fonts are how we write text to the screen so that's what this is for
 	BitmapFont writer;
 	
+	//booleans to check when everyone has connected
+	boolean[] connectionChecks;
+	
+	Socket[] playerSockets;
+	
 	private Texture backgroundImage;
 
 
@@ -100,9 +111,11 @@ public class OrbitGame extends ApplicationAdapter{
 	public void create () {
 		
 		//Initializing variables
+		connectionChecks = new boolean[] {false, false, false ,false};
+		connectionChecks[playerIndex] = true;
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
-		gameState = GameState.WEAPON;
+		gameState = GameState.CONNECTING;
 		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
 		
 		//Input
@@ -139,8 +152,9 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		//setup game state
 		currentPlayer = 0;
-		if(playerIndex != 0)
-			gameState = GameState.WAITING;
+		
+		
+		playerSockets = new Socket[4];
 		
 		//create all the planets
 		for(int k=0;k<players.size();k++){
@@ -151,10 +165,34 @@ public class OrbitGame extends ApplicationAdapter{
 			u.getPlanet().setDegreePosition((float)radians);
 			gameObjects.add(u.getPlanet());
 			if(k!=playerIndex){ 
-				NetworkingListenerThread thread = new NetworkingListenerThread(basePort + k);
+				NetworkingListenerThread thread = new NetworkingListenerThread(k);
 				thread.start();
 			}
 		}
+		//we do this in two seperate for loops because I want all the sockets being listened to before anyone starts sending messages to them
+		/*for(int k=0;k<players.size();k++){
+			SocketHints socketHint = new SocketHints();
+			socketHint.connectTimeout = 10000;
+			//establish connection with each player and continue pinging until we do so
+			while(true){
+				try{
+					Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+					//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
+					try {
+						ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+						stream.flush();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					socket.dispose();
+					break;
+				}
+				catch(GdxRuntimeException ex){
+					continue;
+				}
+			}
+		}*/
 		playerPlanet = player.getPlanet();
 		
 		asteroids = new ArrayList<Asteroid>();
@@ -164,6 +202,7 @@ public class OrbitGame extends ApplicationAdapter{
 		float asteroidSpawnRadius;
 		double x;
 		double y;
+		/*
 		int numAsteroids = randy.nextInt(upperAsteroidAmount - lowerAsteroidAmount + 1) + lowerAsteroidAmount;
 		for (int i = 0; i < numAsteroids; i++){
 			do {
@@ -187,33 +226,21 @@ public class OrbitGame extends ApplicationAdapter{
 			System.out.println("added asteroid");
 			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
 		}
-		
+		*/
 		for (Asteroid a: asteroids){
 			gameObjects.add(a);
 		}
 
 		//this is a texture that gets displayed as the background image
 		backgroundImage = AssetLibrary.getTexture("SpaceBackground.jpg");
-		//test asteroids
-//		int numAsteroids = (int) (randy.nextFloat() * (upperAsteroidAmount - lowerAsteroidAmount) + lowerAsteroidAmount);
-//		for(int k=0;k<numAsteroids;k++){
-//			float asteroidSpawnRange = SPAWN_RADIUS - 50;
-//			double randAngle = (randy.nextFloat() * 2 * Math.PI);
-//			float randDistance = randy.nextFloat() * asteroidSpawnRange;
-//			float randX = (float) (Math.cos(randAngle) * randDistance);
-//			float randY = (float) (Math.sin(randAngle) * randDistance);
-//			Asteroid a = new Asteroid(randX, randY, new Vector2(0,0),0);
-//			gameObjects.add(a);
-//		}
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
+		writer.setScale(5);
+		
 	}
 
-
-	@Override
-	public void render () {
-		//fps.log();
+	public void updateGame(){
 		float DeltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -257,10 +284,7 @@ public class OrbitGame extends ApplicationAdapter{
 			player.setWeapon(currentWeapon);
 			player.fire((int)powerPercent, angle, gameObjects);
 			gameState = GameState.WAITING;
-			currentPlayer ++;
-			if(currentPlayer >= players.size()){
-				currentPlayer = 0;
-			}
+			incrementToNextPlayer();
 			playerTurnOver(powerPercent, (float)angle);
 			break;
 		case WAITING: // Turn over, waiting for other player
@@ -322,14 +346,72 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.end();
 		
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
+	}
+	
+	public void waitForConnect(){
+		for(int k=0;k<players.size();k++){
+			if(k!=playerIndex){
+				SocketHints socketHint = new SocketHints();
+				socketHint.connectTimeout = 1000;
+				//establish connection with each player and continue pinging until we do so
+				try{
+					Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+					try {
+						ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+						stream.writeObject(playerIndex);
+						stream.flush();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					socket.dispose();
+					break;
+				}
+				catch(GdxRuntimeException ex){
+				}
+			}
+		}
 		
+
+		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		Random randy = new Random();
+		writer.setColor(new Color(randy.nextFloat(),randy.nextFloat(),randy.nextFloat(),1));
+		TextBounds bound = writer.getBounds("Waiting for players to connect");
+		writer.draw(batch, "Waiting for players to connect", -bound.width/2, -bound.height/2);
+		batch.end();
+		
+		for(int k=0;k<players.size();k++){
+			if(!connectionChecks[k])
+				return;
+		}
+		if(playerIndex == 0)
+			gameState = GameState.WEAPON;
+		else
+			gameState = GameState.WAITING;
+		
+	}
+
+	@Override
+	public void render () {
+		//fps.log();
+		if(gameState == GameState.CONNECTING){
+			waitForConnect();
+		}
+		else{
+			updateGame();
+		}
 	}
 
 	public class NetworkingListenerThread extends Thread{
 		int port;
+		int playerIndex;
 		
 		public NetworkingListenerThread(int port){
-			this.port = port;
+			this.port = GameplayStatics.game.basePort + port;
+			playerIndex = port;
 		}
 		
 		public void run(){
@@ -340,20 +422,24 @@ public class OrbitGame extends ApplicationAdapter{
 			while(true){
 				Socket socket = serverSocket.accept(null);
 				try {
+					
 					ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
 					Object obj = reader.readObject();
-					if(currentPlayer >= players.size())
-						currentPlayer = 0;
-					 Vector3 fireInfo = (Vector3)obj;
-					 //go to our current player and set their weapon to the one that the other player fired with
-					 GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
-					 GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
-					 currentPlayer ++;
-					 if(currentPlayer >= players.size())
-						 currentPlayer = 0;
+					if(obj instanceof Vector3){
+						Vector3 fireInfo = (Vector3)obj;
+						//go to our current player and set their weapon to the one that the other player fired with
+						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
+						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
+						incrementToNextPlayer();
+					}
+					else {
+						Integer id = (Integer)obj;
+						connectionChecks[id] = true;
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					break;
+					//e.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -366,8 +452,9 @@ public class OrbitGame extends ApplicationAdapter{
 		for(int k=0;k<players.size();k++){
 			if(k!=playerIndex){
 				SocketHints socketHint = new SocketHints();
-				socketHint.connectTimeout = 3000;
+				socketHint.connectTimeout = 10000;
 				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+				System.out.println("are we connectd: " + socket.isConnected());
 				System.out.println("Sending object to port " + (basePort + k));
 				//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
 				Vector3 fireInfo = new Vector3(powerPercent,angle, players.get(currentPlayer).getPlanet().getWeaponIndex());
@@ -384,6 +471,15 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 	}
 	
+	public void incrementToNextPlayer(){
+		currentPlayer ++;
+		if(currentPlayer >= players.size()){
+			currentPlayer = 0;
+		}
+		if(!players.get(currentPlayer).isPlaying)
+			incrementToNextPlayer();
+	}
+	
 	public void checkWinCondition(){
 		int possibleWinnerIndex = -1;
 		for(int k=0;k<players.size();k++){
@@ -392,15 +488,40 @@ public class OrbitGame extends ApplicationAdapter{
 			if(p.health>0){
 				if(possibleWinnerIndex == -1)
 					possibleWinnerIndex = k;
-				else
+				else{
 					return;
-			}	
+				}
+			}
+			else{
+				players.get(k).isPlaying = false;
+				if(k == playerIndex){
+					reportLoss();
+					return;
+				}
+			}
 		}
-		reportWinsAndLosses(possibleWinnerIndex);
+		reportWin();
 	}
 	
-	public void reportWinsAndLosses(int winner){
-		System.out.println(winner);
+	public void reportWin(){
+		
+		System.out.println("You Won!");
+	}
+	
+	public void reportLoss(){
+		System.out.println("You Lost!");
+	}
+	
+	public class GameOverDialog extends Dialog{
+
+		public GameOverDialog(String title,String text, Skin skin) {
+			super(title, skin);
+			this.text(text);
+			Button button = new Button(skin, "Quit");
+			this.button(button);
+			
+		}
+		
 	}
 
 }

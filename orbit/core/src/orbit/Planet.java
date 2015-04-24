@@ -36,7 +36,7 @@ public class Planet extends GameObject implements Serializable{
 	
 	public static final float DEFAULT_STARTING_HEALTH = 100;
 	
-	public static final float ORBIT_ROTATION_SPEED = .1f; //in radians
+	public static final float ORBIT_ROTATION_SPEED = .05f; //in radians
 
 	public static final float LOCAL_ROTATION_SPEED = 50;
 	

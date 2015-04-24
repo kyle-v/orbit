@@ -26,6 +26,7 @@ public class User implements Serializable{
 	//Weapon data
 	Vector<Weapon> weapons;
 	Vector<Weapon> equippedWeapons;
+	boolean isPlaying;
 	
 	//Planet
 	private Planet planet;
@@ -41,7 +42,8 @@ public class User implements Serializable{
 	//we need this because now users are going to be created prior to being in game
 	//this we way call initialize to make all the gdx object only once the game has started
 	public void initialize(){
-		Weapon defaultRocket = new Rocket("N00b Rocket", 5, 0, 10f,
+		isPlaying = true;
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f,
 				10f, AssetLibrary.getTexture("weaponTexture1.png"), AssetLibrary.getTexture("missile.png"));
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
