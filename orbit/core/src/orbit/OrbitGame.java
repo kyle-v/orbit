@@ -44,6 +44,10 @@ public class OrbitGame extends ApplicationAdapter{
 
 	private final float SPAWN_RADIUS = 400;
 	
+	//messing with this might cause an infinite loop just fyi
+	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
+	private final float MIN_ASTEROID_GAP = 150;
+	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
@@ -72,6 +76,9 @@ public class OrbitGame extends ApplicationAdapter{
 	//int that indicates which index we are playing as
 	int playerIndex;
 	int currentPlayer;
+	
+	//Asteroids
+	ArrayList<Asteroid> asteroids;
 	
 	//Fonts are how we write text to the screen so that's what this is for
 	BitmapFont writer;
@@ -141,18 +148,39 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		playerPlanet = player.getPlanet();
 		
-		//test asteroids
-		Asteroid a = new Asteroid(0,0,new Vector2(0,0),0);
-		//Asteroid a1 = new Asteroid(-250,0,new Vector2(0,0),0);
-		//Asteroid a2 = new Asteroid(0,250,new Vector2(0,0),0);
-		//Asteroid a3 = new Asteroid(250,0,new Vector2(0,0),0);
-		//Asteroid a4 = new Asteroid(0,-250,new Vector2(0,0),0);
+		asteroids = new ArrayList<Asteroid>();
 		
-		gameObjects.add(a);
-		//gameObjects.add(a1);
-		//gameObjects.add(a2);
-		//gameObjects.add(a3);
-		//gameObjects.add(a4);
+		//randomly spawn 3 asteroids
+		boolean spawnConflict;
+		float asteroidSpawnRadius;
+		double x;
+		double y;
+		for (int i = 0; i < 3; i++){
+			do {
+				spawnConflict = false;
+				double radians = randy.nextDouble() * (360 + 1); //get a random angle
+				asteroidSpawnRadius = randy.nextFloat() * (MAX_ASTEROID_SPAWN_RADIUS + 1); //get a random distance from center
+				x = Math.cos(radians)*asteroidSpawnRadius;
+				y = Math.sin(radians)*asteroidSpawnRadius;
+				for (Asteroid asteroid : asteroids){ //loop for checking other asteroids
+					if (x == asteroid.position.x && y == asteroid.position.y){ //makes sure position is not the same as other asteroids
+						spawnConflict = true;
+						break;
+					}
+					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
+					if (Math.hypot(x - asteroid.position.x,y - asteroid.position.y) < MIN_ASTEROID_GAP){
+						spawnConflict = true;
+						break;
+					}
+				}
+			} while (spawnConflict);
+			System.out.println("added asteroid");
+			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
+		}
+		
+		for (Asteroid asteroid : asteroids){
+			gameObjects.add(asteroid);
+		}
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);

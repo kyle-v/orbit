@@ -1,7 +1,6 @@
 package orbit;
 
 import java.io.Serializable;
-
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
