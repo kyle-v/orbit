@@ -19,6 +19,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javafx.util.Pair;
 
@@ -34,12 +35,13 @@ import javax.swing.JTextField;
 public class LobbyWindow extends Window{
 	private static final long serialVersionUID = 3030799455712427080L;
 	
-	private ArrayList<User> currentUsers;	//list of users that still needs to be set users from Orbit object
+	Vector<User> currentUsers;	//list of users that still needs to be set users from Orbit object
 	private JPanel mainContainer;			//container for management. names should specify use
 	private JPanel buttonContainer;
 	private JPanel userContainer;
 	private JPanel chatContainer;
 	private JPanel leftSideContainer;
+	
 	
 	private JButton findGameButton;				//private gui elements
 	private JButton profileButton;
@@ -53,7 +55,7 @@ public class LobbyWindow extends Window{
 	
 	LobbyWindow(Orbit orbit){
 		super(orbit);
-		currentUsers = new ArrayList<User>();
+		currentUsers = new Vector<User>();
 		mainContainer = new JPanel(new BorderLayout());
 		buttonContainer = createButtonContainer();
 		userContainer = new JLobbyPanel();
@@ -67,9 +69,33 @@ public class LobbyWindow extends Window{
 		mainContainer.add(leftSideContainer, BorderLayout.CENTER);		//main container adds chat to east
 		mainContainer.add(chatContainer, BorderLayout.EAST);
 		
+		
+		startUpdateThread();
+		
 		addActionListeners();
 		add(mainContainer);
 		setSize(1024,600);
+	}
+	
+	
+	private void startUpdateThread(){
+		Timer updateTimer = new Timer("Ping for lobby updates");
+		updateTimer.schedule(new TimerTask(){
+			@SuppressWarnings("unchecked")
+			public void run(){
+				System.out.println((Vector<User>)Orbit.sendRequest(new ServerRequest("Ping Count", null)));
+//				Vector<User> response = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
+//				if(response != null){
+//					System.out.println(response);
+//					for(User u: response){
+//						System.out.println(u.getUsername());
+//					}
+//					
+//				}
+			}
+		}, 0, 3000);
+		
+		
 	}
 	
 	//adds action listeners to components
@@ -103,7 +129,7 @@ public class LobbyWindow extends Window{
 						}
 					}
 					
-				}, 0, 100);
+				}, 0, 1000);
 			}
 		});
 		
@@ -212,6 +238,12 @@ public class LobbyWindow extends Window{
 		JButton trade;
 		JPanel buttonContainer;
 		JPanel avi;
+		JLabel statusLabel;
+		User user;
+		
+		JButton acceptButton, declineButton;
+		
+		
 		
 		JAviPanel(){
 			this.setLayout(new BorderLayout());
@@ -219,8 +251,14 @@ public class LobbyWindow extends Window{
 			buttonContainer = new JPanel();			//container for bottom button panel
 			playGame = new JButton("Play");
 			trade = new JButton("Trade");
+			acceptButton = new JButton("Accept");
+			declineButton = new JButton("Decline");
 			buttonContainer.add(playGame);
 			buttonContainer.add(trade);
+			statusLabel = new JLabel();
+			if(user != null){
+				statusLabel.setText(user.getUsername());
+			}
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
@@ -231,8 +269,56 @@ public class LobbyWindow extends Window{
 			
 			this.add(avi, BorderLayout.CENTER);				//creates panel
 			this.add(buttonContainer, BorderLayout.SOUTH);
+			this.add(statusLabel, BorderLayout.NORTH);
 			d = new Dimension(170, 172);
 			this.setPreferredSize(d);
+			addActionListeners();
+			
+		}
+		
+		public void newChallenge(User challenger){
+			statusLabel.setText("Challenge from " + challenger.getUsername() + "!");
+			buttonContainer.removeAll();
+			buttonContainer.add(acceptButton);
+			buttonContainer.add(declineButton);
+			while(acceptButton.getActionListeners().length > 0) acceptButton.removeActionListener(acceptButton.getActionListeners()[0]);
+			while(declineButton.getActionListeners().length > 0) declineButton.removeActionListener(declineButton.getActionListeners()[0]);
+			
+			acceptButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					buttonContainer.removeAll();
+					buttonContainer.add(playGame);
+					buttonContainer.add(trade);
+				}
+			});
+			
+			declineButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					buttonContainer.removeAll();
+					buttonContainer.add(playGame);
+					buttonContainer.add(trade);
+				}
+			});
+		}
+		
+		
+		
+		private void addActionListeners(){
+			playGame.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					if(user!=null)statusLabel.setText("Waiting for " + user.getUsername());
+					playGame.setEnabled(false);
+				}
+			});
+			
+			trade.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					if(user!=null)statusLabel.setText("Waiting for " + user.getUsername());
+					trade.setEnabled(true);
+
+				}
+			});
+			
 		}
 		
 		

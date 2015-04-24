@@ -2,7 +2,6 @@ package com.orbit.game.desktop;
 
 import java.util.ArrayList;
 
-import orbit.Orbit;
 import orbit.OrbitGame;
 import orbit.User;
 
@@ -18,11 +17,12 @@ public class DesktopLauncher {
 
 	
 		
-//		LobbyWindow lw = new LobbyWindow(null);
-//		lw.setVisible(true);
+		LobbyWindow lw = new LobbyWindow(null);
+		lw.setVisible(true);
 //		ProfileWindow pw = new ProfileWindow(null);
 //		pw.setVisible(true);
 		
+<<<<<<< HEAD
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User("Kyle","P"));
 		users.add(new User("Steven", "LJK"));
@@ -30,5 +30,14 @@ public class DesktopLauncher {
 		IPs.add("localhost");
 		IPs.add("localhost");
 		new LwjglApplication(new OrbitGame(users,IPs,1), config);
+=======
+//		ArrayList<User> users = new ArrayList<User>();
+//		users.add(new User("Kyle","P"));
+//		users.add(new User("Steven", "LJK"));
+//		ArrayList<String> IPs = new ArrayList<String>();
+//		IPs.add("localhost");
+//		IPs.add("localhost");
+//		new LwjglApplication(new OrbitGame(users,IPs,1), config);
+>>>>>>> origin/master
 	}
 }

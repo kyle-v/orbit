@@ -43,26 +43,30 @@ public class OrbitServerThread extends Thread {
 			}
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
 		}catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());
 		} catch (UnidentifiedRequestException e) {
 			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
 		}
-//		finally{
-//			try {
-//				oos.close();
-//				ois.close();
-//				s.close();
-//			} catch (IOException e) {
-//				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
-//			}
-//		}
+		finally{
+			System.out.println("Client disconnected");
+			if(user!= null)Server.activeUsers.remove(user);
+			server.clients.remove(this);
+			server.numConnections.setText(new Integer(server.clients.size()).toString());
+			try {
+				oos.close();
+				ois.close();
+				s.close();
+			} catch (IOException e) {
+				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
+			}
+		}
 	}
 
 	//reads the request received and performs the appropriate action
-	private void fulfillRequest(ServerRequest sr) throws UnidentifiedRequestException{
+	private  synchronized void fulfillRequest(ServerRequest sr) throws UnidentifiedRequestException{
 		String request = sr.getRequest();
 		Object o = sr.getObject();
 		
@@ -88,6 +92,15 @@ public class OrbitServerThread extends Thread {
 			createUser(o);
 		}else if(request.equals("Get User")){
 			sendResponse(user);
+		}else if(request.equals("Get User List")){
+			System.out.println("ACTIVE USERS: " + Server.activeUsers);
+			sendResponse(Server.activeUsers);
+		}else if(request.equals("Ping Count")){
+			System.out.println("PING COUNT: " + server.getActiveUsers());
+			Vector<Integer> v = new Vector<Integer>();
+			Server.pingCount.add(new Integer(1));
+			v = Server.pingCount;
+			sendResponse(v);
 		}else if(request.equalsIgnoreCase("Find Game")){
 			server.addToReady(this);
 			sendResponse(true);
@@ -109,6 +122,7 @@ public class OrbitServerThread extends Thread {
 	//send response to client (writes response object to oos)
 	private void sendResponse(Object responseObject){
 		try {
+			oos.reset();
 			oos.writeObject(responseObject);
 			oos.flush();
 		} catch (IOException e) {
@@ -135,6 +149,7 @@ public class OrbitServerThread extends Thread {
 		if(d.authenticateLogin(username, password)){
 			response = "Valid";
 			this.user = d.usernameToUserMap.get(username);
+			Server.activeUsers.add(user);
 		}
 		else{
 			response = "Invalid";
