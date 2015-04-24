@@ -79,6 +79,10 @@ class ChatThread extends Thread {
 			String line = "";
 			while (line != null) {
 				line = br.readLine();
+				if(line == null){
+					cs.removeChatThread(this);
+					break;
+				}
 				cs.sendMessageToClients(this, line);
 			}
 		} catch (IOException ioe) {
