@@ -20,10 +20,10 @@ public class ProfileWindow extends Window{
 	private JPanel inventoryScreen;
 	private JPanel profileScreen;
 	
-	private JButton planetButton;
-	private JButton inventoryButton;
-	private JButton profileButton;
-	private JButton backButton;
+	private JOrbitButton planetButton;
+	private JOrbitButton inventoryButton;
+	private JOrbitButton profileButton;
+	private JOrbitButton backButton;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
 	
 	ProfileWindow(Orbit orbit){
@@ -38,10 +38,10 @@ public class ProfileWindow extends Window{
 		buttonPanel = new JPanel();
 	
 		
-		planetButton = new JButton("Planet");
-		inventoryButton = new JButton("Inventory");
-		profileButton = new JButton("Profile");
-		backButton = new JButton("Back to Lobby");
+		planetButton = new JOrbitButton("Planet");
+		inventoryButton = new JOrbitButton("Inventory");
+		profileButton = new JOrbitButton("Profile");
+		backButton = new JOrbitButton("Back to Lobby");
 		
 		
 		buttonPanel.add(profileButton);			//add buttons to panel

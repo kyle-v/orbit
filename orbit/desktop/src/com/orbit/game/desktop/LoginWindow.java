@@ -36,9 +36,9 @@ public class LoginWindow extends Window{
 	private static final long serialVersionUID = 6765474456932332037L;
 	private JTextField usernameTextField;
 	private JPasswordField passwordTextField;
-	private JButton userLoginButton;
-	private JButton guestLoginButton;
-	private JButton newUserButton;
+	private JOrbitButton userLoginButton;
+	private JOrbitButton guestLoginButton;
+	private JOrbitButton newUserButton;
 	private JLabel titleLabel; 
 	
 
@@ -57,9 +57,9 @@ public class LoginWindow extends Window{
 		titleLabel = new JLabel("Orbit");
 		usernameTextField = new JTextField(25);
 		passwordTextField = new JPasswordField(25);
-		userLoginButton = new JButton("Login");
-		guestLoginButton = new JButton("Play as Guest");
-		newUserButton = new JButton("Create User");
+		userLoginButton = new JOrbitButton("Login");
+		guestLoginButton = new JOrbitButton("Play as Guest");
+		newUserButton = new JOrbitButton("Create User");
 		mainPanel = new JOrbitPanel();	
 		JPanel container = new JPanel();
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));	//a container for all JComps
