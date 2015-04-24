@@ -17,8 +17,8 @@ public class DesktopLauncher {
 
 	
 		
-		LobbyWindow lw = new LobbyWindow(null);
-		lw.setVisible(true);
+		//LobbyWindow lw = new LobbyWindow(null);
+		//lw.setVisible(true);
 //		ProfileWindow pw = new ProfileWindow(null);
 //		pw.setVisible(true);
 		ArrayList<User> users = new ArrayList<User>();

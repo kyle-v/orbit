@@ -31,7 +31,7 @@ public class Projectile extends GameObject {
 	 */
 	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, List<GameObject> gameObjects2) {
 		super(x, y, width, height);
-		sprite = new Sprite(owner.projectileImage);
+		sprite = new Sprite(AssetLibrary.getTexture(owner.projectileFilename));
 		sprite.setPosition(x, y);
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
@@ -152,7 +152,7 @@ public class Projectile extends GameObject {
 		System.out.println("test");
 		if(collided instanceof Planet){
 			Planet p = (Planet)collided;
-			p.health -= damage;
+			p.takeDamage(damage);
 			isDead = true;
 			GameplayStatics.game.checkWinCondition();
 		}

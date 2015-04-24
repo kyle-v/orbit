@@ -50,13 +50,14 @@ public class Planet extends GameObject implements Serializable{
 	private int equippedWeaponIndex;
 	private float degreePosition;
 	private float localRotation;
+	private String destroyedTexturePath;
 
-	public Planet(Vector<Weapon> weapons) {
+	public Planet(Vector<Weapon> weapons, String texturePath, String destroyedTexturePath) {
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
 		this.health = DEFAULT_STARTING_HEALTH;
-		planetSkin = new Texture(Gdx.files.internal("defaultPlanet.png"));
+		planetSkin = new Texture(Gdx.files.internal(texturePath));
 		sprite = new Sprite(planetSkin);
 		createPhysicsBody();
 		this.weapons = weapons;
@@ -64,6 +65,7 @@ public class Planet extends GameObject implements Serializable{
 		equippedWeaponIndex = 0;
 		Random randy = new Random();
 		localRotation = randy.nextFloat() * 360;
+		this.destroyedTexturePath = destroyedTexturePath;
 	}
 	
 	
@@ -98,6 +100,14 @@ public class Planet extends GameObject implements Serializable{
 	     shape.dispose();
 	}
 	
+	public void takeDamage(float damage){
+		health -= damage;
+		if(health<=0){
+			Texture texture = AssetLibrary.getTexture(destroyedTexturePath);
+			sprite.setTexture(texture);
+		}
+	}
+	
 	public void setWeapon(int weaponIndex){
 		equippedWeapon = weapons.get(weaponIndex);
 	}
@@ -115,7 +125,7 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, List<GameObject> gameObjects){
-		int buffer = equippedWeapon.projectileImage.getWidth() + 50;
+		int buffer = AssetLibrary.getTexture(equippedWeapon.projectileFilename).getWidth() + 50;
 		buffer += radius;
 		float xPosition = (float) Math.cos(angle) * buffer;
 		float yPosition = (float) Math.sin(angle) * buffer;

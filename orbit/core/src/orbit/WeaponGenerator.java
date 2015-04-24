@@ -10,14 +10,26 @@ public class WeaponGenerator {
 	private Random random;
 	private int numAdjectives;
 	private int numNouns;
+	private static final int MAX_DAMAGE = 20;
+	private static final int MAX_COOLDOWN = 5;
+	private static final float MAX_MASS = 100f;
+	private static final float MAX_SPEED = 100f;
 	WeaponGenerator(){
 		random = new Random();
 		numAdjectives = adjectives.length;
 		numNouns = nouns.length;
 	}
 	
-	public Weapon generateWeapon(){
-		int adjectiveIndex;
-		int nounIndex;
+	//generates a random weapon
+	public Weapon makeWeapon(){
+		int adjectiveIndex = random.nextInt(numAdjectives + 1);
+		int nounIndex = random.nextInt(numNouns + 1);
+		String name = "The " + adjectives[adjectiveIndex] + nouns[nounIndex];
+		int damage = random.nextInt(MAX_DAMAGE + 1) + 1;
+		int cooldown = random.nextInt(MAX_COOLDOWN + 1);
+		float mass = random.nextFloat() * (MAX_MASS - 1) + 1;
+		float speed = random.nextFloat() * (MAX_SPEED - 1) + 1;
+		
+		return new Rocket(name,damage,cooldown,mass,speed,"weaponTexture1.png","rocket.png");
 	}
 }

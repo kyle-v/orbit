@@ -30,6 +30,8 @@ public class User implements Serializable{
 	
 	//Planet
 	private Planet planet;
+	private String planetPath;
+	private String destroyedPlanetPath;
 	
 	public User(String username, String newPass){
 		this.username = username;
@@ -37,18 +39,18 @@ public class User implements Serializable{
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
+		planetPath = "defaultPlanet.png";
+		destroyedPlanetPath = "DestroyedPlanet.png";
 	}
 	
 	//we need this because now users are going to be created prior to being in game
 	//this we way call initialize to make all the gdx object only once the game has started
 	public void initialize(){
 		isPlaying = true;
-		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f,
-				10f, AssetLibrary.getTexture("weaponTexture1.png"), AssetLibrary.getTexture("missile.png"));
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f,
-				10f, AssetLibrary.getTexture("weaponTexture2.png"), AssetLibrary.getTexture("missile.png"));
+		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weaponTexture2.png", "missile.png");
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);
 		
@@ -90,7 +92,7 @@ public class User implements Serializable{
 	
 	public Planet getPlanet(){
 		if(planet==null)
-			planet = new Planet(equippedWeapons);
+			planet = new Planet(equippedWeapons, planetPath, destroyedPlanetPath);
 		return planet;
 	}
 
