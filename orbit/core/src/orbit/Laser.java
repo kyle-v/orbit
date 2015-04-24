@@ -8,19 +8,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-public class Rocket extends Weapon{
+public class Laser extends Weapon{
 	
-	private int projectileWidth = 51;
-	private int projectileHeight = 36;
-	private boolean gravitytoggle = true;
+	private int projectileWidth = 20;
+	private int projectileHeight = 11;
+	private boolean gravitytoggle = false;
 	
-	public Rocket(String name, int damage, int cooldown, float projectileMass,
+	public Laser(String name, int damage, int cooldown, float projectileMass,
 			float maxInitialSpeed, String weaponFilename, String projectileFilename) {
 			super(name, damage, cooldown, projectileMass, maxInitialSpeed, weaponFilename, projectileFilename);
 	}
 
 	public void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects) {
-		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
+		System.out.println("Laser " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
 		Vector2 initSpeed = new Vector2(maxInitialSpeed*(float)(powerPercent)/100f, 0f);
 		initSpeed.rotateRad((float)angle);
 		/*
@@ -29,6 +29,7 @@ public class Rocket extends Weapon{
 		 */
 		
 		Projectile p = new Projectile(xPosition, yPosition, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects, gravitytoggle);
+		p.body.getFixtureList().get(0).setRestitution(10);
 		gameObjects.add(p);
 	}
 	

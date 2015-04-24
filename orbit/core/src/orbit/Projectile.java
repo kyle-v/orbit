@@ -19,6 +19,7 @@ public class Projectile extends GameObject {
 	static final float g = 5f;
 	static final float MAXGRAVITY = 2f;
 	static final float MINDISTANCE = 0f;
+	boolean gravitytoggle;
 	List<GameObject> gameObjects;
 	Sprite sprite;
 	
@@ -29,7 +30,7 @@ public class Projectile extends GameObject {
 	 *  every time it creates a new projectile in
 	 *  addition to the x and y coords and height, width
 	 */
-	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, List<GameObject> gameObjects2) {
+	public Projectile(float x, float y, float width, float height, Vector2 initialSpeed, float initAngle,Weapon owner, List<GameObject> gameObjects2, boolean gravitytoggle) {
 		super(x, y, width, height);
 		sprite = new Sprite(AssetLibrary.getTexture(owner.projectileFilename));
 		sprite.setPosition(x, y);
@@ -37,13 +38,14 @@ public class Projectile extends GameObject {
 		this.velocity = initialSpeed;
 		this.damage = owner.damage;
 		this.gameObjects = gameObjects2;
+		this.gravitytoggle = gravitytoggle;
 		createPhysicsBody();
 		body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
 	public void update(float DeltaTime) {
-		calculateGravity();
+		if(gravitytoggle) calculateGravity();
 		updateVelocityAndPosition(DeltaTime);
 		for (GameObject o : gameObjects){
 			if(o != this){
