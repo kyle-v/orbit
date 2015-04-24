@@ -24,8 +24,8 @@ public class User implements Serializable{
 	private int money;
 	
 	//Weapon data
-	Vector<Weapon> weapons;
-	Vector<Weapon> equippedWeapons;
+	public Vector<Weapon> weapons;
+	public Vector<Weapon> equippedWeapons;
 	boolean isPlaying;
 	
 	//Planet
