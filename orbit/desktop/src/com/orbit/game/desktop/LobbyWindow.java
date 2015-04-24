@@ -19,6 +19,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javafx.util.Pair;
 
@@ -34,7 +35,7 @@ import javax.swing.JTextField;
 public class LobbyWindow extends Window{
 	private static final long serialVersionUID = 3030799455712427080L;
 	
-	private ArrayList<User> currentUsers;	//list of users that still needs to be set users from Orbit object
+	Vector<User> currentUsers;	//list of users that still needs to be set users from Orbit object
 	private JPanel mainContainer;			//container for management. names should specify use
 	private JPanel buttonContainer;
 	private JPanel userContainer;
@@ -54,7 +55,7 @@ public class LobbyWindow extends Window{
 	
 	LobbyWindow(Orbit orbit){
 		super(orbit);
-		currentUsers = new ArrayList<User>();
+		currentUsers = new Vector<User>();
 		mainContainer = new JPanel(new BorderLayout());
 		buttonContainer = createButtonContainer();
 		userContainer = new JLobbyPanel();
@@ -80,12 +81,13 @@ public class LobbyWindow extends Window{
 	private void startUpdateThread(){
 		Timer updateTimer = new Timer("Ping for lobby updates");
 		updateTimer.schedule(new TimerTask(){
+			Object response;
+			@SuppressWarnings("unchecked")
 			public void run(){
-				Object response = Orbit.sendRequest(new ServerRequest("Get User List", null));
+				response = Orbit.sendRequest(new ServerRequest("Get User List", null));
 				if(response != null){
-					@SuppressWarnings("unchecked")
-					ArrayList<User> users = (ArrayList<User>) response;
-					for(User u: users){
+					currentUsers = (Vector<User>) response;
+					for(User u: currentUsers){
 						System.out.println(u.getUsername());
 					}
 					
@@ -304,14 +306,14 @@ public class LobbyWindow extends Window{
 		private void addActionListeners(){
 			playGame.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
-					statusLabel.setText("Waiting for " + user.getUsername());
+					if(user!=null)statusLabel.setText("Waiting for " + user.getUsername());
 					playGame.setEnabled(false);
 				}
 			});
 			
 			trade.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
-					statusLabel.setText("Waiting for " + user.getUsername());
+					if(user!=null)statusLabel.setText("Waiting for " + user.getUsername());
 					trade.setEnabled(true);
 
 				}

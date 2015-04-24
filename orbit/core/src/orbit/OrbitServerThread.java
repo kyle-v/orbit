@@ -43,7 +43,7 @@ public class OrbitServerThread extends Thread {
 			}
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
 		}catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());

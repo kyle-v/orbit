@@ -44,7 +44,7 @@ public class Server extends JFrame{
 	
 	//Connected client threads
 	public Vector<OrbitServerThread> clients = new Vector<OrbitServerThread>();
-	public ArrayList<User> activeUsers = new ArrayList<User>();
+	public Vector<User> activeUsers = new Vector<User>();
 	private HashMap<String, OrbitServerThread> usernameToThreadMap = new HashMap<String, OrbitServerThread>();
 	private Queue<OrbitServerThread> readyClients = new LinkedList<OrbitServerThread>();
 	
