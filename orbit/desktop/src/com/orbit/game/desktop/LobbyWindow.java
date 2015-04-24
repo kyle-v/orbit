@@ -1,16 +1,9 @@
 
 package com.orbit.game.desktop;
 
-import orbit.ServerRequest;
-import orbit.User;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,10 +20,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import orbit.ServerRequest;
+import orbit.User;
 
 public class LobbyWindow extends Window{
 	private static final long serialVersionUID = 3030799455712427080L;
@@ -50,6 +47,7 @@ public class LobbyWindow extends Window{
 	private JTextField messageTextField;
 	private JTextArea chatArea;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
+	
 	
 	private ChatClient chatClient;
 	private Vector<JAviPanel> aviPanels = new Vector<JAviPanel>();
@@ -88,6 +86,10 @@ public class LobbyWindow extends Window{
 				currentUsers = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
 				if(currentUsers != null){
 					updateLobbyAvis();
+				}
+				for(JAviPanel jap : aviPanels){
+					jap.revalidate();
+					jap.repaint();
 				}
 			}
 		}, 0, 3000);	
@@ -245,11 +247,10 @@ public class LobbyWindow extends Window{
 	class JAviPanel extends JPanel{
 
 		private static final long serialVersionUID = 3L;
-		
+		ImageIcon aviImage;
 		JButton playGame;
 		JButton trade;
 		JPanel buttonContainer;
-		JPanel avi;
 		JLabel statusLabel;
 		User user;
 		
@@ -260,6 +261,7 @@ public class LobbyWindow extends Window{
 		JAviPanel(User user){
 			this.setLayout(new BorderLayout());
 			this.user = user;
+//			System.out.println(user.getPlanet().toString());
 			
 			buttonContainer = new JPanel();			//container for bottom button panel
 			playGame = new JButton("Play");
@@ -275,12 +277,14 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-			avi = new JPanel();							//panel to hold image avi
-			avi.setBackground(Color.BLUE);
+			aviImage = new ImageIcon("assets/worker.png");
+			System.out.println(aviImage.toString());
+			JLabel label = new JLabel();
+			label.setIcon(aviImage);
 			d = new Dimension(170, 140);
-			avi.setPreferredSize(d);
+			label.setPreferredSize(d);//panel to hold image avi
 			
-			this.add(avi, BorderLayout.CENTER);				//creates panel
+			this.add(label, BorderLayout.CENTER);				//creates panel
 			this.add(buttonContainer, BorderLayout.SOUTH);
 			this.add(statusLabel, BorderLayout.NORTH);
 			d = new Dimension(170, 172);
@@ -328,12 +332,8 @@ public class LobbyWindow extends Window{
 				public void actionPerformed(ActionEvent e) {
 					if(user!=null)statusLabel.setText("Waiting for " + user.getUsername());
 					trade.setEnabled(true);
-
 				}
 			});
-			
 		}
-		
-		
 	}
 }

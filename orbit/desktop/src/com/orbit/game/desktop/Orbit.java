@@ -58,7 +58,6 @@ public class Orbit {
 
 		login.setVisible(false);
 		lobby.setVisible(true);
-
 	}
 
 	public void destruct(){
