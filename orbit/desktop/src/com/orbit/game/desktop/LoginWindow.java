@@ -46,7 +46,6 @@ public class LoginWindow extends Window{
 	private final ImageIcon backgroundImage = new ImageIcon("assets/LoginWallpaper.jpg");
 	private final JLabel usernameLabel = new JLabel("Username: ");
 	private final JLabel passwordLabel = new JLabel("Password: ");
-
 	
 	
 	//need to pass in an orbit ref. will temporarily use blank constructor

@@ -3,6 +3,7 @@ package orbit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -34,6 +36,10 @@ public class Planet extends GameObject implements Serializable{
 	
 	public static final float DEFAULT_STARTING_HEALTH = 100;
 	
+	public static final float ORBIT_ROTATION_SPEED = .1f; //in radians
+
+	public static final float LOCAL_ROTATION_SPEED = 50;
+	
 	public float health;
 	private float radius;
 	private Texture planetSkin;
@@ -42,6 +48,8 @@ public class Planet extends GameObject implements Serializable{
 	private Vector<Weapon> weapons;
 	private Weapon equippedWeapon;
 	private int equippedWeaponIndex;
+	private float degreePosition;
+	private float localRotation;
 
 	public Planet(Vector<Weapon> weapons) {
 		super(0, 0, DEFAULT_RADIUS*2, DEFAULT_RADIUS*2);
@@ -54,6 +62,8 @@ public class Planet extends GameObject implements Serializable{
 		this.weapons = weapons;
 		equippedWeapon = this.weapons.get(0);
 		equippedWeaponIndex = 0;
+		Random randy = new Random();
+		localRotation = randy.nextFloat() * 360;
 	}
 	
 	
@@ -77,9 +87,8 @@ public class Planet extends GameObject implements Serializable{
 	                        GameplayStatics.pixelsToMeters(),
 	                (sprite.getY() + radius) / GameplayStatics.pixelsToMeters());
 	     body = GameplayStatics.getWorld().createBody(bodyDef);
-	     PolygonShape shape = new PolygonShape();
+	     CircleShape shape = new CircleShape();
 	     shape.setRadius(radius/ GameplayStatics.pixelsToMeters());
-	     shape.setAsBox(radius/2/GameplayStatics.pixelsToMeters(), radius/2/GameplayStatics.pixelsToMeters());
 	     FixtureDef fixtureDef = new FixtureDef();
 	     fixtureDef.shape = shape;
 	     fixtureDef.density = 0.1f;
@@ -99,6 +108,10 @@ public class Planet extends GameObject implements Serializable{
 	
 	public int getWeaponIndex(){
 		return equippedWeaponIndex;
+	}
+	
+	public void setDegreePosition(float pos){
+		degreePosition = pos;
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, List<GameObject> gameObjects){
@@ -121,10 +134,16 @@ public class Planet extends GameObject implements Serializable{
 	@Override
 	public void update(float DeltaTime) {
 		updateVelocityAndPosition(DeltaTime);
+		degreePosition += DeltaTime * ORBIT_ROTATION_SPEED;
+		//localRotation += DeltaTime * LOCAL_ROTATION_SPEED;
+		float distance = body.getPosition().len();
+		body.setTransform(new Vector2((float)Math.cos(degreePosition)*distance,(float)Math.sin(degreePosition)*distance), localRotation);
 		//set the sprites position to the same as 
 		sprite.setPosition((body.getPosition().x * GameplayStatics.pixelsToMeters()) - 
                 radius,
         (body.getPosition().y * GameplayStatics.pixelsToMeters()) - radius);
+		position.x = sprite.getX() + sprite.getWidth()/2;
+		position.y = sprite.getY() + sprite.getHeight()/2;
 		// TODO Auto-generated method stub
 		
 	}
