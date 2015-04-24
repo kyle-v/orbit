@@ -54,7 +54,7 @@ public class OrbitGame extends ApplicationAdapter{
 	//messing with this might cause an infinite loop just fyi
 	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
 	private final float MIN_ASTEROID_GAP = 100;
-
+	private final float MAX_ASTEROID_VELOCITY = 5;
 	private final int lowerAsteroidAmount = 3;
 	private final int upperAsteroidAmount = 5;
 	
@@ -101,12 +101,15 @@ public class OrbitGame extends ApplicationAdapter{
 	private Texture backgroundImage;
 	
 	private String gameOverText;
+	
+	public long randomSeed;
 
 
-	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex){
+	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex, long randomSeed){
 		this.players = players;
 		this.playerIndex = playerIndex;
 		playerIPAddresses = ipaddresses;
+		this.randomSeed = randomSeed;
 	}
 	
 	@Override
@@ -119,6 +122,8 @@ public class OrbitGame extends ApplicationAdapter{
 		batch = new SpriteBatch();
 		gameState = GameState.CONNECTING;
 		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
+		
+		
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -146,15 +151,14 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		player = players.get(playerIndex);
 		float increment = 360/players.size();
-		Random randy = new Random();
+		Random randy = new Random(randomSeed);
+		GameplayStatics.randy = randy;
 		float start = 20;
-		
 
 		GameplayStatics.game = this;
 		
 		//setup game state
 		currentPlayer = 0;
-		
 		
 		playerSockets = new Socket[4];
 		
@@ -171,30 +175,6 @@ public class OrbitGame extends ApplicationAdapter{
 				thread.start();
 			}
 		}
-		//we do this in two seperate for loops because I want all the sockets being listened to before anyone starts sending messages to them
-		/*for(int k=0;k<players.size();k++){
-			SocketHints socketHint = new SocketHints();
-			socketHint.connectTimeout = 10000;
-			//establish connection with each player and continue pinging until we do so
-			while(true){
-				try{
-					Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
-					//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
-					try {
-						ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-						stream.flush();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					socket.dispose();
-					break;
-				}
-				catch(GdxRuntimeException ex){
-					continue;
-				}
-			}
-		}*/
 		playerPlanet = player.getPlanet();
 		
 		asteroids = new ArrayList<Asteroid>();
@@ -382,7 +362,7 @@ public class OrbitGame extends ApplicationAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		Random randy = new Random();
+		Random randy = GameplayStatics.randy;
 		writer.setColor(new Color(randy.nextFloat(),randy.nextFloat(),randy.nextFloat(),1));
 		TextBounds bound = writer.getBounds("Waiting for players to connect");
 		writer.draw(batch, "Waiting for players to connect", -bound.width/2, -bound.height/2);
@@ -396,7 +376,7 @@ public class OrbitGame extends ApplicationAdapter{
 			gameState = GameState.WEAPON;
 		else
 			gameState = GameState.WAITING;
-		
+		new SpawnAsteroidThread((long) (GameplayStatics.randy.nextFloat() * 10)).start();;
 	}
 
 	@Override
@@ -454,6 +434,56 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 	}
 	
+	public class SpawnAsteroidThread extends Thread{
+		long spawnTime;
+		
+		SpawnAsteroidThread(long spawnTime){
+			this.spawnTime = spawnTime;
+		}
+		
+		public void run(){
+			try {
+				sleep(spawnTime * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			spawnAsteroid();
+			SpawnAsteroidThread thread = new SpawnAsteroidThread((long) (GameplayStatics.randy.nextFloat() * 10));
+			thread.start();
+		}
+		
+		public void spawnAsteroid(){
+			Camera cam = GameplayStatics.game.camera;
+			float height = cam.viewportHeight;
+			float width = cam.viewportWidth;
+			Random randy = GameplayStatics.randy;
+			int topOrLeft = randy.nextInt(2);
+			int negativeOrPositive = randy.nextInt(2);
+			if(negativeOrPositive==0){
+				negativeOrPositive = -1;
+			}
+			else{
+				negativeOrPositive = 1;
+			}
+			float randY;
+			float randX;
+			
+			if(topOrLeft == 0){
+				randY = height * randy.nextFloat() - height/2;
+				randX = (60 + width/2) * negativeOrPositive;
+			}
+			else{
+				randY = (60 + height/2) * negativeOrPositive;
+				randX =  width * randy.nextFloat() - width/2;
+			}
+			Vector2 vel = new Vector2(randX, randY).nor();
+			vel.scl(MAX_ASTEROID_VELOCITY);
+			Asteroid a = new Asteroid(randX, randY, vel.X, vel.y);
+			gameObjects.add(a);
+		}
+	}
+		
 	public void playerTurnOver(float powerPercent, float angle){
 		for(int k=0;k<players.size();k++){
 			if(k!=playerIndex){

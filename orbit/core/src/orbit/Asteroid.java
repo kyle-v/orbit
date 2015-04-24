@@ -26,7 +26,7 @@ public class Asteroid extends GameObject implements Serializable {
 	Texture texture;
 	public Asteroid(float x, float y,Vector2 initialSpeed, float initialAngle){
 		super(x,y,DEFAULT_RADIUS*2,DEFAULT_RADIUS*2);
-		this.texture = new Texture(Gdx.files.internal("asteroid.png"));
+		this.texture = AssetLibrary.getTexture("asteroid.png");
 		this.sprite = new Sprite(this.texture);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
