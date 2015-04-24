@@ -50,15 +50,19 @@ public class OrbitServerThread extends Thread {
 		} catch (UnidentifiedRequestException e) {
 			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
 		}
-//		finally{
-//			try {
-//				oos.close();
-//				ois.close();
-//				s.close();
-//			} catch (IOException e) {
-//				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
-//			}
-//		}
+		finally{
+			System.out.println("Client disconnected");
+			if(user!= null)server.activeUsers.remove(user);
+			server.clients.remove(this);
+			server.numConnections.setText(new Integer(server.clients.size()).toString());
+			try {
+				oos.close();
+				ois.close();
+				s.close();
+			} catch (IOException e) {
+				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
+			}
+		}
 	}
 
 	//reads the request received and performs the appropriate action
@@ -88,6 +92,8 @@ public class OrbitServerThread extends Thread {
 			createUser(o);
 		}else if(request.equals("Get User")){
 			sendResponse(user);
+		}else if(request.equals("Get User List")){
+			sendResponse(server.activeUsers);
 		}else if(request.equalsIgnoreCase("Find Game")){
 			server.addToReady(this);
 			sendResponse(true);
@@ -135,6 +141,7 @@ public class OrbitServerThread extends Thread {
 		if(d.authenticateLogin(username, password)){
 			response = "Valid";
 			this.user = d.usernameToUserMap.get(username);
+			server.activeUsers.add(user);
 		}
 		else{
 			response = "Invalid";
