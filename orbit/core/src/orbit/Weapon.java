@@ -18,9 +18,19 @@ public abstract class Weapon implements Serializable{
 	//Weapon Properties
 	protected String name;
 	protected int damage;
+	public int damageUpgradeAmt = 5;
+	public int damageUpgradeCost = 100;
+	
+	
 	protected int cooldown;
 	protected float projectileMass;
+	
+	
 	protected float maxInitialSpeed;
+	public float speedUpgradeAmt = 1;
+	public int speedUpgradeCost = 100;
+	
+	
 	protected String weaponFilename;
 	protected String projectileFilename;
 	
@@ -63,5 +73,22 @@ public abstract class Weapon implements Serializable{
 	
 	public float getSpeed(){
 		return this.maxInitialSpeed;
+	}
+	
+	public void upgradeDamage(){
+		damage += damageUpgradeAmt;
+		damageUpgradeCost = (int) (damageUpgradeCost*1.2);
+	}
+	
+	public void upgradeSpeed(){
+		maxInitialSpeed += speedUpgradeAmt;
+		speedUpgradeCost = (int) (speedUpgradeCost*1.2);
+	}
+	
+	public String getWeaponImage(){
+		return weaponFilename;
+	}
+	public String getProjectileImage(){
+		return projectileFilename;
 	}
 }
