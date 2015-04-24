@@ -55,8 +55,8 @@ public class OrbitGame extends ApplicationAdapter{
 	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
 	private final float MIN_ASTEROID_GAP = 100;
 	private final float MAX_ASTEROID_VELOCITY = 5;
-	private final int lowerAsteroidAmount = 3;
-	private final int upperAsteroidAmount = 5;
+	private final int lowerAsteroidAmount = 2;
+	private final int upperAsteroidAmount = 4;
 	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
@@ -184,7 +184,7 @@ public class OrbitGame extends ApplicationAdapter{
 		float asteroidSpawnRadius;
 		double x;
 		double y;
-		/*
+		
 		int numAsteroids = randy.nextInt(upperAsteroidAmount - lowerAsteroidAmount + 1) + lowerAsteroidAmount;
 		for (int i = 0; i < numAsteroids; i++){
 			do {
@@ -208,7 +208,7 @@ public class OrbitGame extends ApplicationAdapter{
 			System.out.println("added asteroid");
 			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
 		}
-		*/
+		
 		for (Asteroid a: asteroids){
 			gameObjects.add(a);
 		}

@@ -53,7 +53,11 @@ public class User implements Serializable{
 		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weaponTexture2.png", "missile.png");
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);
-		
+		AssetLibrary.getTexture(destroyedPlanetPath);
+		for(Weapon w: weapons){
+			AssetLibrary.getTexture(w.weaponFilename);
+			AssetLibrary.getTexture(w.projectileFilename);
+		}
 	}
 	
 	//set current equipped weapon

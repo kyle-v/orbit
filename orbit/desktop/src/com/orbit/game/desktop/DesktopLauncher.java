@@ -1,6 +1,7 @@
 package com.orbit.game.desktop;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import orbit.OrbitGame;
 import orbit.User;
@@ -27,6 +28,7 @@ public class DesktopLauncher {
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		new LwjglApplication(new OrbitGame(users,IPs,1), config);
+		Random randy = new Random();
+		new LwjglApplication(new OrbitGame(users,IPs,0,randy.nextLong()), config);
 	}
 }

@@ -1,5 +1,7 @@
 package orbit;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -14,6 +16,7 @@ public class GameplayStatics {
 	private static final float PIXELS_TO_METERS = 50;
 	private static ShapeRenderer renderer;
 	public static OrbitGame game;
+	public static Random randy;
 	
 	public static void setShapeRenderer(ShapeRenderer srenderer){
 		renderer = srenderer;
