@@ -30,6 +30,8 @@ public class User implements Serializable{
 	
 	//Planet
 	private Planet planet;
+	private String planetPath;
+	private String destroyedPlanetPath;
 	
 	public User(String username, String newPass){
 		this.username = username;
@@ -37,6 +39,8 @@ public class User implements Serializable{
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
+		planetPath = "defaultPlanet.png";
+		destroyedPlanetPath = "DestroyedPlanet.png";
 	}
 	
 	//we need this because now users are going to be created prior to being in game
@@ -90,7 +94,7 @@ public class User implements Serializable{
 	
 	public Planet getPlanet(){
 		if(planet==null)
-			planet = new Planet(equippedWeapons);
+			planet = new Planet(equippedWeapons, planetPath, destroyedPlanetPath);
 		return planet;
 	}
 

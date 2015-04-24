@@ -152,7 +152,7 @@ public class Projectile extends GameObject {
 		System.out.println("test");
 		if(collided instanceof Planet){
 			Planet p = (Planet)collided;
-			p.health -= damage;
+			p.takeDamage(damage);
 			isDead = true;
 			GameplayStatics.game.checkWinCondition();
 		}

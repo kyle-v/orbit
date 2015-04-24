@@ -45,7 +45,7 @@ public class OrbitGame extends ApplicationAdapter{
 
 
 	//Game goes through 4 states: Choosing weapon, choosing angle, choosing power, and waiting for the other player's move.
-	public static enum GameState {WEAPON, AIMING, POWER, FIRE, WAITING, CONNECTING};
+	public static enum GameState {WEAPON, AIMING, POWER, FIRE, WAITING, CONNECTING, GAMEOVER};
 	public GameState gameState; 
 
 	private final float SPAWN_RADIUS = 400;
@@ -99,6 +99,8 @@ public class OrbitGame extends ApplicationAdapter{
 	Socket[] playerSockets;
 	
 	private Texture backgroundImage;
+	
+	private String gameOverText;
 
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex){
@@ -237,7 +239,7 @@ public class OrbitGame extends ApplicationAdapter{
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
 		writer.setScale(5);
-		
+		//new GameOverDialog("test", "test", new Skin(Gdx.files.internal("uiskin.atlas")));
 	}
 
 	public void updateGame(){
@@ -305,7 +307,6 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		batch.draw(backgroundImage, -965, -650);
 		
-		writer.draw(batch, Integer.toString(playerIndex) +  " " + Integer.toString(currentPlayer), 0, 0);
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
@@ -316,6 +317,10 @@ public class OrbitGame extends ApplicationAdapter{
 			player.equippedWeapons.get(i).sprite.setPosition(weaponGUIX,weaponGUIY);
 			player.equippedWeapons.get(i).sprite.draw(batch);
 			weaponGUIY -= 100;
+		}
+		if(gameState == GameState.GAMEOVER){
+			TextBounds bound = writer.getBounds(gameOverText);
+			writer.draw(batch, gameOverText, -bound.width/2, -bound.height/2);
 		}
 		batch.end();
 
@@ -397,6 +402,7 @@ public class OrbitGame extends ApplicationAdapter{
 	@Override
 	public void render () {
 		//fps.log();
+		
 		if(gameState == GameState.CONNECTING){
 			waitForConnect();
 		}
@@ -504,12 +510,17 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 	
 	public void reportWin(){
-		
-		System.out.println("You Won!");
+		gameOverText = "You Won! Click x in upper right";
+		writer.setScale(3);
+		gameState = GameState.GAMEOVER;
+		writer.setColor(Color.YELLOW);
 	}
 	
 	public void reportLoss(){
-		System.out.println("You Lost!");
+		gameOverText = "You Lost, click x in upper right";
+		writer.setScale(3);
+		gameState = GameState.GAMEOVER;
+		writer.setColor(Color.YELLOW);
 	}
 	
 	public class GameOverDialog extends Dialog{
@@ -517,11 +528,13 @@ public class OrbitGame extends ApplicationAdapter{
 		public GameOverDialog(String title,String text, Skin skin) {
 			super(title, skin);
 			this.text(text);
-			Button button = new Button(skin, "Quit");
+			Button button = new Button(skin, "Quit"){
+				protected void result(Object object){
+					Gdx.app.exit();
+				}
+			};
 			this.button(button);
-			
 		}
-		
 	}
 
 }
