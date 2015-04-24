@@ -45,12 +45,12 @@ public class OrbitGame extends ApplicationAdapter{
 	private final float SPAWN_RADIUS = 400;
 	
 
-//	//messing with this might cause an infinite loop just fyi
-//	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
-//	private final float MIN_ASTEROID_GAP = 150;
+	//messing with this might cause an infinite loop just fyi
+	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
+	private final float MIN_ASTEROID_GAP = 100;
 
-	private final int lowerAsteroidAmount = 5;
-	private final int upperAsteroidAmount = 15;
+	private final int lowerAsteroidAmount = 3;
+	private final int upperAsteroidAmount = 5;
 	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
@@ -157,59 +157,54 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		playerPlanet = player.getPlanet();
 		
-//		asteroids = new ArrayList<Asteroid>();
-//		
-//		//randomly spawn 3 asteroids
-//		boolean spawnConflict;
-//		float asteroidSpawnRadius;
-//		double x;
-//		double y;
-//		for (int i = 0; i < 3; i++){
-//			do {
-//				spawnConflict = false;
-//				double radians = randy.nextDouble() * (360 + 1); //get a random angle
-//				asteroidSpawnRadius = randy.nextFloat() * (MAX_ASTEROID_SPAWN_RADIUS + 1); //get a random distance from center
-//				x = Math.cos(radians)*asteroidSpawnRadius;
-//				y = Math.sin(radians)*asteroidSpawnRadius;
-//				for (Asteroid asteroid : asteroids){ //loop for checking other asteroids
-//					if (x == asteroid.position.x && y == asteroid.position.y){ //makes sure position is not the same as other asteroids
-//						spawnConflict = true;
-//						break;
-//					}
-//					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
-//					if (Math.hypot(x - asteroid.position.x,y - asteroid.position.y) < MIN_ASTEROID_GAP){
-//						spawnConflict = true;
-//						break;
-//					}
-//				}
-//			} while (spawnConflict);
-//			System.out.println("added asteroid");
-//			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
-//		}
+		asteroids = new ArrayList<Asteroid>();
+	
+		//randomly spawn asteroids
+		boolean spawnConflict;
+		float asteroidSpawnRadius;
+		double x;
+		double y;
+		int numAsteroids = randy.nextInt(upperAsteroidAmount - lowerAsteroidAmount + 1) + lowerAsteroidAmount;
+		for (int i = 0; i < numAsteroids; i++){
+			do {
+				spawnConflict = false;
+				double radians = randy.nextDouble() * (360 + 1); //get a random angle
+				asteroidSpawnRadius = randy.nextFloat() * (MAX_ASTEROID_SPAWN_RADIUS + 1); //get a random distance from center
+				x = Math.cos(radians)*asteroidSpawnRadius;
+				y = Math.sin(radians)*asteroidSpawnRadius;
+				for (Asteroid asteroid : asteroids){ //loop for checking other asteroids
+					if (x == asteroid.position.x && y == asteroid.position.y){ //makes sure position is not the same as other asteroids
+						spawnConflict = true;
+						break;
+					}
+					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
+					if (Math.hypot(x - asteroid.position.x,y - asteroid.position.y) < MIN_ASTEROID_GAP){
+						spawnConflict = true;
+						break;
+					}
+				}
+			} while (spawnConflict);
+			System.out.println("added asteroid");
+			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
+		}
+		
+		for (Asteroid a: asteroids){
+			gameObjects.add(a);
+		}
 
 		//this is a texture that gets displayed as the background image
 		backgroundImage = AssetLibrary.getTexture("SpaceBackground.jpg");
 		//test asteroids
-		int numAsteroids = (int) (randy.nextFloat() * (upperAsteroidAmount - lowerAsteroidAmount) + lowerAsteroidAmount);
-		for(int k=0;k<numAsteroids;k++){
-			float asteroidSpawnRange = SPAWN_RADIUS - 50;
-			double randAngle = (randy.nextFloat() * 2 * Math.PI);
-			float randDistance = randy.nextFloat() * asteroidSpawnRange;
-			float randX = (float) (Math.cos(randAngle) * randDistance);
-			float randY = (float) (Math.sin(randAngle) * randDistance);
-			Asteroid a = new Asteroid(randX, randY, new Vector2(0,0),0);
-			gameObjects.add(a);
-		}
-		
-		//Asteroid a = new Asteroid(0,0,new Vector2(0,0),0);
-		//Asteroid a1 = new Asteroid(-250,0,new Vector2(0,0),0);
-		//Asteroid a2 = new Asteroid(0,250,new Vector2(0,0),0);
-		//Asteroid a3 = new Asteroid(250,0,new Vector2(0,0),0);
-		//Asteroid a4 = new Asteroid(0,-250,new Vector2(0,0),0);
-		
-		for (Asteroid asteroid : asteroids){
-			gameObjects.add(asteroid);
-		}
+//		int numAsteroids = (int) (randy.nextFloat() * (upperAsteroidAmount - lowerAsteroidAmount) + lowerAsteroidAmount);
+//		for(int k=0;k<numAsteroids;k++){
+//			float asteroidSpawnRange = SPAWN_RADIUS - 50;
+//			double randAngle = (randy.nextFloat() * 2 * Math.PI);
+//			float randDistance = randy.nextFloat() * asteroidSpawnRange;
+//			float randX = (float) (Math.cos(randAngle) * randDistance);
+//			float randY = (float) (Math.sin(randAngle) * randDistance);
+//			Asteroid a = new Asteroid(randX, randY, new Vector2(0,0),0);
+//			gameObjects.add(a);
+//		}
 		
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
