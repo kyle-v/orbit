@@ -334,29 +334,7 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 	
 	public void waitForConnect(){
-		for(int k=0;k<players.size();k++){
-			if(k!=playerIndex){
-				SocketHints socketHint = new SocketHints();
-				socketHint.connectTimeout = 1000;
-				//establish connection with each player and continue pinging until we do so
-				try{
-					Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
-					try {
-						ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-						stream.writeObject(playerIndex);
-						stream.flush();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					socket.dispose();
-					break;
-				}
-				catch(GdxRuntimeException ex){
-				}
-			}
-		}
-		
+
 
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -367,6 +345,31 @@ public class OrbitGame extends ApplicationAdapter{
 		TextBounds bound = writer.getBounds("Waiting for players to connect");
 		writer.draw(batch, "Waiting for players to connect", -bound.width/2, -bound.height/2);
 		batch.end();
+		for(int k=0;k<players.size();k++){
+			if(k!=playerIndex){
+				SocketHints socketHint = new SocketHints();
+				socketHint.connectTimeout = 1000;
+				//establish connection with each player and continue pinging until we do so
+				while(true){
+					try{
+						Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+						try {
+							ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+							stream.writeObject(playerIndex);
+							stream.flush();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						socket.dispose();
+						break;
+					}
+					catch(GdxRuntimeException ex){
+						continue;
+					}
+				}
+			}
+		}
 		
 		for(int k=0;k<players.size();k++){
 			if(!connectionChecks[k])
@@ -477,7 +480,7 @@ public class OrbitGame extends ApplicationAdapter{
 				randY = (60 + height/2) * negativeOrPositive;
 				randX =  width * randy.nextFloat() - width/2;
 			}
-			Vector2 vel = new Vector2(randX, randY).nor();
+			Vector2 vel = new Vector2(-randX, -randY).nor();
 			vel = vel.scl(MAX_ASTEROID_VELOCITY);
 			Asteroid a = new Asteroid(randX, randY, vel.X, vel.y);
 			gameObjects.add(a);
