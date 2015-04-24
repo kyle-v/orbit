@@ -310,7 +310,7 @@ public class OrbitGame extends ApplicationAdapter{
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
-		//shitty weapon gui code
+		//weapon gui code
 		int weaponGUIX = 800;
 		int weaponGUIY = 200;
 		for(int i = 0; i < player.equippedWeapons.size(); i++){

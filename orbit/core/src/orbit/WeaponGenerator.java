@@ -15,9 +15,4 @@ public class WeaponGenerator {
 		numAdjectives = adjectives.length;
 		numNouns = nouns.length;
 	}
-	
-	public Weapon generateWeapon(){
-		int adjectiveIndex;
-		int nounIndex;
-	}
 }

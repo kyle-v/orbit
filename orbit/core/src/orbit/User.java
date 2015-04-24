@@ -47,12 +47,10 @@ public class User implements Serializable{
 	//this we way call initialize to make all the gdx object only once the game has started
 	public void initialize(){
 		isPlaying = true;
-		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f,
-				10f, AssetLibrary.getTexture("weaponTexture1.png"), AssetLibrary.getTexture("missile.png"));
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f,
-				10f, AssetLibrary.getTexture("weaponTexture2.png"), AssetLibrary.getTexture("missile.png"));
+		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weaponTexture2.png", "missile.png");
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);
 		

@@ -14,9 +14,8 @@ public class Rocket extends Weapon{
 	private int projectileHeight = 36;
 	
 	public Rocket(String name, int damage, int cooldown, float projectileMass,
-			float maxInitialSpeed, Texture weaponImage, Texture projectileImage) {
-		super(name, damage, cooldown, projectileMass, maxInitialSpeed, weaponImage,
-				projectileImage);
+			float maxInitialSpeed, String weaponFilename, String projectileFilename) {
+			super(name, damage, cooldown, projectileMass, maxInitialSpeed, weaponFilename, projectileFilename);
 	}
 
 	public void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects) {

@@ -125,7 +125,7 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	public void FireWeapon(int powerPercent, double angle, List<GameObject> gameObjects){
-		int buffer = equippedWeapon.projectileImage.getWidth() + 50;
+		int buffer = AssetLibrary.getTexture(equippedWeapon.projectileFilename).getWidth() + 50;
 		buffer += radius;
 		float xPosition = (float) Math.cos(angle) * buffer;
 		float yPosition = (float) Math.sin(angle) * buffer;
