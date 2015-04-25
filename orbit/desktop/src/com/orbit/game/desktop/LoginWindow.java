@@ -44,6 +44,7 @@ public class LoginWindow extends Window{
 
 	private JOrbitPanel mainPanel;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/LoginWallpaper.jpg");
+	private final ImageIcon logo = new ImageIcon("assets/logo.png");
 	private final JLabel usernameLabel = new JLabel("Username: ");
 	private final JLabel passwordLabel = new JLabel("Password: ");
 	
@@ -53,7 +54,7 @@ public class LoginWindow extends Window{
 		super(orbit);
 		
 		//initialize all the shit
-		titleLabel = new JLabel("Orbit");
+		//titleLabel = new JLabel(logo);
 		usernameTextField = new JTextField(25);
 		passwordTextField = new JPasswordField(25);
 		userLoginButton = new JOrbitButton("Login");
@@ -64,10 +65,10 @@ public class LoginWindow extends Window{
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));	//a container for all JComps
 		mainPanel.setSize(1024, 600);
 
-		titleLabel.setSize(200, 200);
-		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		titleLabel.setFont(new Font("Helvetica", Font.BOLD, 30));
-		container.add(titleLabel);			//adds logo
+		//titleLabel.setSize(321, 315);
+		//titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//titleLabel.setFont(new Font("Helvetica", Font.BOLD, 30));
+		//container.add(titleLabel);			//adds logo
 		
 		
 		GridBagConstraints textFieldConstraints = new GridBagConstraints();		//constraints for inner panels
@@ -234,6 +235,8 @@ public class LoginWindow extends Window{
 		
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
+			//hard coded logo for right now
+			g.drawImage(logo.getImage(), 350,50,null);
 		}
 	}
 }

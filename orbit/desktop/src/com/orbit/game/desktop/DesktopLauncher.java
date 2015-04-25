@@ -22,8 +22,8 @@ public class DesktopLauncher {
 //		lw.setVisible(true);
 		Orbit o = new Orbit();
 		o.currentUser = new User("mazen", "azar");
-		ProfileWindow pw = new ProfileWindow(o);
-		pw.setVisible(true);
+		//ProfileWindow pw = new ProfileWindow(o);
+		//pw.setVisible(true);
 //		ArrayList<User> users = new ArrayList<User>();
 //		users.add(new User("Kyle","P"));
 //		users.add(new User("Steven", "LJK"));
