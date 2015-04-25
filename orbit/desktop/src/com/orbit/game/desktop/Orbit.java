@@ -92,6 +92,7 @@ public class Orbit {
 		Object response = null;
 		try {
 			//System.out.println("Sending ServerRequest...");
+			oos.reset();
 			oos.writeObject(sr);
 			oos.flush();
 			//System.out.println("ServerRequest sent. Waiting for response...");

@@ -5,13 +5,17 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -33,11 +37,14 @@ public class ProfileWindow extends Window{
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
 	//private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet_pinkLarge.png");
 	ImageIcon planetImage;
+	JComboBox jcb;
+	JLabel jl, imageLabel;
+	JButton jb;
 	
 	ProfileWindow(Orbit orbit){
 
 		super(orbit);
-		planetImage = new ImageIcon("assets/" + orbit.currentUser.planetPath);
+		planetImage = new ImageIcon("assets/planets/" + orbit.currentUser.planetPath);
 
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		profilePanel = new JProfilePanel();
@@ -53,10 +60,9 @@ public class ProfileWindow extends Window{
 		buttonPanel.add(Box.createGlue());
 		buttonPanel.add(backButton);
 		
-		JPanel testPanel = new JPanel();
-		testPanel.add(new JLabel("FUCKKKKKKKKKKKK"));
-		testPanel.add(inventoryPanel);
-		containerPanel.add(testPanel, BorderLayout.EAST);
+//		JPanel testPanel = new JPanel();
+//		testPanel.add(inventoryPanel);
+		containerPanel.add(inventoryPanel, BorderLayout.EAST);
 		containerPanel.add(profilePanel, BorderLayout.CENTER);		//add panels to main panel
 		containerPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -77,14 +83,39 @@ public class ProfileWindow extends Window{
 			weaponPanels.add(wg);
 			inventoryPanel.add(wg);
 		}
+		
+		File file = new File("assets/planets/");  
+		File[] files = file.listFiles();  
+		String[] pattern = new String[files.length];
+		for (int i = 0; i<files.length; i++){
+			pattern[i] = files[i].getName();
+		}
+		jcb = new JComboBox(pattern);
+		jcb.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent itemEvent) {
+				setImage(itemEvent.getItem().toString());
+			}
+		});
+		inventoryPanel.add(jcb);
+	}
+	
+	public void setImage(String imagePath){
+		orbit.currentUser.planetPath = imagePath;
+		planetImage = new ImageIcon("assets/planets/" + imagePath);
+		profilePanel.revalidate();
+		profilePanel.repaint();
 	}
 
 	private void addActionListeners(){
 		backButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				System.out.println("planet sent: " + orbit.currentUser.planetPath);
 				Orbit.sendRequest(new ServerRequest("Update User", orbit.currentUser));
+				if(orbit.lobby == null){
+					orbit.lobby = new LobbyWindow(orbit);
+				}
 				orbit.lobby.setVisible(true);
-				orbit.profile.setVisible(false);
+				((LobbyWindow)(orbit.lobby)).startUpdateThread();
 				orbit.profile.dispose();
 			}
 		});

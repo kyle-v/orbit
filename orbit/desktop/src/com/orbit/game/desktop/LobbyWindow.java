@@ -91,12 +91,11 @@ public class LobbyWindow extends Window{
 		quitButton.setEnabled(bool);
 	}
 	
-	private void startUpdateThread(){
+	public void startUpdateThread(){
 		updateTimer = new Timer("Ping for lobby updates");
 		updateTimer.schedule(new TimerTask(){
 			@SuppressWarnings("unchecked")
 			public void run(){
-				//System.out.println((Vector<User>)Orbit.sendRequest(new ServerRequest("Ping Count", null)));
 				currentUsers = (Vector<User>)Orbit.sendRequest(new ServerRequest("Get User List", null));
 				if(currentUsers != null){
 					updateLobbyAvis();
@@ -135,8 +134,8 @@ public class LobbyWindow extends Window{
 				if(orbit.profile == null){
 					orbit.profile = new ProfileWindow(orbit);
 				}
-				orbit.lobby.setVisible(false);
 				orbit.profile.setVisible(true);
+				orbit.lobby.dispose();
 			}
 		});
 		
@@ -293,7 +292,6 @@ public class LobbyWindow extends Window{
 		JAviPanel(User user){
 			this.setLayout(new BorderLayout());
 			this.user = user;
-//			System.out.println(user.getPlanet().toString());
 			
 			buttonContainer = new JPanel();			//container for bottom button panel
 			playGame = new JButton("Play");
@@ -309,9 +307,7 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-//			System.out.println(user.planetPath);
-			aviImage = new ImageIcon("assets/" + user.planetPath);
-			//System.out.println(aviImage.toString());
+			aviImage = new ImageIcon("assets/planets/" + user.planetPath);
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
 			d = new Dimension(170, 140);

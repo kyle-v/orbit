@@ -40,7 +40,7 @@ public class Server extends JFrame{
 	public ChatServer chatServer;
 	
 	//access to the database
-	private Database d;
+	Database d;
 	
 	//Connected client threads
 	public Vector<OrbitServerThread> clients = new Vector<OrbitServerThread>();

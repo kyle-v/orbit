@@ -98,6 +98,7 @@ public class OrbitServerThread extends Thread {
 			server.addToReady(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("User Quit")){
+			server.d.usernameToUserMap.replace(user.getUsername(), user);
 			server.clients.remove(this);
 			server.activeUsers.remove(this.user);
 			server.usernameToThreadMap.remove(this.user.getUsername());
@@ -105,20 +106,19 @@ public class OrbitServerThread extends Thread {
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("Get Opponents")){
 			//opponents vector should be the same in all clients that are in the same game
-			//System.out.println("Getting opponents: " + opponents);
 			sendResponse(opponents);
 		}else if(request.equals("Update User")){
 			User u = (User)o;
 			server.activeUsers.remove(this.user);
 			server.activeUsers.add(u);
 			this.user = u;
+			server.d.usernameToUserMap.replace(user.getUsername(), user);
 			sendResponse("Done");
 		}else if(request.equals("User to Profile Screen")){
 			server.readyClients.remove(server.usernameToThreadMap.get(user.getUsername()));
 			sendResponse("Done");
 		}else if(request.equalsIgnoreCase("End Matchmaking")){
 			//opponents vector should be the same in all clients that are in the same game
-			//System.out.println("Getting opponents: " + opponents);
 			server.readyClients.remove(server.usernameToThreadMap.get(user.getUsername()));
 			sendResponse("Done");
 		}else{
