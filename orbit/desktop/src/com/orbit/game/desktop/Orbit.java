@@ -33,8 +33,6 @@ public class Orbit {
 		//new ProfileWindow();
 		//lobby.setVisible(true);
 		login.setVisible(true);
-
-
 	}
 
 	public void launchGame(){
@@ -53,7 +51,7 @@ public class Orbit {
 	}
 
 	public void openLobby(){
-		System.out.println("Opening lobby as " + currentUser.getUsername());
+		//System.out.println("Opening lobby as " + currentUser.getUsername());
 		lobby = new LobbyWindow(this); 
 
 		login.setVisible(false);
@@ -93,12 +91,12 @@ public class Orbit {
 	public static Object sendRequest(ServerRequest sr){
 		Object response = null;
 		try {
-			System.out.println("Sending ServerRequest...");
+			//System.out.println("Sending ServerRequest...");
 			oos.writeObject(sr);
 			oos.flush();
-			System.out.println("ServerRequest sent. Waiting for response...");
+			//System.out.println("ServerRequest sent. Waiting for response...");
 			response = ois.readObject();
-			System.out.println("Got response. Returned.");
+			//System.out.println("Got response. Returned.");
 		} catch (IOException e) { e.printStackTrace();
 		} catch (ClassNotFoundException e) { e.printStackTrace();
 		}

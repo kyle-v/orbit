@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import orbit.ServerRequest;
 import orbit.User;
@@ -48,8 +51,10 @@ public class LobbyWindow extends Window{
 	private JTextArea chatArea;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
 	Timer updateTimer;
+	Timer checkForGame;
+	public WaitingWindow ww = null;
 	
-	private ChatClient chatClient;
+	ChatClient chatClient;
 	private Vector<JAviPanel> aviPanels = new Vector<JAviPanel>();
 	
 	LobbyWindow(Orbit orbit){
@@ -60,7 +65,6 @@ public class LobbyWindow extends Window{
 		userContainer = new JLobbyPanel();
 		chatContainer = createChatContainer();
 		leftSideContainer = new JPanel(new BorderLayout());
-
 		
 		leftSideContainer.add(userContainer, BorderLayout.CENTER);		//left side container holds users and buttons
 		leftSideContainer.add(buttonContainer, BorderLayout.SOUTH);
@@ -74,6 +78,17 @@ public class LobbyWindow extends Window{
 		addActionListeners();
 		add(mainContainer);
 		setSize(1024,600);
+	}
+	
+	public void endMatchmaking(){
+		Orbit.sendRequest(new ServerRequest("End Matchmaking", orbit.currentUser.getUsername()));
+		enableButtons(true);
+	}
+	
+	public void enableButtons(boolean bool){
+		profileButton.setEnabled(bool);
+		findGameButton.setEnabled(bool);
+		quitButton.setEnabled(bool);
 	}
 	
 	private void startUpdateThread(){
@@ -95,7 +110,7 @@ public class LobbyWindow extends Window{
 	}
 	
 	private void updateLobbyAvis(){
-		System.out.println("Updating avis");
+		//System.out.println("Updating avis");
 		userContainer.removeAll();
 		aviPanels.removeAllElements();
 		for(User u : currentUsers){
@@ -112,8 +127,11 @@ public class LobbyWindow extends Window{
 		//opens profile window
 		profileButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
+				if(ww != null){
+					dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
+				}
 				updateTimer.cancel();
-				Orbit.sendRequest(new ServerRequest("User to Profile Screen", orbit.currentUser.getUsername()));
+				Orbit.sendRequest(new ServerRequest("User to Profile Screen", null));
 				if(orbit.profile == null){
 					orbit.profile = new ProfileWindow(orbit);
 				}
@@ -125,18 +143,34 @@ public class LobbyWindow extends Window{
 		//start's matchmaking
 		findGameButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
+				enableButtons(false);
+				ww = new WaitingWindow(LobbyWindow.this);
 				Orbit.sendRequest(new ServerRequest("Find Game", null));
-				Timer checkForGame = new Timer();
+				checkForGame = new Timer();
 				checkForGame.schedule(new TimerTask(){
 					public void run() {
+						ww.time--;
+						ww.waitMessage.setText("Waiting for another player...  " + ww.time + "s until timeout.");
+						
 						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
 						if(response != null){
 							@SuppressWarnings("unchecked")
 							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
 
 							System.out.println("Client has opponents!" + opponents.getValue().toString());
+							checkForGame = null;
+							ww.dispose();
+							ww.gameStarted = true;
+							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
-							
+							//TODO close lobbywindow
+							orbit.launchGame();
+						}else{
+							if(ww.time == 0){
+								checkForGame = null;
+								ww.dispose();
+								this.cancel();
+							}
 						}
 					}
 					
@@ -152,11 +186,7 @@ public class LobbyWindow extends Window{
 				orbit.currentUser = null;
 				orbit.login.setVisible(true);
 				orbit.lobby.setVisible(false);
-//				try {
-					LobbyWindow.this.chatClient.endThread();
-					//LobbyWindow.this.chatClient.join();
-//				} catch (InterruptedException e1) { e1.printStackTrace();
-//				}
+				chatClient.endThread();
 				orbit.lobby.dispose();
 			}
 		});
@@ -260,8 +290,6 @@ public class LobbyWindow extends Window{
 		
 		JButton acceptButton, declineButton;
 		
-		
-		
 		JAviPanel(User user){
 			this.setLayout(new BorderLayout());
 			this.user = user;
@@ -282,7 +310,7 @@ public class LobbyWindow extends Window{
 			buttonContainer.setPreferredSize(d);
 	
 			aviImage = new ImageIcon("assets/worker.png");
-			System.out.println(aviImage.toString());
+			//System.out.println(aviImage.toString());
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
 			d = new Dimension(170, 140);
@@ -322,8 +350,6 @@ public class LobbyWindow extends Window{
 			});
 		}
 		
-		
-		
 		private void addActionListeners(){
 			playGame.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
@@ -338,6 +364,60 @@ public class LobbyWindow extends Window{
 					trade.setEnabled(true);
 				}
 			});
+		}
+	}
+
+	class WaitingWindow extends JFrame{
+
+		private JLabel waitMessage = new JLabel("", SwingConstants.CENTER);
+		LobbyWindow lw;
+//		Timer countdown;
+		int time;
+		JButton cancelButton;
+		boolean gameStarted = false;
+		
+		public WaitingWindow(LobbyWindow lw){
+			super("Finding Game...");
+			System.out.println("Starting waiting window");
+			setSize(500,100);
+			setLocationRelativeTo(null);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			
+			this.lw = lw;
+
+			addWindowListener(new WindowAdapter() {
+				//TODO
+			    public void windowClosing(WindowEvent e) {
+			    	System.out.println("Closing waiting window");
+			    	if(checkForGame != null){
+			    		checkForGame.cancel();
+			    		checkForGame = null;
+			    	}
+			    }
+			    public void windowClosed(WindowEvent e){
+			    	System.out.println("waitingwindow closed");
+			    	WaitingWindow.this.lw.endMatchmaking();
+			    	WaitingWindow.this.lw.ww = null;
+			    	if(gameStarted){
+			    		WaitingWindow.this.lw.dispose();
+			    	}
+			    }
+			});
+			
+			time = 5;
+			waitMessage.setText("Waiting for another player...  " + time + "s until timeout.");
+			
+			cancelButton = new JButton("Cancel");
+			cancelButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					System.out.println("Canceled Matchmaking");
+					dispatchEvent(new WindowEvent(WaitingWindow.this, WindowEvent.WINDOW_CLOSING));
+				}
+			});
+			
+			add(waitMessage, BorderLayout.NORTH);
+			add(cancelButton, BorderLayout.SOUTH);
+			setVisible(true);
 		}
 	}
 }
