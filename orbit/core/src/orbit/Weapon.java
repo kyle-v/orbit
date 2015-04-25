@@ -34,8 +34,6 @@ public abstract class Weapon implements Serializable{
 	protected String weaponFilename;
 	protected String projectileFilename;
 	
-	protected Sprite sprite;
-	
 	//Constructor
 	public Weapon(String name, int damage, int cooldown, float projectileMass,
 			float maxInitialSpeed, String weaponFilename, String projectileFilename) {
@@ -47,8 +45,6 @@ public abstract class Weapon implements Serializable{
 		this.maxInitialSpeed = maxInitialSpeed;
 		this.weaponFilename = weaponFilename;
 		this.projectileFilename = projectileFilename;
-		
-		this.sprite = new Sprite(AssetLibrary.getTexture(weaponFilename));
 	}
 	
 	public abstract void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects);

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -66,6 +67,11 @@ public class OrbitGame extends ApplicationAdapter{
 	private Planet playerPlanet;
 	private FPSLogger fps;
 	private List<GameObject> gameObjects;
+	
+	//Sprites for Weapon GUI
+	Sprite[] weaponSprites;
+	int weaponGUIX = 800;
+	int weaponGUIY = 200;
 
 	//Input control
 	public int currentWeapon; // Weapon currently selected
@@ -220,6 +226,14 @@ public class OrbitGame extends ApplicationAdapter{
 		writer.setColor(Color.YELLOW);
 		writer.setScale(5);
 		//new GameOverDialog("test", "test", new Skin(Gdx.files.internal("uiskin.atlas")));
+		
+		//weapon gui stuff
+		weaponSprites = new Sprite[player.equippedWeapons.size()];
+		for(int i = 0; i < weaponSprites.length; i++){
+			weaponSprites[i] = new Sprite(AssetLibrary.getTexture(player.equippedWeapons.get(i).weaponFilename));
+			weaponSprites[i].setPosition(weaponGUIX,weaponGUIY);
+			weaponGUIY -= 100;
+		}
 	}
 
 	public void updateGame(){
@@ -244,60 +258,63 @@ public class OrbitGame extends ApplicationAdapter{
 
 		//Game loop
 		switch(gameState){
-		case WEAPON: //Start of turn  - choosing weapon
-			if (currentWeapon < 0){
-				currentWeapon = player.equippedWeapons.size() - 1;
-			} else if (currentWeapon > player.equippedWeapons.size() - 1){
-				currentWeapon = 0;
-			}
-			break;
-		case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
-			angle += 3 * DeltaTime;
-			if(angle > 2 * Math.PI)
-				angle -= 2* Math.PI;
-			break;
-		case POWER: //Choosing power to shoot
-			if(increasing) powerPercent += 50 * DeltaTime;
-			else powerPercent -= 50 * DeltaTime;
-			if (powerPercent > 100) increasing = false;
-			if (powerPercent < 0) increasing = true;
-			break;
-		case FIRE:
-			player.setWeapon(currentWeapon);
-			player.fire((int)powerPercent, angle, gameObjects);
-			gameState = GameState.WAITING;
-			incrementToNextPlayer();
-			playerTurnOver(powerPercent, (float)angle);
-			break;
-		case WAITING: // Turn over, waiting for other player
-			if(currentPlayer == playerIndex)
-				gameState = GameState.WEAPON;
-			//When opponent's turn is over move back to WEAPON state
-			break;
-		default:
-			break;
+			case WEAPON: //Start of turn  - choosing weapon
+				if (currentWeapon < 0){
+					currentWeapon = player.equippedWeapons.size() - 1;
+				} else if (currentWeapon > player.equippedWeapons.size() - 1){
+					currentWeapon = 0;
+				}
+				break;
+			case AIMING: //Choosing angle to shoot at - oscillates back and forth - spacebar to stop it
+				angle += 3 * DeltaTime;
+				if(angle > 2 * Math.PI)
+					angle -= 2* Math.PI;
+				break;
+			case POWER: //Choosing power to shoot
+				if(increasing) powerPercent += 50 * DeltaTime;
+				else powerPercent -= 50 * DeltaTime;
+				if (powerPercent > 100) increasing = false;
+				if (powerPercent < 0) increasing = true;
+				break;
+			case FIRE:
+				player.setWeapon(currentWeapon);
+				player.fire((int)powerPercent, angle, gameObjects);
+				gameState = GameState.WAITING;
+				incrementToNextPlayer();
+				playerTurnOver(powerPercent, (float)angle);
+				break;
+			case WAITING: // Turn over, waiting for other player
+				if(currentPlayer == playerIndex)
+					gameState = GameState.WEAPON;
+				//When opponent's turn is over move back to WEAPON state
+				break;
+			default:
+				break;
 		}
+	}
 
 
 
+		
+	
+	public void draw(){
 		//Drawing everything
 		//tell it to draw from our current camera's point of view
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		
+				
 		batch.draw(backgroundImage, -965, -650);
-		
+				
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
 		//weapon gui code
-		int weaponGUIX = 800;
-		int weaponGUIY = 200;
-		for(int i = 0; i < player.equippedWeapons.size(); i++){
-			player.equippedWeapons.get(i).sprite.setPosition(weaponGUIX,weaponGUIY);
-			player.equippedWeapons.get(i).sprite.draw(batch);
-			weaponGUIY -= 100;
+		
+		
+		for(int i = 0; i < weaponSprites.length; i++){
+			weaponSprites[i].draw(batch);
 		}
+		
 		if(gameState == GameState.GAMEOVER){
 			TextBounds bound = writer.getBounds(gameOverText);
 			writer.draw(batch, gameOverText, -bound.width/2, -bound.height/2);
@@ -314,22 +331,22 @@ public class OrbitGame extends ApplicationAdapter{
 				shapeRenderer.rect(pos.x - 50,pos.y + 80, p.health, 10);
 			}
 		}
-		
-		
+				
+				
 		shapeRenderer.setColor(1, 1, 0, 1);
 		Vector2 playerPos = playerPlanet.position;
 		shapeRenderer.rect(playerPos.x - 80, playerPos.y, 10, powerPercent);
 		shapeRenderer.setColor(1, 1, 0, 1);
 		shapeRenderer.line(playerPos.x, playerPos.y, playerPos.x+(float)Math.cos(angle) * 100 ,  playerPos.y+(float)Math.sin(angle) * 100 );
 		shapeRenderer.end();
-		//shitty weapon selection display
+		//weapon selection display
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.rect(weaponGUIX, 200 - currentWeapon * 100, 100, 100);
-		
-		
+				
+				
 		shapeRenderer.end();
-		
+				
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
 	}
 	
