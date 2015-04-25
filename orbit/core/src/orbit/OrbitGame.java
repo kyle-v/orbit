@@ -18,6 +18,8 @@ import java.util.Vector;
 
 
 
+
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -105,6 +107,7 @@ public class OrbitGame extends ApplicationAdapter{
 	//int that indicates which index we are playing as
 	int playerIndex;
 	int currentPlayer;
+	int numPlayers;
 	
 	//Asteroids
 	ArrayList<Asteroid> asteroids;
@@ -129,11 +132,13 @@ public class OrbitGame extends ApplicationAdapter{
 		this.playerIndex = playerIndex;
 		this.playerIPAddresses = ipaddresses;
 		this.randomSeed = randomSeed;
+		this.numPlayers = players.size();
 	}
 	
 	@Override
 	public void create () {
 		
+		gameState = GameState.CONNECTING;
 		//setup server stuff
 		if (playerIndex == 0){
 			setupServer();
@@ -374,9 +379,6 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 	
 	public void setupServer(){
-		
-		//ServerSocketHints socketHint = new ServerSocketHints();
-		//socketHint.acceptTimeout = 0;
 		GameServer gameserver = new GameServer(basePort);
 		gameserver.start();
 		GameClient gc = new GameClient();
@@ -388,29 +390,43 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		private int gameSocket;
 		private Vector<PeerThread> ptVector = new Vector<PeerThread>();
+		private int numPlayersConnected = 0;
+		private boolean playersConnected = false;
 		
 		public GameServer(int port){
 			gameSocket = port;
 		}
 		
-		public synchronized void sendupdatedGameObjects(PeerThread pt, List<GameObject> gameObjects) {
-			for (PeerThread pt1 : ptVector) {
-				pt1.sendGameObjects(gameObjects);
+		public synchronized void sendPlayersConnected(){
+			for (PeerThread pt : ptVector){
+				pt.allPlayersConnected(playersConnected);
+			}
+		}
+		
+		public synchronized void sendupdatedGameObjects(List<GameObject> gameObjects) {
+			for (PeerThread pt : ptVector) {
+				pt.sendGameObjects(gameObjects);
 			}
 		}
 		
 		public void run(){
 			ServerSocket ss = null;
 			try {
-				System.out.println("Starting Chat Server");
+				System.out.println("Starting Game Server");
 				ss = new ServerSocket(gameSocket);
 				while (true) {
-					System.out.println("Waiting for client to connect...");
 					Socket s = ss.accept();
 					System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
 					PeerThread pt = new PeerThread(s, this);
 					ptVector.add(pt);
 					pt.start();
+					numPlayersConnected++;
+					System.out.println(numPlayersConnected);
+					if (numPlayersConnected == numPlayers){
+						playersConnected = true;
+						System.out.println("All players connected!");
+					}
+					System.out.println(ptVector.size());
 				}
 			} catch (IOException ioe) {
 				System.out.println("IOE: " + ioe.getMessage());
@@ -431,6 +447,7 @@ public class OrbitGame extends ApplicationAdapter{
 		private ObjectOutputStream oos;
 		private GameServer gs;
 		private Socket socket;
+		public boolean isDisconnected = false;
 		public PeerThread(Socket s, GameServer gs){
 			socket = s;
 			this.gs = gs;
@@ -439,6 +456,16 @@ public class OrbitGame extends ApplicationAdapter{
 				oos = new ObjectOutputStream(socket.getOutputStream());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public void allPlayersConnected(boolean playersConnected){
+			try {
+				oos.reset();
+				oos.writeBoolean(playersConnected);
+				oos.flush();
+			} catch (IOException e){
 				e.printStackTrace();
 			}
 		}
@@ -457,6 +484,9 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		public void run(){
 			try{
+				while(gameState == GameState.CONNECTING){
+					gs.sendPlayersConnected();
+				}
 
 				while(true){
 					Vector3 fireInfo = (Vector3)ois.readObject();
@@ -464,16 +494,23 @@ public class OrbitGame extends ApplicationAdapter{
 					if(fireInfo != null){
 						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
-						gs.sendupdatedGameObjects(this, gameObjects);
+						gs.sendupdatedGameObjects(gameObjects);
 					}
 				}
 			} catch(IOException e){
 				System.out.println("Terminated ClientListenerThread");
-//					System.out.println("IOException in ClientListenerThread.run(): " + e.getMessage());
-			}catch (ClassNotFoundException e) {
+				isDisconnected = true;
+			}	catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		
+		public String getAddress(){
+			return ("/" + socket.getInetAddress() + ":" + socket.getPort());
+		}
+		public Socket getSocket(){
+			return socket;
 		}
 	}
 	
@@ -482,22 +519,30 @@ public class OrbitGame extends ApplicationAdapter{
 		private ObjectInputStream ois;
 		private ObjectOutputStream oos;
 		private Socket s;
-//		private JTextArea textArea;
 		String ipAddress = playerIPAddresses.get(0);
 		int portNumber = basePort;
 		boolean isAlive = true;
+		boolean isConnected = false;
 
 		public GameClient(){
-//			textArea = jta;
 			try{
 				
 				s = new Socket(ipAddress, portNumber);
-				System.out.println("Before");
 				oos = new ObjectOutputStream(s.getOutputStream());
 				sendFireInfo(null);
-				System.out.println("After");
 				ois = new ObjectInputStream(s.getInputStream());
-				gameState = GameState.WEAPON;
+				while (gameState == GameState.CONNECTING){
+					isConnected = ois.readBoolean();
+					if (isConnected){
+						if(isHost){
+							gameState = GameState.WEAPON;
+						} else {
+							gameState = GameState.WAITING;
+						}
+					}
+				}
+				
+				System.out.println("Streams started");
 				
 			}catch(IOException ioe){
 				System.out.println("IOE Exception in GameClient main" + ioe.getMessage());
@@ -531,21 +576,9 @@ public class OrbitGame extends ApplicationAdapter{
 						e.printStackTrace();
 					} 
 				}
-//				String nullStr = null;
-//				pw.println(nullStr);
-//				pw.flush();
-			} catch (IOException e) { System.out.println("Disconnected from chat server");
+			} catch (IOException e) { 
+				System.out.println("Disconnected from game server");
 			}
-//			finally{
-//				try{
-//					if(pw != null) pw.close();
-//					if(br != null) br.close();
-//					if(s != null) s.close();
-//				}
-//				catch(IOException ioe){
-//					System.out.println("IOE exception in chat client finally block " + ioe.getMessage());
-//				}
-//			}
 		}
 	}
 	
@@ -553,10 +586,6 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	public void connectToServer(){
 		boolean connected = false;
-		
-		//SocketHints socketHint = new SocketHints();
-		//socketHint.connectTimeout = 10000;
-		
 			gc = new GameClient();
 			gc.start();
 			System.out.println("Connected to server!");
