@@ -76,7 +76,6 @@ public class LobbyWindow extends Window{
 		setSize(1024,600);
 	}
 	
-	
 	private void startUpdateThread(){
 		Timer updateTimer = new Timer("Ping for lobby updates");
 		updateTimer.schedule(new TimerTask(){
