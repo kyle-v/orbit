@@ -5,7 +5,11 @@
 package com.orbit.game.desktop;
 
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -46,8 +50,13 @@ public class Window extends JFrame{
 		}
 		
 		protected void paintComponent(Graphics g){
+			Graphics2D gtwod = (Graphics2D) g;
+	        FontMetrics fontM = gtwod.getFontMetrics();
+	        Rectangle2D r2d = fontM.getStringBounds(name, gtwod);				//centers the string in button
+	        int x = (this.getWidth() - (int) r2d.getWidth()) / 2;
+	        int y = (this.getHeight() - (int) r2d.getHeight()) / 2 + fontM.getAscent();
 			g.drawImage(backgroundImage.getImage(), 0, 0, 100, 30, null);
-			g.drawString(name, 15, 15);
+			g.drawString(name, x, y);
 			
 		}
 		
