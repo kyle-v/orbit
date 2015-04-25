@@ -149,7 +149,7 @@ public class OrbitGame extends ApplicationAdapter{
 		//Initializing variables
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
-		gameState = GameState.CONNECTING;
+		//gameState = GameState.CONNECTING;
 		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
 		
 		//Input
