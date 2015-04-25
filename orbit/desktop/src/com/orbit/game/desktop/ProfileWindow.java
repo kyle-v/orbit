@@ -44,7 +44,7 @@ public class ProfileWindow extends Window{
 	ProfileWindow(Orbit orbit){
 
 		super(orbit);
-		planetImage = new ImageIcon("assets/planets/" + orbit.currentUser.planetPath);
+		planetImage = new ImageIcon("bin/planets/" + orbit.currentUser.planetPath);
 
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		profilePanel = new JProfilePanel();
@@ -84,13 +84,13 @@ public class ProfileWindow extends Window{
 			inventoryPanel.add(wg);
 		}
 		
-		File file = new File("assets/planets/");  
+		File file = new File("bin/planets/");  
 		File[] files = file.listFiles();  
 		String[] pattern = new String[files.length];
 		for (int i = 0; i<files.length; i++){
 			pattern[i] = files[i].getName();
 		}
-		jcb = new JComboBox(pattern);
+		jcb = new JComboBox<String>(pattern);
 		jcb.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent itemEvent) {
 				setImage(itemEvent.getItem().toString());
@@ -101,7 +101,7 @@ public class ProfileWindow extends Window{
 	
 	public void setImage(String imagePath){
 		orbit.currentUser.planetPath = imagePath;
-		planetImage = new ImageIcon("assets/planets/" + imagePath);
+		planetImage = new ImageIcon("bin/planets/" + imagePath);
 		profilePanel.revalidate();
 		profilePanel.repaint();
 	}
