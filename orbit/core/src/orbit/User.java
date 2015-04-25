@@ -50,9 +50,9 @@ public class User implements Serializable{
 		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weaponTexture2.png", "missile.png");
-		weapons.add(godRocket);
-		equippedWeapons.add(godRocket);
+		Weapon godLaser = new Laser("Lazzzooorzz", 50, 0, 10f, 10f, "weaponTexture2.png", "laser.png");
+		weapons.add(godLaser);
+		equippedWeapons.add(godLaser);
 		AssetLibrary.getTexture(destroyedPlanetPath);
 		for(Weapon w: weapons){
 			AssetLibrary.getTexture(w.weaponFilename);
@@ -63,6 +63,11 @@ public class User implements Serializable{
 	//set current equipped weapon
 	public void setWeapon(int weaponIndex){
 		planet.setWeapon(weaponIndex);
+	}
+	
+	//set planet and avi image
+	public void setImage(String imagePath){
+		planetPath = imagePath;
 	}
 	
 	//this is how we fire our weapons, it goes through the players currently equipped weapon and the planet automaticlly fires it in the correct spot
