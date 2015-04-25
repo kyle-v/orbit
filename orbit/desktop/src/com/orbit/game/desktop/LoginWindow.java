@@ -66,7 +66,7 @@ public class LoginWindow extends Window{
 
 		titleLabel.setSize(200, 200);
 		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		titleLabel.setFont(new Font("Serif", Font.BOLD, 30));
+		titleLabel.setFont(new Font("Helvetica", Font.BOLD, 30));
 		container.add(titleLabel);			//adds logo
 		
 		
@@ -82,9 +82,10 @@ public class LoginWindow extends Window{
 		passwordPanel.add(passwordLabel, textFieldConstraints);
 		passwordPanel.add(passwordTextField, textFieldConstraints);
 		
+		Color c = new Color(187, 127, 222);
 		
-		usernamePanel.setBackground(Color.LIGHT_GRAY);
-		passwordPanel.setBackground(Color.LIGHT_GRAY);
+		usernamePanel.setBackground(c);
+		passwordPanel.setBackground(c);
 		container.add(usernamePanel);
 		container.add(passwordPanel);
 		
@@ -96,10 +97,10 @@ public class LoginWindow extends Window{
 		buttonContainer.add(guestLoginButton);
 		buttonContainer.add(Box.createHorizontalGlue());
 		buttonContainer.add(newUserButton);
-		
-		buttonContainer.setBackground(Color.LIGHT_GRAY);
+
+		buttonContainer.setBackground(c);
 		container.add(buttonContainer);					//adds buttons, then adds panel to frame
-		container.setBackground(Color.LIGHT_GRAY);
+		container.setBackground(c);
 		container.setSize(600,600);
 		
 		GridBagConstraints centerConstraints = new GridBagConstraints();
