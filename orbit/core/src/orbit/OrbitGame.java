@@ -291,6 +291,8 @@ public class OrbitGame extends ApplicationAdapter{
 			default:
 				break;
 		}
+		
+		draw();
 	}
 
 
@@ -308,9 +310,8 @@ public class OrbitGame extends ApplicationAdapter{
 		for(GameObject o : gameObjects){
 			o.draw(batch);
 		}
+		
 		//weapon gui code
-		
-		
 		for(int i = 0; i < weaponSprites.length; i++){
 			weaponSprites[i].draw(batch);
 		}
