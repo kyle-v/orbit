@@ -109,6 +109,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private ServerSocket serverSocket;
 	
 	boolean isConnected = false;
+	boolean isHost;
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex, long randomSeed){
 		this.players = players;
@@ -123,11 +124,14 @@ public class OrbitGame extends ApplicationAdapter{
 		//setup server stuff
 		if (playerIndex == 0){
 			setupServer();
+			isHost = true;
 			
 		} else {
 			connectToServer();
+			isHost = false;
 		}
 		isConnected = true;
+		System.out.println(isConnected);
 		
 		//Initializing variables
 		fps = new FPSLogger();
@@ -388,14 +392,7 @@ public class OrbitGame extends ApplicationAdapter{
 
 	@Override
 	public void render () {
-		//fps.log();
-		
-//		if(gameState == GameState.CONNECTING && playerIndex != 0){
-//			waitForConnect();
-//		}
-//		else{
-//			updateGame();
-//		}
+		updateGame();
 	}
 	
 	public class SpawnAsteroidThread extends Thread{
