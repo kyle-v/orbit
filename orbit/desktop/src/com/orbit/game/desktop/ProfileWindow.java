@@ -138,6 +138,17 @@ public class ProfileWindow extends Window{
 			}
 		}
 	}
+	
+
+	public void checkMoney(){
+		for(WeaponGui wg: weaponPanels){
+			if(orbit.currentUser.getMoney() < wg.weapon.damageUpgradeCost) wg.upgradeDamage.setEnabled(false);
+			else wg.upgradeDamage.setEnabled(true);
+			if(orbit.currentUser.getMoney() < wg.weapon.speedUpgradeCost) wg.upgradeSpeed.setEnabled(false);
+			else wg.upgradeDamage.setEnabled(true);
+		}
+
+	}
 
 
 	class JProfilePanel extends JPanel{				//custom Lobby panel with overridden paint component
@@ -197,6 +208,8 @@ class WeaponGui extends JPanel{
 
 		add(equipButton);
 		pw.checkEquipLimits();
+		pw.checkMoney();
+
 
 		addActionListeners();
 		repaint();
@@ -211,6 +224,8 @@ class WeaponGui extends JPanel{
 					upgradeDamage.setText("Upgrade +" + weapon.damageUpgradeAmt +" $" + weapon.damageUpgradeCost);
 					if(pw.orbit.currentUser.getMoney() < weapon.damageUpgradeCost) upgradeDamage.setEnabled(false);
 				}
+				pw.checkMoney();
+
 			}
 		});
 
@@ -221,7 +236,11 @@ class WeaponGui extends JPanel{
 					weapon.upgradeSpeed();
 					upgradeSpeed.setText("Upgrade +" + weapon.speedUpgradeAmt +" - $" + weapon.speedUpgradeAmt);
 					if(pw.orbit.currentUser.getMoney() < weapon.speedUpgradeCost) upgradeSpeed.setEnabled(false);
+				
 				}
+				pw.checkMoney();
+
+				
 			}
 		});
 
