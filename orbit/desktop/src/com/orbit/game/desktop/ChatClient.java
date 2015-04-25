@@ -17,6 +17,7 @@ public class ChatClient extends Thread{
 	private JTextArea textArea;
 	static final String ipAddress = "localhost";
 	static final int portNumber = 9000;
+	boolean isAlive = true;
 
 	public ChatClient(JTextArea jta){
 		textArea = jta;
@@ -26,6 +27,42 @@ public class ChatClient extends Thread{
 			pw = new PrintWriter(s.getOutputStream());
 		}catch(IOException ioe){
 			System.out.println("IOE Exception in ChatClient main" + ioe.getMessage());
+		}
+	}
+
+	public void sendMessage(String str){
+		System.out.println("sending message to server");
+		pw.println(str);
+		pw.flush();
+	}
+
+	public void endThread(){
+		isAlive = false;
+		try{
+			if(pw != null) pw.close();
+			if(br != null) br.close();
+			if(s != null) s.close();
+		}
+		catch(IOException ioe){
+			System.out.println("IOE exception in chat client finally block " + ioe.getMessage());
+		}
+	}
+	
+	public void run() {
+		String line;
+		try {			
+			while(isAlive){
+				line = br.readLine();
+				while(line != null){
+					System.out.println("From Server: " + line);
+					textArea.append(line + "\n");
+					line = br.readLine();
+				}
+			}
+//			String nullStr = null;
+//			pw.println(nullStr);
+//			pw.flush();
+		} catch (IOException e) { System.out.println("Disconnected from chat server");
 		}
 //		finally{
 //			try{
@@ -37,27 +74,5 @@ public class ChatClient extends Thread{
 //				System.out.println("IOE exception in chat client finally block " + ioe.getMessage());
 //			}
 //		}
-	}
-
-	public void sendMessage(String str){
-		System.out.println("sending message to server");
-		pw.println(str);
-		pw.flush();
-	}
-
-	public void run() {
-		String line;
-		try {
-			line = br.readLine();
-
-			while(line != null){
-				System.out.println("From Server: " + line);
-				textArea.append(line + "\n");
-				line = br.readLine();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

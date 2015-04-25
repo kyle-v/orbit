@@ -78,8 +78,6 @@ public class Orbit {
 			s = new Socket(ipAddress, portNumber);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
-
-
 		} catch (UnknownHostException e1) { e1.printStackTrace();
 			System.out.println("UnknownHostException");
 		} catch (IOException e1) { //e1.printStackTrace();
@@ -90,15 +88,9 @@ public class Orbit {
 					JOptionPane.ERROR_MESSAGE);
 			//quit game
 		}
-
-
-
-
-
 	}
 
 	public static Object sendRequest(ServerRequest sr){
-
 		Object response = null;
 		try {
 			System.out.println("Sending ServerRequest...");

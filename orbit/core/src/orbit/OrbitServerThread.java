@@ -98,10 +98,9 @@ public class OrbitServerThread extends Thread {
 			server.addToReady(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("User Quit")){
-			String username = (String)o;
 			server.clients.remove(this);
-			server.activeUsers.remove(this);
-			server.usernameToThreadMap.remove(username);
+			server.activeUsers.remove(this.user);
+			server.usernameToThreadMap.remove(this.user.getUsername());
 			server.readyClients.remove(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("Get Opponents")){
@@ -109,6 +108,16 @@ public class OrbitServerThread extends Thread {
 			//opponents vector should be the same in all clients that are in the same game
 			System.out.println("Getting opponents: " + opponents);
 			sendResponse(opponents);
+		}else if(request.equals("Update User")){
+			User u = (User)o;
+			server.activeUsers.remove(this.user);
+			server.activeUsers.add(u);
+			this.user = u;
+			sendResponse("Done");
+		}else if(request.equals("User to Profile Screen")){
+			String username = (String)o;
+			server.readyClients.remove(server.usernameToThreadMap.get(username));
+			sendResponse("Done");
 		}else{
 			//request does not match an existing request. unable to fulfill request
 			throw new UnidentifiedRequestException(request);

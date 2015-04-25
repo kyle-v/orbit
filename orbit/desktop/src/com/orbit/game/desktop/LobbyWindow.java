@@ -47,7 +47,7 @@ public class LobbyWindow extends Window{
 	private JTextField messageTextField;
 	private JTextArea chatArea;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
-	
+	Timer updateTimer;
 	
 	private ChatClient chatClient;
 	private Vector<JAviPanel> aviPanels = new Vector<JAviPanel>();
@@ -77,7 +77,7 @@ public class LobbyWindow extends Window{
 	}
 	
 	private void startUpdateThread(){
-		Timer updateTimer = new Timer("Ping for lobby updates");
+		updateTimer = new Timer("Ping for lobby updates");
 		updateTimer.schedule(new TimerTask(){
 			@SuppressWarnings("unchecked")
 			public void run(){
@@ -96,9 +96,7 @@ public class LobbyWindow extends Window{
 	
 	private void updateLobbyAvis(){
 		System.out.println("Updating avis");
-//		for(JAviPanel jap : aviPanels){
-			userContainer.removeAll();
-//		}
+		userContainer.removeAll();
 		aviPanels.removeAllElements();
 		for(User u : currentUsers){
 			JAviPanel temp = new JAviPanel(u);
@@ -114,11 +112,13 @@ public class LobbyWindow extends Window{
 		//opens profile window
 		profileButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
+				updateTimer.cancel();
+				Orbit.sendRequest(new ServerRequest("User to Profile Screen", orbit.currentUser.getUsername()));
 				if(orbit.profile == null){
 					orbit.profile = new ProfileWindow(orbit);
-					orbit.lobby.setVisible(false);
-					orbit.profile.setVisible(true);
 				}
+				orbit.lobby.setVisible(false);
+				orbit.profile.setVisible(true);
 			}
 		});
 		
@@ -147,11 +147,16 @@ public class LobbyWindow extends Window{
 		//quits back to login window
 		quitButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
+				//send server a quit signal
+				Orbit.sendRequest(new ServerRequest("User Quit", orbit.currentUser));
 				orbit.currentUser = null;
 				orbit.login.setVisible(true);
 				orbit.lobby.setVisible(false);
-				//send server a quit signal
-				Orbit.sendRequest(new ServerRequest("User Quit", orbit.currentUser.getUsername()));
+//				try {
+					LobbyWindow.this.chatClient.endThread();
+					//LobbyWindow.this.chatClient.join();
+//				} catch (InterruptedException e1) { e1.printStackTrace();
+//				}
 				orbit.lobby.dispose();
 			}
 		});
