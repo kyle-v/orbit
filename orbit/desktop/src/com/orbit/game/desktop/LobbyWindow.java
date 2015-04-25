@@ -186,6 +186,7 @@ public class LobbyWindow extends Window{
 				orbit.login.setVisible(true);
 				orbit.lobby.setVisible(false);
 				chatClient.endThread();
+				updateTimer.cancel();
 				orbit.lobby.dispose();
 			}
 		});
@@ -383,7 +384,6 @@ public class LobbyWindow extends Window{
 			this.lw = lw;
 
 			addWindowListener(new WindowAdapter() {
-				//TODO
 			    public void windowClosing(WindowEvent e) {
 			    	System.out.println("Closing waiting window");
 			    	if(checkForGame != null){

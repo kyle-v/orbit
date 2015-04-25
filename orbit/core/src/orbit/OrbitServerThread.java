@@ -28,42 +28,6 @@ public class OrbitServerThread extends Thread {
 		this.s = s;
 		this.d = d;
 	}
-	/*
-	public void run(){
-		System.out.println("Starting to run OrbitServerThread");
-		try {
-			//acquire streams
-			ois = new ObjectInputStream(s.getInputStream());
-			oos = new ObjectOutputStream(s.getOutputStream());
-			
-			//only ServerRequests are received (sent by client)
-			while(true){
-				ServerRequest sr = (ServerRequest)ois.readObject();
-				fulfillRequest(sr);
-			}
-			
-		} catch (IOException e) {
-			//e.printStackTrace();
-			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
-		}catch (ClassNotFoundException e) {
-			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());
-		} catch (UnidentifiedRequestException e) {
-			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
-		}
-		finally{
-			System.out.println("Client disconnected");
-			if(user!= null)Server.activeUsers.remove(user);
-			server.clients.remove(this);
-			server.numConnections.setText(new Integer(server.clients.size()).toString());
-			try {
-				oos.close();
-				ois.close();
-				s.close();
-			} catch (IOException e) {
-				System.out.println("IOE in OrbitServerThread.run() - finally: " + e.getMessage());
-			}
-		}
-	}*/
 	
 	public void run(){
 		System.out.println("Starting to run OrbitServerThread");
@@ -200,6 +164,7 @@ public class OrbitServerThread extends Thread {
 			response = "Valid";
 			this.user = d.usernameToUserMap.get(username);
 			Server.activeUsers.add(user);
+			System.out.println("PLANET:   " + user.planetPath);
 		}
 		else{
 			response = "Invalid";

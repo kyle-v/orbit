@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import orbit.ServerRequest;
 import orbit.Weapon;
@@ -185,7 +186,7 @@ class WeaponGui extends JPanel{
 		setPreferredSize(new Dimension(200, 70));
 		this.setMinimumSize(new Dimension(200, 70));
 		ImageIcon weaponImage = new ImageIcon(weapon.getWeaponImage());
-		JLabel weaponLabel = new JLabel(weapon.getName(), weaponImage, JLabel.EAST);
+		JLabel weaponLabel = new JLabel(weapon.getName(), weaponImage, SwingConstants.TRAILING);
 		add(weaponLabel);
 		damageLabel = new JLabel("Damage: " + weapon.getDamage());
 		add(damageLabel);

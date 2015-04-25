@@ -39,7 +39,7 @@ public class User implements Serializable{
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
-		planetPath = "miller.jpg";
+		planetPath = "miller.png";
 		destroyedPlanetPath = "DestroyedPlanet.png";
 		createWeapons();
 
