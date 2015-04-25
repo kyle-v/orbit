@@ -104,9 +104,8 @@ public class OrbitServerThread extends Thread {
 			server.readyClients.remove(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("Get Opponents")){
-			//ip addresses
 			//opponents vector should be the same in all clients that are in the same game
-			System.out.println("Getting opponents: " + opponents);
+			//System.out.println("Getting opponents: " + opponents);
 			sendResponse(opponents);
 		}else if(request.equals("Update User")){
 			User u = (User)o;
@@ -115,8 +114,12 @@ public class OrbitServerThread extends Thread {
 			this.user = u;
 			sendResponse("Done");
 		}else if(request.equals("User to Profile Screen")){
-			String username = (String)o;
-			server.readyClients.remove(server.usernameToThreadMap.get(username));
+			server.readyClients.remove(server.usernameToThreadMap.get(user.getUsername()));
+			sendResponse("Done");
+		}else if(request.equalsIgnoreCase("End Matchmaking")){
+			//opponents vector should be the same in all clients that are in the same game
+			//System.out.println("Getting opponents: " + opponents);
+			server.readyClients.remove(server.usernameToThreadMap.get(user.getUsername()));
 			sendResponse("Done");
 		}else{
 			//request does not match an existing request. unable to fulfill request
