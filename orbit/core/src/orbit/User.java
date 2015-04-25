@@ -30,7 +30,7 @@ public class User implements Serializable{
 	
 	//Planet
 	private Planet planet;
-	private String planetPath;
+	public String planetPath;
 	private String destroyedPlanetPath;
 	
 	public User(String username, String newPass){
@@ -39,7 +39,7 @@ public class User implements Serializable{
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
-		planetPath = "defaultPlanet.png";
+		planetPath = "miller.jpg";
 		destroyedPlanetPath = "DestroyedPlanet.png";
 	}
 	
@@ -63,11 +63,6 @@ public class User implements Serializable{
 	//set current equipped weapon
 	public void setWeapon(int weaponIndex){
 		planet.setWeapon(weaponIndex);
-	}
-	
-	//set planet and avi image
-	public void setImage(String imagePath){
-		planetPath = imagePath;
 	}
 	
 	//this is how we fire our weapons, it goes through the players currently equipped weapon and the planet automaticlly fires it in the correct spot
