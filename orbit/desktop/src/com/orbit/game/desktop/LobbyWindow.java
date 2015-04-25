@@ -309,7 +309,7 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-			aviImage = new ImageIcon("assets/worker.png");
+			aviImage = new ImageIcon("assets/miller.jpg");
 			//System.out.println(aviImage.toString());
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
