@@ -31,11 +31,13 @@ public class ProfileWindow extends Window{
 
 	private JOrbitButton backButton;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
-	private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet_pinkLarge.png");
+	//private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet_pinkLarge.png");
+	ImageIcon planetImage;
 	
 	ProfileWindow(Orbit orbit){
 
 		super(orbit);
+		planetImage = new ImageIcon("assets/" + orbit.currentUser.planetPath);
 
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		profilePanel = new JProfilePanel();
@@ -115,7 +117,7 @@ public class ProfileWindow extends Window{
 		}
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
-			g.drawImage(defaultPlanet.getImage() ,this.getWidth()/2 -110, this.getHeight()/5,null );
+			g.drawImage(planetImage.getImage() ,this.getWidth()/2 -110, this.getHeight()/5,null );
 		}
 	}
 
