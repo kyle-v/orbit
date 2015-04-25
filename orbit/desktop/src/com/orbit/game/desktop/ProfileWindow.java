@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -30,7 +31,7 @@ public class ProfileWindow extends Window{
 
 	private JOrbitButton backButton;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
-	private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet.png");
+	private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet_pinkLarge.png");
 	
 	ProfileWindow(Orbit orbit){
 
@@ -105,6 +106,7 @@ public class ProfileWindow extends Window{
 		}
 	}
 
+
 	class JProfilePanel extends JPanel{				//custom Lobby panel with overridden paint component
 		private static final long serialVersionUID = 2L;
 
@@ -113,7 +115,7 @@ public class ProfileWindow extends Window{
 		}
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
-			g.drawImage(defaultPlanet.getImage() ,this.getWidth()/3,this.getHeight()/4,null );
+			g.drawImage(defaultPlanet.getImage() ,this.getWidth()/2 -110, this.getHeight()/5,null );
 		}
 	}
 
