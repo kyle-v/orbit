@@ -50,8 +50,10 @@ public class ProfileWindow extends Window{
 		buttonPanel.add(Box.createGlue());
 		buttonPanel.add(backButton);
 		
-		
-
+		JPanel testPanel = new JPanel();
+		testPanel.add(new JLabel("FUCKKKKKKKKKKKK"));
+		testPanel.add(inventoryPanel);
+		containerPanel.add(testPanel, BorderLayout.EAST);
 		containerPanel.add(profilePanel, BorderLayout.CENTER);		//add panels to main panel
 		containerPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -59,11 +61,9 @@ public class ProfileWindow extends Window{
 		add(containerPanel);
 		addActionListeners();
 		setSize(1024,600);
-		
 	}
 
 	private void setupProfilePanel(){
-		
 		for(Weapon w : orbit.currentUser.weapons){
 			WeaponGui wg;
 			if(orbit.currentUser.equippedWeapons.contains(w)){
@@ -74,13 +74,9 @@ public class ProfileWindow extends Window{
 			weaponPanels.add(wg);
 			inventoryPanel.add(wg);
 		}
-		profilePanel.add(inventoryPanel);
-
-		
 	}
 
 	private void addActionListeners(){
-
 		backButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				Orbit.sendRequest(new ServerRequest("Update User", orbit.currentUser));
@@ -107,19 +103,14 @@ public class ProfileWindow extends Window{
 				wg.equipButton.setEnabled(true);
 			}
 		}
-		
-		
 	}
 
 	class JProfilePanel extends JPanel{				//custom Lobby panel with overridden paint component
-
-
 		private static final long serialVersionUID = 2L;
 
 		JProfilePanel(){					
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		}
-
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
 			g.drawImage(defaultPlanet.getImage() ,this.getWidth()/3,this.getHeight()/4,null );
@@ -130,7 +121,6 @@ public class ProfileWindow extends Window{
 }
 
 class WeaponGui extends JPanel{
-
 	private static final long serialVersionUID = 1L;
 	Weapon weapon;
 	JLabel damageLabel;
@@ -164,17 +154,14 @@ class WeaponGui extends JPanel{
 		equipButton = new JButton("Equip");
 		if(equipped) {
 			equipButton.setText("Unequip");
-
 		}else{
 			equipButton.setText("Equip");
-
 		}
 		if(pw.orbit.currentUser.getMoney() < weapon.damageUpgradeCost) upgradeDamage.setEnabled(false);
 		if(pw.orbit.currentUser.getMoney() < weapon.speedUpgradeCost) upgradeSpeed.setEnabled(false);
 
 		add(equipButton);
 		pw.checkEquipLimits();
-
 
 		addActionListeners();
 		repaint();
@@ -188,7 +175,6 @@ class WeaponGui extends JPanel{
 					weapon.upgradeDamage();
 					upgradeDamage.setText("Upgrade +" + weapon.damageUpgradeAmt +" $" + weapon.damageUpgradeCost);
 					if(pw.orbit.currentUser.getMoney() < weapon.damageUpgradeCost) upgradeDamage.setEnabled(false);
-
 				}
 			}
 		});
@@ -211,13 +197,11 @@ class WeaponGui extends JPanel{
 					pw.orbit.currentUser.equippedWeapons.remove(weapon);
 					equipped = false;
 					equipButton.setText("Equip");
-
 				}else{
 					//EQUIP
 					pw.orbit.currentUser.equippedWeapons.add(weapon);
 					equipped = true;
 					equipButton.setText("Unequip");
-
 				}
 				pw.checkEquipLimits();
 
