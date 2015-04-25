@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
+
+
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -28,10 +31,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.net.ServerSocket;
-import com.badlogic.gdx.net.ServerSocketHints;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -286,8 +290,8 @@ public class OrbitGame extends ApplicationAdapter{
 				if (powerPercent < 0) increasing = true;
 				break;
 			case FIRE:
-				player.setWeapon(currentWeapon);
-				player.fire((int)powerPercent, angle, gameObjects);
+				//player.setWeapon(currentWeapon);
+				//player.fire((int)powerPercent, angle, gameObjects);
 				gameState = GameState.WAITING;
 				incrementToNextPlayer();
 				playerTurnOver(powerPercent, (float)angle);
@@ -362,30 +366,113 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	public void setupServer(){
 		
-		ServerSocketHints socketHint = new ServerSocketHints();
-		socketHint.acceptTimeout = 0;
-		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, basePort, socketHint);
-		
-		System.out.println("Server online");
-		socket = serverSocket.accept(null);
-		System.out.println("Recieved Connection!");
+		//ServerSocketHints socketHint = new ServerSocketHints();
+		//socketHint.acceptTimeout = 0;
+		new GameServer(basePort);
 		
 	}
 	
+	public class GameServer extends Thread{
+		
+		private int gameSocket = 9020;
+		private Vector<PeerThread> ptVector = new Vector<PeerThread>();
+		
+		public GameServer(int port){
+			gameSocket = port;
+		}
+		
+		public synchronized void sendupdatedGameObjects(PeerThread pt, List<GameObject> gameObjects) {
+			for (PeerThread pt1 : ptVector) {
+				pt1.sendGameObjects(gameObjects);
+			}
+		}
+		
+		public void run(){
+			ServerSocket ss = null;
+			try {
+				System.out.println("Starting Chat Server");
+				ss = new ServerSocket(gameSocket);
+				while (true) {
+					System.out.println("Waiting for client to connect...");
+					Socket s = ss.accept();
+					System.out.println("Client " + s.getInetAddress() + ":" + s.getPort() + " connected");
+					PeerThread pt = new PeerThread(s, this);
+					ptVector.add(pt);
+					pt.start();
+				}
+			} catch (IOException ioe) {
+				System.out.println("IOE: " + ioe.getMessage());
+			} finally {
+				if (ss != null) {
+					try {
+						ss.close();
+					} catch (IOException ioe) {
+						System.out.println("IOE closing ServerSocket: " + ioe.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	public class PeerThread extends Thread{
+		private ObjectInputStream ois;
+		private ObjectOutputStream oos;
+		private GameServer gs;
+		private Socket socket;
+		public PeerThread(Socket s, GameServer gs){
+			socket = s;
+			this.gs = gs;
+			try {
+				ois = new ObjectInputStream(socket.getInputStream());
+				oos = new ObjectOutputStream(socket.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public void sendGameObjects(List<GameObject> gameObjects){
+			
+		}
+		
+		public void run(){
+			try{
+
+				while(true){
+					Vector3 fireInfo = (Vector3)ois.readObject();
+					GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
+					GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
+					oos.writeObject(gameObjects);
+				}
+			} catch(IOException e){
+				System.out.println("Terminated ClientListenerThread");
+//					System.out.println("IOException in ClientListenerThread.run(): " + e.getMessage());
+			}catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	public void connectToServer(){
 		boolean connected = false;
 		
-		SocketHints socketHint = new SocketHints();
-		socketHint.connectTimeout = 10000;
+		//SocketHints socketHint = new SocketHints();
+		//socketHint.connectTimeout = 10000;
 		
 		while(connected == false){
 			try {
-				socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(0), basePort, socketHint);
+				socket = new Socket(playerIPAddresses.get(0), basePort);
 				System.out.println("Connected to server!");
 				connected = true;
 			} catch (GdxRuntimeException ex) {
 				System.out.println("Waiting for server...");
 				continue;
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
