@@ -99,37 +99,41 @@ public class OrbitGame extends ApplicationAdapter{
 	//Fonts are how we write text to the screen so that's what this is for
 	BitmapFont writer;
 	
-	//booleans to check when everyone has connected
-	boolean[] connectionChecks;
-	
-	Socket[] playerSockets;
-	
 	private Texture backgroundImage;
 	
 	private String gameOverText;
 	
 	public long randomSeed;
-
+	
+	private Socket socket;
+	private ServerSocket serverSocket;
+	
+	boolean isConnected = false;
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex, long randomSeed){
 		this.players = players;
 		this.playerIndex = playerIndex;
-		playerIPAddresses = ipaddresses;
+		this.playerIPAddresses = ipaddresses;
 		this.randomSeed = randomSeed;
 	}
 	
 	@Override
 	public void create () {
 		
+		//setup server stuff
+		if (playerIndex == 0){
+			setupServer();
+			
+		} else {
+			connectToServer();
+		}
+		isConnected = true;
+		
 		//Initializing variables
-		connectionChecks = new boolean[] {false, false, false ,false};
-		connectionChecks[playerIndex] = true;
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
 		gameState = GameState.CONNECTING;
 		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
-		
-		
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -166,8 +170,6 @@ public class OrbitGame extends ApplicationAdapter{
 		//setup game state
 		currentPlayer = 0;
 		
-		playerSockets = new Socket[4];
-		
 		//create all the planets
 		for(int k=0;k<players.size();k++){
 			User u = players.get(k);
@@ -176,11 +178,15 @@ public class OrbitGame extends ApplicationAdapter{
 			u.getPlanet().SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
 			u.getPlanet().setDegreePosition((float)radians);
 			gameObjects.add(u.getPlanet());
-			if(k!=playerIndex){ 
-				NetworkingListenerThread thread = new NetworkingListenerThread(k);
-				thread.start();
-			}
+//			if(k!=playerIndex){
+//				System.out.println("Looking for port on " + (GameplayStatics.game.basePort + k));
+//				NetworkingListenerThread thread = new NetworkingListenerThread(k);
+//				thread.start();
+//			}
 		}
+		
+		
+		
 		playerPlanet = player.getPlanet();
 		
 		asteroids = new ArrayList<Asteroid>();
@@ -211,7 +217,6 @@ public class OrbitGame extends ApplicationAdapter{
 					}
 				}
 			} while (spawnConflict);
-			System.out.println("added asteroid");
 			asteroids.add(new Asteroid((float)x,(float)y,new Vector2(0,0),0));
 		}
 		
@@ -351,108 +356,46 @@ public class OrbitGame extends ApplicationAdapter{
 		debugRenderer.render(GameplayStatics.getWorld(), debugMatrix);
 	}
 	
-	public void waitForConnect(){
-
-
-		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		Random randy = GameplayStatics.randy;
-		writer.setColor(new Color(randy.nextFloat(),randy.nextFloat(),randy.nextFloat(),1));
-		TextBounds bound = writer.getBounds("Waiting for players to connect");
-		writer.draw(batch, "Waiting for players to connect", -bound.width/2, -bound.height/2);
-		batch.end();
-		for(int k=0;k<players.size();k++){
-			if(k!=playerIndex){
-				SocketHints socketHint = new SocketHints();
-				socketHint.connectTimeout = 1000;
-				//establish connection with each player and continue pinging until we do so
-				while(true){
-					try{
-						Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
-						try {
-							ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-							stream.writeObject(playerIndex);
-							stream.flush();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						socket.dispose();
-						break;
-					}
-					catch(GdxRuntimeException ex){
-						continue;
-					}
-				}
+	public void setupServer(){
+		
+		ServerSocketHints socketHint = new ServerSocketHints();
+		socketHint.acceptTimeout = 0;
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, basePort, socketHint);
+		
+		System.out.println("Server online");
+		socket = serverSocket.accept(null);
+		System.out.println("Recieved Connection!");
+		
+	}
+	
+	public void connectToServer(){
+		boolean connected = false;
+		
+		SocketHints socketHint = new SocketHints();
+		socketHint.connectTimeout = 10000;
+		
+		while(connected == false){
+			try {
+				socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(0), basePort, socketHint);
+				System.out.println("Connected to server!");
+				connected = true;
+			} catch (GdxRuntimeException ex) {
+				System.out.println("Waiting for server...");
+				continue;
 			}
 		}
-		
-		for(int k=0;k<players.size();k++){
-			if(!connectionChecks[k])
-				return;
-		}
-		if(playerIndex == 0)
-			gameState = GameState.WEAPON;
-		else
-			gameState = GameState.WAITING;
-		new SpawnAsteroidThread((long) (GameplayStatics.randy.nextFloat() * 10)).start();;
 	}
 
 	@Override
 	public void render () {
 		//fps.log();
 		
-		if(gameState == GameState.CONNECTING){
-			waitForConnect();
-		}
-		else{
-			updateGame();
-		}
-	}
-
-	public class NetworkingListenerThread extends Thread{
-		int port;
-		int playerIndex;
-		
-		public NetworkingListenerThread(int port){
-			this.port = GameplayStatics.game.basePort + port;
-			playerIndex = port;
-		}
-		
-		public void run(){
-			System.out.println("Port opened on port " + port);
-			ServerSocketHints socketHint = new ServerSocketHints();
-			socketHint.acceptTimeout = 0;
-			ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, port, socketHint);
-			while(true){
-				Socket socket = serverSocket.accept(null);
-				try {
-					
-					ObjectInputStream reader = new ObjectInputStream(socket.getInputStream());
-					Object obj = reader.readObject();
-					if(obj instanceof Vector3){
-						Vector3 fireInfo = (Vector3)obj;
-						//go to our current player and set their weapon to the one that the other player fired with
-						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
-						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
-						incrementToNextPlayer();
-					}
-					else {
-						Integer id = (Integer)obj;
-						connectionChecks[id] = true;
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					break;
-					//e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+//		if(gameState == GameState.CONNECTING && playerIndex != 0){
+//			waitForConnect();
+//		}
+//		else{
+//			updateGame();
+//		}
 	}
 	
 	public class SpawnAsteroidThread extends Thread{
@@ -508,22 +451,22 @@ public class OrbitGame extends ApplicationAdapter{
 	public void playerTurnOver(float powerPercent, float angle){
 		for(int k=0;k<players.size();k++){
 			if(k!=playerIndex){
-				SocketHints socketHint = new SocketHints();
-				socketHint.connectTimeout = 10000;
-				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
-				System.out.println("are we connectd: " + socket.isConnected());
-				System.out.println("Sending object to port " + (basePort + k));
+//				SocketHints socketHint = new SocketHints();
+//				socketHint.connectTimeout = 10000;
+//				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
+				//System.out.println("are we connected: " + socket.isConnected());
+				//System.out.println("Sending object to port " + (basePort + k));
 				//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
 				Vector3 fireInfo = new Vector3(powerPercent,angle, players.get(currentPlayer).getPlanet().getWeaponIndex());
-				try {
-					ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-					stream.writeObject(fireInfo);
-					stream.flush();
+				//try {
+					//ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+					//stream.writeObject(fireInfo);
+					//stream.flush();
 					
-				} catch (IOException e) {
+				//} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					//e.printStackTrace();
+				//}
 			}
 		}
 	}

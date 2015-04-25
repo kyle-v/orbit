@@ -20,18 +20,18 @@ public class DesktopLauncher {
 		
 //		LobbyWindow lw = new LobbyWindow(null);
 //		lw.setVisible(true);
-		Orbit o = new Orbit();
-		o.currentUser = new User("mazen", "azar");
-		ProfileWindow pw = new ProfileWindow(o);
-		pw.setVisible(true);
-//		ArrayList<User> users = new ArrayList<User>();
-//		users.add(new User("Kyle","P"));
-//		users.add(new User("Steven", "LJK"));
-//		ArrayList<String> IPs = new ArrayList<String>();
-//		IPs.add("localhost");
-//		IPs.add("localhost");
-//		Random randy = new Random();
-//		int playerID = 1;
-//		new LwjglApplication(new OrbitGame(users,IPs,playerID,1), config);
+//		Orbit o = new Orbit();
+//		o.currentUser = new User("mazen", "azar");
+//		ProfileWindow pw = new ProfileWindow(o);
+//		pw.setVisible(true);
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User("Kyle","P"));
+		users.add(new User("Steven", "LJK"));
+		ArrayList<String> IPs = new ArrayList<String>();
+		IPs.add("localhost");
+		IPs.add("localhost");
+		Random randy = new Random();
+		int playerID = 0;
+		new LwjglApplication(new OrbitGame(users,IPs,playerID,1), config);
 	}
 }
