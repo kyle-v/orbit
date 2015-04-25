@@ -28,12 +28,10 @@ public class ProfileWindow extends Window{
 
 	private Vector<WeaponGui> weaponPanels = new Vector<WeaponGui>();
 
-	private JOrbitButton planetButton;
-	private JOrbitButton inventoryButton;
-	private JOrbitButton profileButton;
 	private JOrbitButton backButton;
 	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
-
+	private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet.png");
+	
 	ProfileWindow(Orbit orbit){
 
 		super(orbit);
@@ -119,13 +117,15 @@ public class ProfileWindow extends Window{
 		private static final long serialVersionUID = 2L;
 
 		JProfilePanel(){					
-			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		}
 
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
+			g.drawImage(defaultPlanet.getImage() ,this.getWidth()/3,this.getHeight()/4,null );
 		}
 	}
+
 
 }
 
