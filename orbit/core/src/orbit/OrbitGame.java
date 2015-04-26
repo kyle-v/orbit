@@ -190,6 +190,7 @@ public class OrbitGame extends ApplicationAdapter{
 		float start = 20;
 
 		GameplayStatics.game = this;
+		GameplayStatics.gameObjects = gameObjects;
 		
 		//setup game state
 		currentPlayer = 0;

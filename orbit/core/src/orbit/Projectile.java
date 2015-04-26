@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -114,7 +115,10 @@ public class Projectile extends GameObject {
 	
 	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
-			
+			Sound impactSound = AssetLibrary.getSound("ProjectileImpact.wav");
+			impactSound.play();
+			ProjectileExplosion explosion = new ProjectileExplosion(position.x,position.y, 100, 100);
+			GameplayStatics.gameObjects.add(explosion);
 			return true;
 		}
 		return false;
