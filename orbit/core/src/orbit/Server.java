@@ -205,7 +205,7 @@ public class Server extends JFrame{
 
 				for(OrbitServerThread c : readyClients){
 					users.add(c.getUser());
-					ips.add(c.s.getInetAddress().toString());
+					ips.add(c.s.getInetAddress().toString().substring(1));
 					c.opponents = opponents;
 				}
 

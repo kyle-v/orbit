@@ -45,7 +45,16 @@ public class Orbit {
 		config.title = "Interplanet Orbit";
 		config.width = 1000;
 		config.height = 700;
-		int playerID = opponents.indexOf(currentUser);
+		int playerID = -1;
+		for(int i = 0 ; i < opponents.size(); i++){
+			if(opponents.get(i).getUsername().equals(currentUser.getUsername())) 
+				playerID = i;
+		}
+		System.out.println("User " + currentUser.getUsername() + " " + playerID);
+		if(playerID == -1) {
+			System.out.println("User not found in list of players");
+			return;
+		}
 		new LwjglApplication(new OrbitGame(opponents, ips, playerID, seed), config);
 
 	}

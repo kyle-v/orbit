@@ -566,10 +566,10 @@ public class OrbitGame extends ApplicationAdapter{
 			try {	
 				while(!isConnected){
 					try{
-						
+
 						s = new Socket(ipAddress, portNumber);
+
 						oos = new ObjectOutputStream(s.getOutputStream());
-						//sendFireInfo(null);
 						ois = new ObjectInputStream(s.getInputStream());
 //						while (gameState == GameState.CONNECTING){
 //							isConnected = ois.readBoolean();
@@ -617,8 +617,8 @@ public class OrbitGame extends ApplicationAdapter{
 					System.out.println("Disconnected from game server with IOException");
 				}finally{
 					try {
-						ois.close();
-						oos.close();
+						if(ois != null)ois.close();
+						if(oos != null)oos.close();
 						s.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

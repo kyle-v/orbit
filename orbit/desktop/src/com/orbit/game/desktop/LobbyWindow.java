@@ -159,7 +159,7 @@ public class LobbyWindow extends Window{
 							@SuppressWarnings("unchecked")
 							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
 
-							System.out.println("Client has opponents!" + opponents.getValue().toString());
+							System.out.println("Opponent!");
 							checkForGame = null;
 							ww.dispose();
 							ww.gameStarted = true;
@@ -311,7 +311,7 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-			aviImage = new ImageIcon("bin/planets/" + user.planetPath);
+			aviImage = new ImageIcon("bin/" + user.planetPath);
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
 			d = new Dimension(170, 140);

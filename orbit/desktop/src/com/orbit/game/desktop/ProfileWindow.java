@@ -47,7 +47,7 @@ public class ProfileWindow extends Window{
 	ProfileWindow(Orbit orbit){
 
 		super(orbit);
-		planetImage = new ImageIcon("bin/planets/" + orbit.currentUser.planetPath);
+		planetImage = new ImageIcon("bin/" + orbit.currentUser.planetPath);
 
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		profilePanel = new JProfilePanel();
@@ -101,11 +101,12 @@ public class ProfileWindow extends Window{
 				setImage(itemEvent.getItem().toString());
 			}
 		});
+		jcb.setSelectedItem(orbit.currentUser.planetPath.substring(orbit.currentUser.planetPath.lastIndexOf('/')+1));
 		planetPanel.add(jcb);
 	}
 	
 	public void setImage(String imagePath){
-		orbit.currentUser.planetPath = imagePath;
+		orbit.currentUser.planetPath = "planets/" + imagePath;
 		planetImage = new ImageIcon("bin/planets/" + imagePath);
 		profilePanel.revalidate();
 		profilePanel.repaint();
