@@ -80,6 +80,7 @@ public class Database implements Serializable{
 				usernameToUserMap = new HashMap<String, User>();
 			}
 			usernameToUserMap.put(username, newUser);
+			
 			return true;
 		}
 		else{

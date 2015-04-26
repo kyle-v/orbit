@@ -1,13 +1,9 @@
 package orbit;
 
-import java.awt.Image;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 
 public class User implements Serializable{
 
@@ -17,59 +13,67 @@ public class User implements Serializable{
 	public static final int STARTING_MONEY = 1000;
 
 	private static final int MIN_PASS_LENGTH = 5;
-	
+
 	//User account data
 	private String username;
 	private String encryptedPass = null; //password stored and received by server in encrypted format.
 	private int money;
-	
+
 	//Weapon data
 	public Vector<Weapon> weapons;
 	public Vector<Weapon> equippedWeapons;
 	boolean isPlaying;
-	
+
 	//Planet
 	private Planet planet;
 	public String planetPath;
 	private String destroyedPlanetPath;
-	
+
 	public User(String username, String newPass){
 		this.username = username;
 		encryptedPass = newPass;
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
-		planetPath = "miller.jpg";
+		planetPath = "miller.png";
 		destroyedPlanetPath = "DestroyedPlanet.png";
+		createWeapons();
+
+
 	}
-	
+
+	private void createWeapons() {
+
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
+		weapons.add(defaultRocket);
+		equippedWeapons.add(defaultRocket);
+		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
+		weapons.add(godRocket);
+		equippedWeapons.add(godRocket);		
+	}
+
+
 	//we need this because now users are going to be created prior to being in game
 	//this we way call initialize to make all the gdx object only once the game has started
 	public void initialize(){
 		isPlaying = true;
-		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");
-		weapons.add(defaultRocket);
-		equippedWeapons.add(defaultRocket);
-		Weapon godLaser = new Laser("Lazzzooorzz", 50, 0, 10f, 10f, "weaponTexture2.png", "laser.png");
-		weapons.add(godLaser);
-		equippedWeapons.add(godLaser);
 		AssetLibrary.getTexture(destroyedPlanetPath);
 		for(Weapon w: weapons){
 			AssetLibrary.getTexture(w.weaponFilename);
 			AssetLibrary.getTexture(w.projectileFilename);
 		}
 	}
-	
+
 	//set current equipped weapon
 	public void setWeapon(int weaponIndex){
 		planet.setWeapon(weaponIndex);
 	}
-	
+
 	//this is how we fire our weapons, it goes through the players currently equipped weapon and the planet automaticlly fires it in the correct spot
 	public void fire(int powerPercent, double angle, List<GameObject> gameObjects){
 		planet.FireWeapon(powerPercent, angle, gameObjects);
 	}
-	
+
 	public String getUsername() {
 		return username;
 	}
@@ -93,7 +97,7 @@ public class User implements Serializable{
 	public int getMoney() {
 		return money;
 	}
-	
+
 	public Planet getPlanet(){
 		if(planet==null)
 			planet = new Planet(equippedWeapons, planetPath, destroyedPlanetPath);
@@ -103,7 +107,7 @@ public class User implements Serializable{
 	public void addMoney(int amt) {
 		this.money += amt;
 	}
-	
+
 	public boolean withdrawMoney(int amt){
 		if(amt > money){
 			return false;
@@ -112,18 +116,18 @@ public class User implements Serializable{
 			return true;
 		}
 	}
-	
+
 	public boolean removeWeapon(Weapon w){
 		if(weapons.contains(w)){
 			weapons.remove(w);
 			return true;
 		}else return false;
 	}
-	
+
 	public void addWeapon(Weapon w){
 		weapons.add(w);
 	}
-	
+
 }
 
 class InvalidPassException extends Exception{

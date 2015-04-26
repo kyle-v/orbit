@@ -39,7 +39,11 @@ public class OrbitServerThread extends Thread {
 			//only ServerRequests are received (sent by client)
 			while(true){
 				ServerRequest sr = (ServerRequest)ois.readObject();
-				fulfillRequest(sr);
+				try{
+					fulfillRequest(sr);
+				}catch (UnidentifiedRequestException e) {
+					System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
+				}
 			}
 			
 		} catch (IOException e) {
@@ -47,13 +51,14 @@ public class OrbitServerThread extends Thread {
 			System.out.println("IOE in OrbitServerThread.run(): " + e.getMessage());
 		}catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException in OrbitServerThread.run(): " + e.getMessage());
-		} catch (UnidentifiedRequestException e) {
-			System.out.println("UnidentifiedRequestException in OrbitServerThread.run(): " + e.getMessage());
-		}
+		} 
 		finally{
 			System.out.println("Client disconnected");
 			if(user!= null)Server.activeUsers.remove(user);
 			server.clients.remove(this);
+			if(server.readyClients.contains(this)){
+				server.readyClients.remove(this);
+			}
 			server.numConnections.setText(new Integer(server.clients.size()).toString());
 			try {
 				oos.close();
@@ -162,6 +167,7 @@ public class OrbitServerThread extends Thread {
 			response = "Valid";
 			this.user = d.usernameToUserMap.get(username);
 			Server.activeUsers.add(user);
+			System.out.println("PLANET:   " + user.planetPath);
 		}
 		else{
 			response = "Invalid";

@@ -49,7 +49,7 @@ public class LobbyWindow extends Window{
 	private JButton sendMessageButton;
 	private JTextField messageTextField;
 	private JTextArea chatArea;
-	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
+	private final ImageIcon backgroundImage = new ImageIcon("bin/SpaceBackground.jpg");
 	Timer updateTimer;
 	Timer checkForGame;
 	public WaitingWindow ww = null;
@@ -110,6 +110,9 @@ public class LobbyWindow extends Window{
 	
 	private void updateLobbyAvis(){
 		//System.out.println("Updating avis");
+		
+		
+		
 		userContainer.removeAll();
 		aviPanels.removeAllElements();
 		for(User u : currentUsers){
@@ -163,7 +166,7 @@ public class LobbyWindow extends Window{
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
 							//TODO close lobbywindow
-							orbit.launchGame();
+							orbit.launchGame(opponents.getKey(), opponents.getValue(), 0);
 						}else{
 							if(ww.time == 0){
 								checkForGame = null;
@@ -186,6 +189,7 @@ public class LobbyWindow extends Window{
 				orbit.login.setVisible(true);
 				orbit.lobby.setVisible(false);
 				chatClient.endThread();
+				updateTimer.cancel();
 				orbit.lobby.dispose();
 			}
 		});
@@ -195,9 +199,9 @@ public class LobbyWindow extends Window{
 		
 		JPanel tempPanel = new JPanel();			//creates bottom button panel
 		
-		findGameButton = new JButton("Find Game");
-		profileButton = new JButton("Profile");
-		quitButton = new JButton("Quit");
+		findGameButton = new JOrbitButton("Find Game");
+		profileButton = new JOrbitButton("Profile");
+		quitButton = new JOrbitButton("Quit");
 		
 		tempPanel.add(profileButton);
 		tempPanel.add(findGameButton);
@@ -214,7 +218,7 @@ public class LobbyWindow extends Window{
 		innerButtonContainer.setLayout(innerButtonContainerLayout);
 		
 		
-		sendMessageButton = new JButton("Send");			//Initialize and add glue
+		sendMessageButton = new JOrbitButton("Send");			//Initialize and add glue
 		messageTextField = new JTextField(17);
 		innerButtonContainer.add(messageTextField);
 		innerButtonContainer.add(Box.createHorizontalGlue());
@@ -294,10 +298,10 @@ public class LobbyWindow extends Window{
 			this.user = user;
 			
 			buttonContainer = new JPanel();			//container for bottom button panel
-			playGame = new JButton("Play");
-			trade = new JButton("Trade");
-			acceptButton = new JButton("Accept");
-			declineButton = new JButton("Decline");
+			playGame = new JOrbitButton("Play");
+			trade = new JOrbitButton("Trade");
+			acceptButton = new JOrbitButton("Accept");
+			declineButton = new JOrbitButton("Decline");
 			buttonContainer.add(playGame);
 			buttonContainer.add(trade);
 			statusLabel = new JLabel();
@@ -307,7 +311,7 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-			aviImage = new ImageIcon("assets/planets/" + user.planetPath);
+			aviImage = new ImageIcon("bin/planets/" + user.planetPath);
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
 			d = new Dimension(170, 140);
@@ -383,7 +387,6 @@ public class LobbyWindow extends Window{
 			this.lw = lw;
 
 			addWindowListener(new WindowAdapter() {
-				//TODO
 			    public void windowClosing(WindowEvent e) {
 			    	System.out.println("Closing waiting window");
 			    	if(checkForGame != null){
@@ -404,7 +407,7 @@ public class LobbyWindow extends Window{
 			time = 5;
 			waitMessage.setText("Waiting for another player...  " + time + "s until timeout.");
 			
-			cancelButton = new JButton("Cancel");
+			cancelButton = new JOrbitButton("Cancel");
 			cancelButton.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e){
 					System.out.println("Canceled Matchmaking");

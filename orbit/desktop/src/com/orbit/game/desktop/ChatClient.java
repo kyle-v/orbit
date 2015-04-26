@@ -15,7 +15,7 @@ public class ChatClient extends Thread{
 	private BufferedReader br;
 	private Socket s;
 	private JTextArea textArea;
-	static final String ipAddress = "localhost";
+	static final String ipAddress = Orbit.ipAddress;
 	static final int portNumber = 9000;
 	boolean isAlive = true;
 
