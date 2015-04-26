@@ -48,10 +48,10 @@ public class User implements Serializable{
 
 	private void createWeapons() {
 
-		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weaponTexture2.png", "missile.png");
+		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);		
 	}
