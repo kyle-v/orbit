@@ -17,9 +17,11 @@ public class InputController extends InputAdapter{
 	public boolean keyUp(int keycode) {
 		//change users weapons
 		if(keycode == Keys.UP && game.gameState == GameState.WEAPON){ //Switch weapon if in weapon state
+			System.out.println("Does input work");
 			game.currentWeapon--;
 		}
 		if(keycode == Keys.DOWN && game.gameState == GameState.WEAPON){
+			System.out.println("Does input work");
 			game.currentWeapon++;
 		}
 		if(keycode == Keys.SPACE){
