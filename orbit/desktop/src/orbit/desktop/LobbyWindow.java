@@ -404,7 +404,7 @@ public class LobbyWindow extends Window{
 			    }
 			});
 			
-			time = 5;
+			time = 30;
 			waitMessage.setText("Waiting for another player...  " + time + "s until timeout.");
 			
 			cancelButton = new JOrbitButton("Cancel");

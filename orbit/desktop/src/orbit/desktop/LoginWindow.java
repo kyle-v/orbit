@@ -319,10 +319,6 @@ public class LoginWindow extends Window{
 		String response = (String)Orbit.sendRequest(new ServerRequest("Authenticate Login", strings));
 		//DEBUG System.out.println("Received response: " + response);
 		if(response.equalsIgnoreCase("Valid")){
-			//Login as user
-			//start new server listener thread
-			//			slt = new ServerListenerThread();
-			//			slt.start();
 			orbit.currentUser = (User)Orbit.sendRequest(new ServerRequest("Get User", null));
 			orbit.openLobby();
 
@@ -331,13 +327,16 @@ public class LoginWindow extends Window{
 
 
 		}
+		else if(response.equalsIgnoreCase("Remote Login")){
+			//Deny login
+			status.setText("User logged in elsewhere. Log out of remote location and try again.");
+			System.out.println("Remote login");
+		}
 		else{
 			//Deny login
 			status.setText("Invalid login");
 			System.out.println("Invalid login");
 		}
-
-
 	}
 
 	//signals server to create a new user. indicates whether new user was created

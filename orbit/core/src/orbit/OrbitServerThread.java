@@ -168,10 +168,15 @@ public class OrbitServerThread extends Thread {
 			System.out.println("Database is null");
 		}
 		if(d.authenticateLogin(username, password)){
-			response = "Valid";
-			this.user = d.usernameToUserMap.get(username);
-			Server.activeUsers.add(user);
-			System.out.println("PLANET:   " + user.planetPath);
+			if(!server.usernameToThreadMap.containsKey(username)){
+				response = "Valid";
+				this.user = d.usernameToUserMap.get(username);
+				Server.activeUsers.add(user);
+				server.usernameToThreadMap.put(username, this);
+			}
+			else{
+				response = "Remote Login";
+			}
 		}
 		else{
 			response = "Invalid";
