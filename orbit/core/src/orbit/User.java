@@ -54,7 +54,7 @@ public class User implements Serializable{
 
 
 	//we need this because now users are going to be created prior to being in game
-	//this we way call initialize to make all the gdx object only once the game has started
+	//this we way call initialize to make al l the gdx object only once the game has started
 	public void initialize(){
 		isPlaying = true;
 		AssetLibrary.getTexture(destroyedPlanetPath);

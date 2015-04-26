@@ -23,21 +23,22 @@ public class Asteroid extends GameObject implements Serializable {
 	private float radius;
 	private float rotationDirection;
 	float angle;
-	Texture texture;
+	transient Texture texture;
 	public Asteroid(float x, float y,Vector2 initialSpeed, float initialAngle){
 		super(x,y,DEFAULT_RADIUS*2,DEFAULT_RADIUS*2);
+		this.imagePath = "asteroid.png";
 		this.texture = AssetLibrary.getTexture("asteroid.png");
 		this.sprite = new Sprite(this.texture);
 		this.mass = DEFAULT_MASS;
 		this.radius = DEFAULT_RADIUS;
 		this.drag = DEFAULT_DRAG;
-		createPhysicsBody();
+		//createPhysicsBody();
 		
 		//sets a random rotation direction for the asteroid
 		Random randomizer = GameplayStatics.randy;
 		rotationDirection = randomizer.nextFloat() * (MAX_ROTATION - MIN_ROTATION + 1) + MIN_ROTATION;
-		body.setAngularVelocity(rotationDirection);
-		body.setLinearVelocity(initialSpeed);
+		//body.setAngularVelocity(rotationDirection);
+		//body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
@@ -59,20 +60,18 @@ public class Asteroid extends GameObject implements Serializable {
 	}
 	
 	protected void updateVelocityAndPosition(float DeltaTime){
-		body.setLinearVelocity(body.getLinearVelocity().add(acceleration.setLength(DeltaTime)));
+		super.updateVelocityAndPosition(DeltaTime);
+		//body.setLinearVelocity(body.getLinearVelocity().add(acceleration.setLength(DeltaTime)));
 		//body.setTransform(body.getPosition(), body.getLinearVelocity().angle());
-		body.setLinearVelocity(getLinearDrag(body.getLinearVelocity())); //linear drag
-		rotationDirection = body.getAngularVelocity();
-		velocity.add(acceleration);
-		position.add(velocity);
-		bounds.x = position.x - width/2;
-		bounds.y = position.y - height/2;
+	//	body.setLinearVelocity(getLinearDrag(body.getLinearVelocity())); //linear drag
+	//	rotationDirection = body.getAngularVelocity();
+
 	}
 	
 	public void draw(SpriteBatch batch){
-		sprite.setPosition((body.getPosition().x * GameplayStatics.pixelsToMeters()) - 
+		sprite.setPosition(position.x - 
                 radius,
-        (body.getPosition().y * GameplayStatics.pixelsToMeters()) - radius);
+        position.y - radius);
 		//spin the asteroid around
 		sprite.rotate(rotationDirection);
 		sprite.draw(batch);

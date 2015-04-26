@@ -2,6 +2,7 @@ package orbit;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,8 +28,9 @@ public abstract class GameObject implements Serializable{
 	protected float width;
 	protected float height;
 	protected boolean isDead;
-	transient protected Body body;
-	protected Sprite sprite;
+	protected String imagePath;
+	//transient protected Body body;
+	transient protected Sprite sprite;
 	
 	public GameObject (float x, float y, float width, float height) {
 		/*
@@ -49,36 +51,49 @@ public abstract class GameObject implements Serializable{
 		mass = 0;
 	}
 	
-	public void createPhysicsBody(){
-		BodyDef bodyDef = new BodyDef();
-	     bodyDef.type = BodyDef.BodyType.DynamicBody;
-	     bodyDef.position.set((position.x + width/2) /
-	                        GameplayStatics.pixelsToMeters(),
-	                (position.y + height/2) / GameplayStatics.pixelsToMeters());
-	     body = GameplayStatics.getWorld().createBody(bodyDef);
-	     PolygonShape shape = new PolygonShape();
-	     shape.setAsBox(width/2/GameplayStatics.pixelsToMeters(), height/2/GameplayStatics.pixelsToMeters());
-	     FixtureDef fixtureDef = new FixtureDef();
-	     fixtureDef.shape = shape;
-	     fixtureDef.density = 0.1f;
-	     fixtureDef.restitution = 0.5f;
-	     body.createFixture(fixtureDef);
-	     body.setUserData(this);
-	     shape.dispose();
-	}
+//	public void createPhysicsBody(){
+//
+//		BodyDef bodyDef = new BodyDef();
+//	     bodyDef.type = BodyDef.BodyType.DynamicBody;
+//	     bodyDef.position.set((sprite.getX() + width/2) /
+//	                        GameplayStatics.pixelsToMeters(),
+//	                (sprite.getY() + height/2) / GameplayStatics.pixelsToMeters());
+//	     body = GameplayStatics.getWorld().createBody(bodyDef);
+//	     PolygonShape shape = new PolygonShape();
+//	     shape.setAsBox(width/2/GameplayStatics.pixelsToMeters(), height/2/GameplayStatics.pixelsToMeters());
+//	     FixtureDef fixtureDef = new FixtureDef();
+//	     fixtureDef.shape = shape;
+//	     fixtureDef.density = 0.1f;
+//	     fixtureDef.restitution = 0.5f;
+//	     body.createFixture(fixtureDef);
+//	     body.setUserData(this);
+//	     shape.dispose();
+//	}
 	
 	protected void updateVelocityAndPosition(float DeltaTime){
-		body.setLinearVelocity(body.getLinearVelocity().add(acceleration.setLength(DeltaTime)));
+		//createPhysicsBody();
+		if(sprite == null){
+			Texture texture = AssetLibrary.getTexture(imagePath);
+			sprite = new Sprite(texture);
+		}
+//		if(body == null){
+//			createPhysicsBody();
+//		}
+//		body.setLinearVelocity(body.getLinearVelocity().add(acceleration.setLength(DeltaTime)));
 		//body.setTransform(body.getPosition(), body.getLinearVelocity().angle());
-		body.setAngularVelocity(0);
+		//body.setAngularVelocity(0);
 		velocity.add(acceleration);
 		position.add(velocity);
 		bounds.x = position.x - width/2;
 		bounds.y = position.y - height/2;
 	}
 	
+	public void remakeBody(){
+		//createPhysicsBody();
+	}
+	
 	public void Destroy(){
-		GameplayStatics.getWorld().destroyBody(body);
+		//GameplayStatics.getWorld().destroyBody(body);
 	}
 	
 	//functions that will be called when a collision happens
@@ -90,7 +105,9 @@ public abstract class GameObject implements Serializable{
 	abstract public void update(float DeltaTime);
 	
 	public void draw(SpriteBatch b){
-		sprite.setPosition(body.getPosition().x * GameplayStatics.pixelsToMeters() - width/2, body.getPosition().y * GameplayStatics.pixelsToMeters() - height/2);
+		sprite.setPosition(position.x - width/2, position.y - height/2);
+
+//		sprite.setPosition(position.x * GameplayStatics.pixelsToMeters() - width/2, position.y * GameplayStatics.pixelsToMeters() - height/2);
 		sprite.draw(b);
 	}
 	
