@@ -61,11 +61,11 @@ public class OrbitGame extends ApplicationAdapter{
 	
 
 	//messing with this might cause an infinite loop just fyi
-	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
-	private final float MIN_ASTEROID_GAP = 150;
+	private final float MAX_ASTEROID_SPAWN_RADIUS = 500;
+	private final float MIN_ASTEROID_GAP = 300;
 	private final float MAX_ASTEROID_VELOCITY = 5;
-	private final int lowerAsteroidAmount = 2;
-	private final int upperAsteroidAmount = 4;
+	private final int lowerAsteroidAmount = 5;
+	private final int upperAsteroidAmount = 8;
 	
 	private boolean gamePaused = false;
 	private SpriteBatch batch;
@@ -74,8 +74,8 @@ public class OrbitGame extends ApplicationAdapter{
 	private ArrayList<User> opponents;
 	private Planet playerPlanet;
 	private FPSLogger fps;
-	private List<GameObject> gameObjects;
-	private List<GameObject> newGameObjects;
+	private Vector<GameObject> gameObjects;
+	private Vector<GameObject> newGameObjects;
 
 	GameClient gc;
 
@@ -157,7 +157,7 @@ public class OrbitGame extends ApplicationAdapter{
 		fps = new FPSLogger();
 		batch = new SpriteBatch();
 		//gameState = GameState.CONNECTING;
-		gameObjects = Collections.synchronizedList(new ArrayList<GameObject>());
+		gameObjects = new Vector<GameObject>();
 		
 		//Input
 		Gdx.input.setInputProcessor(new InputController(this));
@@ -233,6 +233,17 @@ public class OrbitGame extends ApplicationAdapter{
 					}
 					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
 					if (Math.hypot(x - asteroid.position.x,y - asteroid.position.y) < MIN_ASTEROID_GAP){
+						spawnConflict = true;
+						break;
+					}
+				}
+				for (User u : players){
+					if (x == u.getPlanet().position.x && y == u.getPlanet().position.y){ //makes sure position is not the same as other asteroids
+						spawnConflict = true;
+						break;
+					}
+					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
+					if (Math.hypot(x - u.getPlanet().position.x,y - u.getPlanet().position.y) < MIN_ASTEROID_GAP/2){
 						spawnConflict = true;
 						break;
 					}
@@ -319,7 +330,7 @@ public class OrbitGame extends ApplicationAdapter{
 				if (powerPercent < 0) increasing = true;
 				break;
 			case FIRE:
-				//player.setWeapon(currentWeapon);
+				player.setWeapon(currentWeapon);
 				//player.fire((int)powerPercent, angle, gameObjects);
 				playerTurnOver(powerPercent, (float)angle);
 
@@ -349,10 +360,10 @@ public class OrbitGame extends ApplicationAdapter{
 		batch.begin();
 				
 		batch.draw(backgroundImage, -965, -650);
-				
-			for(GameObject o : gameObjects){
-				o.draw(batch);
-			}
+			
+		for(GameObject o : gameObjects){
+			o.draw(batch);
+		}
 		
 		
 		//weapon gui code
@@ -409,12 +420,13 @@ public class OrbitGame extends ApplicationAdapter{
 		private Vector<PeerThread> ptVector = new Vector<PeerThread>();
 		private int numPlayersConnected = 0;
 		private boolean playersConnected = false;
+
 		
 		public GameServer(int port){
 			gameSocket = port;
 		}
 		
-		public synchronized void sendupdatedGameObjects(List<GameObject> gameObjects) {
+		public synchronized void sendupdatedGameObjects(Vector<GameObject> gameObjects) {
 			for (PeerThread pt : ptVector) {
 				pt.sendGameObjects(gameObjects);
 			}
@@ -479,7 +491,7 @@ public class OrbitGame extends ApplicationAdapter{
 			}
 		}
 		
-		public void sendGameObjects(List<GameObject> gameObjects){
+		public void sendGameObjects(Vector<GameObject> gameObjects){
 			try {
 				oos.reset();
 				oos.writeObject(gameObjects);
@@ -566,17 +578,12 @@ public class OrbitGame extends ApplicationAdapter{
 
 						oos = new ObjectOutputStream(s.getOutputStream());
 						ois = new ObjectInputStream(s.getInputStream());
-//						while (gameState == GameState.CONNECTING){
-//							isConnected = ois.readBoolean();
-//							if (isConnected){
 								if(isHost){
 									gameState = GameState.WEAPON;
 									myturn = true;
 								} else {
 									gameState = GameState.WAITING;
 									myturn = false;
-//								}
-//							}
 								}
 						isConnected = true;
 						
@@ -590,7 +597,7 @@ public class OrbitGame extends ApplicationAdapter{
 				while(isAlive){
 						sleep(1000);
 						System.out.println("waiting");
-						GameplayStatics.game.newGameObjects = Collections.synchronizedList((List<GameObject>)ois.readObject());
+						GameplayStatics.game.newGameObjects =(Vector<GameObject>)ois.readObject();
 						
 						System.out.println("read objects");
 						if(myturn == true){
@@ -631,11 +638,10 @@ public class OrbitGame extends ApplicationAdapter{
 		boolean connected = false;
 			gc = new GameClient();
 			gc.start();
-			//System.out.println("Connected to server!");
 	}
 
 	@Override
-	public void render () {
+	public synchronized void render () {
 		updateGame();
 	}
 	
@@ -654,14 +660,14 @@ public class OrbitGame extends ApplicationAdapter{
 				e.printStackTrace();
 			}
 			spawnAsteroid();
+			System.out.println("Asteroid created");
 			SpawnAsteroidThread thread = new SpawnAsteroidThread((long) (GameplayStatics.randy.nextFloat() * 10));
 			thread.start();
 		}
 		
 		public void spawnAsteroid(){
-			Camera cam = GameplayStatics.game.camera;
-			float height = cam.viewportHeight;
-			float width = cam.viewportWidth;
+			float height = 1000;
+			float width = 700;
 			Random randy = GameplayStatics.randy;
 			int topOrLeft = randy.nextInt(2);
 			int negativeOrPositive = randy.nextInt(2);
@@ -685,33 +691,13 @@ public class OrbitGame extends ApplicationAdapter{
 			Vector2 vel = new Vector2(-randX, -randY).nor();
 			vel = vel.scl(MAX_ASTEROID_VELOCITY);
 			Asteroid a = new Asteroid(randX, randY, vel.X, vel.y);
-			gameObjects.add(a);
+			newGameObjects.add(a);
 		}
 	}
 		
 	public void playerTurnOver(float powerPercent, float angle){
-//		for(int k=0;k<players.size();k++){
-//			if(k!=playerIndex){
-//				SocketHints socketHint = new SocketHints();
-//				socketHint.connectTimeout = 10000;
-//				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
-				//System.out.println("are we connected: " + socket.isConnected());
-				//System.out.println("Sending object to port " + (basePort + k));
-				//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
-				Vector3 fireInfo = new Vector3(powerPercent,angle, players.get(currentPlayer).getPlanet().getWeaponIndex());
+				Vector3 fireInfo = new Vector3(powerPercent,angle, currentWeapon);
 				gc.sendFireInfo(fireInfo);
-				//gameState = GameState.WAITING;
-				//try {
-					//ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-					//stream.writeObject(fireInfo);
-					//stream.flush();
-					
-				//} catch (IOException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				//}
-//			}
-//		}
 	}
 	
 	public void incrementToNextPlayer(){
