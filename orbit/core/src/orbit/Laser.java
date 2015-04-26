@@ -29,7 +29,6 @@ public class Laser extends Weapon{
 		 */
 		
 		Projectile p = new Projectile(xPosition, yPosition, projectileWidth, projectileHeight, initSpeed, (float)angle, this, gameObjects, gravitytoggle);
-		//p.body.getFixtureList().get(0).setRestitution(10);
 		gameObjects.add(p);
 	}
 	

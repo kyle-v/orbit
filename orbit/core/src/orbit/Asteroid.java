@@ -42,18 +42,6 @@ public class Asteroid extends GameObject implements Serializable {
 	}
 
 	@Override
-	public void OnCollisionEnter(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void OnCollisionExit(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void update(float DeltaTime) {
 		// TODO Auto-generated method stub
 		updateVelocityAndPosition(DeltaTime);
