@@ -69,9 +69,9 @@ public class Asteroid extends GameObject implements Serializable {
 	}
 	
 	public void draw(SpriteBatch batch){
-		sprite.setPosition(position.x * GameplayStatics.pixelsToMeters() - 
+		sprite.setPosition(position.x - 
                 radius,
-        (position.y * GameplayStatics.pixelsToMeters()) - radius);
+        position.y - radius);
 		//spin the asteroid around
 		sprite.rotate(rotationDirection);
 		sprite.draw(batch);
