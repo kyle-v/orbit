@@ -1,4 +1,4 @@
-package com.orbit.game.desktop;
+package orbit.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

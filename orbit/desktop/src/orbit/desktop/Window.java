@@ -2,7 +2,7 @@
  * Basic window class for all our windows
  */
 
-package com.orbit.game.desktop;
+package orbit.desktop;
 
 import java.awt.Dimension;
 import java.awt.FontMetrics;

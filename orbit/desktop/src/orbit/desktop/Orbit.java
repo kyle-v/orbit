@@ -1,4 +1,4 @@
-package com.orbit.game.desktop;
+package orbit.desktop;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,12 +11,14 @@ import javafx.util.Pair;
 
 import javax.swing.JOptionPane;
 
+import orbit.GameData;
 import orbit.OrbitGame;
 import orbit.ServerRequest;
 import orbit.User;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
 
 public class Orbit {
 
@@ -40,14 +42,14 @@ public class Orbit {
 		login.setVisible(true);
 	}
 
-	public void launchGame(ArrayList<User> opponents, ArrayList<String> ips, int seed){
+	public void launchGame(GameData gameData){
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Interplanet Orbit";
 		config.width = 1000;
 		config.height = 700;
 		int playerID = -1;
-		for(int i = 0 ; i < opponents.size(); i++){
-			if(opponents.get(i).getUsername().equals(currentUser.getUsername())) 
+		for(int i = 0 ; i < gameData.players.size(); i++){
+			if(gameData.players.get(i).getUsername().equals(currentUser.getUsername())) 
 				playerID = i;
 		}
 		System.out.println("User " + currentUser.getUsername() + " " + playerID);
@@ -55,8 +57,10 @@ public class Orbit {
 			System.out.println("User not found in list of players");
 			return;
 		}
-		new LwjglApplication(new OrbitGame(opponents, ips, playerID, seed), config);
+		System.out.println("Launching game");
+	    new LwjglApplication(new OrbitGame(gameData, playerID), config);
 
+		
 	}
 
 	public static void main (String[] arg) {

@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javafx.util.Pair;
 
 //server-side thread reads and fulfills requests to be sent back to client
@@ -19,6 +18,7 @@ public class OrbitServerThread extends Thread {
 	private ObjectOutputStream oos = null;
 	private User user = null;
 	
+	public GameData gameData = null;
 	public Pair<ArrayList<User>, ArrayList<String>> opponents = null;
 	public boolean inGame = false;
 	
@@ -112,6 +112,10 @@ public class OrbitServerThread extends Thread {
 		}else if(request.equalsIgnoreCase("Get Opponents")){
 			//opponents vector should be the same in all clients that are in the same game
 			sendResponse(opponents);
+		}else if(request.equalsIgnoreCase("Get Game Data")){
+			//opponents vector should be the same in all clients that are in the same game
+			
+			sendResponse(gameData);
 		}else if(request.equals("Update User")){
 			User u = (User)o;
 			server.activeUsers.remove(this.user);

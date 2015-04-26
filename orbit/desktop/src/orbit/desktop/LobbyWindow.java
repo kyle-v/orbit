@@ -1,8 +1,9 @@
 
-package com.orbit.game.desktop;
+package orbit.desktop;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,6 +32,7 @@ import javax.swing.SwingConstants;
 
 import orbit.ServerRequest;
 import orbit.User;
+import orbit.GameData;
 
 public class LobbyWindow extends Window{
 	private static final long serialVersionUID = 3030799455712427080L;
@@ -154,19 +156,17 @@ public class LobbyWindow extends Window{
 						ww.time--;
 						ww.waitMessage.setText("Waiting for another player...  " + ww.time + "s until timeout.");
 						
-						Object response = Orbit.sendRequest(new ServerRequest("Get Opponents", null));
+						Object response = Orbit.sendRequest(new ServerRequest("Get Game Data", null));
 						if(response != null){
 							@SuppressWarnings("unchecked")
-							Pair<ArrayList<User>, ArrayList<String>> opponents = (Pair<ArrayList<User>, ArrayList<String>>)response;
-
-							System.out.println("Opponent!");
+							GameData gameData = (GameData)response;
 							checkForGame = null;
 							ww.dispose();
 							ww.gameStarted = true;
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
 							//TODO close lobbywindow
-							orbit.launchGame(opponents.getKey(), opponents.getValue(), 0);
+							orbit.launchGame(gameData);
 						}else{
 							if(ww.time == 0){
 								checkForGame = null;
@@ -380,6 +380,7 @@ public class LobbyWindow extends Window{
 		public WaitingWindow(LobbyWindow lw){
 			super("Finding Game...");
 			System.out.println("Starting waiting window");
+			setLayout(new FlowLayout());
 			setSize(500,100);
 			setLocationRelativeTo(null);
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -415,8 +416,8 @@ public class LobbyWindow extends Window{
 				}
 			});
 			
-			add(waitMessage, BorderLayout.NORTH);
-			add(cancelButton, BorderLayout.SOUTH);
+			add(waitMessage);
+			add(cancelButton);
 			setVisible(true);
 		}
 	}

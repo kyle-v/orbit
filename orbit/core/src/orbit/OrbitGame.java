@@ -14,12 +14,6 @@ import java.util.Random;
 import java.util.Vector;
 
 
-
-
-
-
-
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -84,6 +78,8 @@ public class OrbitGame extends ApplicationAdapter{
 	private List<GameObject> newGameObjects;
 
 	GameClient gc;
+
+	
 	
 	//Sprites for Weapon GUI
 	Sprite[] weaponSprites;
@@ -133,11 +129,11 @@ public class OrbitGame extends ApplicationAdapter{
 	float player1Health = 100;
 	float player2Health = 100;
 
-	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex, long randomSeed){
-		this.players = players;
+	public OrbitGame(GameData gameData, int playerIndex){
+		this.players = gameData.players;
 		this.playerIndex = playerIndex;
-		this.playerIPAddresses = ipaddresses;
-		this.randomSeed = randomSeed;
+		this.playerIPAddresses = gameData.ips;
+		this.randomSeed = gameData.seed;
 		this.numPlayers = players.size();
 	}
 	

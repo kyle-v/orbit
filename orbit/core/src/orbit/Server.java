@@ -36,7 +36,8 @@ public class Server extends JFrame{
 	ServerSocket ss = null;
 	private Socket s;
 	public static final int portNumber = 6789;
-	
+	public static final int NUM_PLAYERS_PER_GAME = 2;
+	int numGames = 0;
 	public ChatServer chatServer;
 	
 	//access to the database
@@ -86,6 +87,7 @@ public class Server extends JFrame{
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add(startServerButton);
 		add(buttonPanel, BorderLayout.SOUTH);
+		
 		
 		//display useful information
 		serverStatus = new JLabel("Server stopped");
@@ -198,17 +200,25 @@ public class Server extends JFrame{
 	public synchronized void addToReady(OrbitServerThread ost){
 		if(!readyClients.contains(ost)){
 			readyClients.add(ost);
-			if(readyClients.size() >= 2){
+			if(readyClients.size() >= NUM_PLAYERS_PER_GAME){
 				ArrayList<User> users = new ArrayList<User>();
 				ArrayList<String> ips = new ArrayList<String>();
-				Pair<ArrayList<User>, ArrayList<String>> opponents = new Pair<ArrayList<User>, ArrayList<String>>(users, ips);
-
-				for(OrbitServerThread c : readyClients){
+				GameData gameData = new GameData(numGames);
+				numGames++;
+				OrbitServerThread[] clients = new OrbitServerThread[NUM_PLAYERS_PER_GAME];
+				for(int i = 0; i < NUM_PLAYERS_PER_GAME; i++){
+					OrbitServerThread c = readyClients.pop();
 					users.add(c.getUser());
-					ips.add(c.s.getInetAddress().toString().substring(1));
-					c.opponents = opponents;
+					ips.add(c.s.getInetAddress().toString().substring(1));//substring to remove leading '/'
+					clients[i] = c;
 				}
-
+				gameData.players = users;
+				gameData.ips = ips;
+				
+				for(OrbitServerThread player : clients){
+					player.gameData = gameData;
+				}
+				
 			}
 		}
 	}

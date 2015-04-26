@@ -1,4 +1,4 @@
-package com.orbit.game.desktop;
+package orbit.desktop;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,6 +31,6 @@ public class DesktopLauncher {
 		IPs.add("localhost");
 		IPs.add("localhost");
 		int playerID = 1;
-		new LwjglApplication(new OrbitGame(users,IPs,playerID,5), config);
+		//new LwjglApplication(new OrbitGame(users,IPs,playerID,5), config);
 	}
 }
