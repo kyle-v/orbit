@@ -196,9 +196,9 @@ public class LobbyWindow extends Window{
 		
 		JPanel tempPanel = new JPanel();			//creates bottom button panel
 		
-		findGameButton = new JButton("Find Game");
-		profileButton = new JButton("Profile");
-		quitButton = new JButton("Quit");
+		findGameButton = new JOrbitButton("Find Game");
+		profileButton = new JOrbitButton("Profile");
+		quitButton = new JOrbitButton("Quit");
 		
 		tempPanel.add(profileButton);
 		tempPanel.add(findGameButton);
@@ -215,7 +215,7 @@ public class LobbyWindow extends Window{
 		innerButtonContainer.setLayout(innerButtonContainerLayout);
 		
 		
-		sendMessageButton = new JButton("Send");			//Initialize and add glue
+		sendMessageButton = new JOrbitButton("Send");			//Initialize and add glue
 		messageTextField = new JTextField(17);
 		innerButtonContainer.add(messageTextField);
 		innerButtonContainer.add(Box.createHorizontalGlue());
@@ -295,10 +295,10 @@ public class LobbyWindow extends Window{
 			this.user = user;
 			
 			buttonContainer = new JPanel();			//container for bottom button panel
-			playGame = new JButton("Play");
-			trade = new JButton("Trade");
-			acceptButton = new JButton("Accept");
-			declineButton = new JButton("Decline");
+			playGame = new JOrbitButton("Play");
+			trade = new JOrbitButton("Trade");
+			acceptButton = new JOrbitButton("Accept");
+			declineButton = new JOrbitButton("Decline");
 			buttonContainer.add(playGame);
 			buttonContainer.add(trade);
 			statusLabel = new JLabel();
@@ -404,7 +404,7 @@ public class LobbyWindow extends Window{
 			time = 5;
 			waitMessage.setText("Waiting for another player...  " + time + "s until timeout.");
 			
-			cancelButton = new JButton("Cancel");
+			cancelButton = new JOrbitButton("Cancel");
 			cancelButton.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e){
 					System.out.println("Canceled Matchmaking");
