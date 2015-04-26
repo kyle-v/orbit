@@ -1,3 +1,12 @@
+/*
+ * Mazen Azar - mazar@usc.edu
+ * Steven Lai - laisteve@usc.edu
+ * Steven Li - listeven@usc.edu
+ * Teddy Park - theodorp@usc.edu
+ * Aditya Radhakrishna - radh439@usc.edu
+ * Kyle Vaidyanathan - kvaidyan@usc.edu
+ */
+
 package orbit;
 
 import java.awt.BorderLayout;
