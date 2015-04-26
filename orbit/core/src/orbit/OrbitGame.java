@@ -85,6 +85,8 @@ public class OrbitGame extends ApplicationAdapter{
 	Sprite[] weaponSprites;
 	int weaponGUIX = 800;
 	int weaponGUIY = 200;
+	
+	Sprite arrow;
 
 	//Input control
 	public int currentWeapon; // Weapon currently selected
@@ -264,6 +266,7 @@ public class OrbitGame extends ApplicationAdapter{
 		writer.setScale(5);
 		
 		//weapon gui stuff
+		arrow = new Sprite(AssetLibrary.getTexture("misc/arrow.png"));
 		weaponSprites = new Sprite[player.equippedWeapons.size()];
 		for(int i = 0; i < weaponSprites.length; i++){
 			weaponSprites[i] = new Sprite(AssetLibrary.getTexture(player.equippedWeapons.get(i).weaponFilename));
@@ -372,6 +375,10 @@ public class OrbitGame extends ApplicationAdapter{
 		for(int i = 0; i < weaponSprites.length; i++){
 			weaponSprites[i].draw(batch);
 		}
+		
+		
+		arrow.setPosition(weaponGUIX - 90, 200 - currentWeapon * 100);
+		arrow.draw(batch);
 		
 		if(gameState == GameState.GAMEOVER){
 			TextBounds bound = writer.getBounds(gameOverText);
