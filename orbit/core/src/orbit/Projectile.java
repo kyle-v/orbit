@@ -21,7 +21,7 @@ public class Projectile extends GameObject {
 	static final float MINDISTANCE = 0f;
 	boolean gravitytoggle;
 	List<GameObject> gameObjects;
-	Sprite sprite;
+	//transient Sprite sprite;
 	
 	//Constructor
 	/*
@@ -34,24 +34,30 @@ public class Projectile extends GameObject {
 		super(x, y, width, height);
 		sprite = new Sprite(AssetLibrary.getTexture(owner.projectileFilename));
 		sprite.setPosition(x, y);
+		this.imagePath = owner.projectileFilename;
 		this.mass = owner.projectileMass;
 		this.velocity = initialSpeed;
+		System.out.println("Initial speed" + initialSpeed);
 		this.damage = owner.damage;
 		this.gameObjects = gameObjects2;
 		this.gravitytoggle = gravitytoggle;
-		createPhysicsBody();
-		body.setLinearVelocity(initialSpeed);
+		//createPhysicsBody();
+		//body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
 	public void update(float DeltaTime) {
 		if(gravitytoggle) calculateGravity();
 		updateVelocityAndPosition(DeltaTime);
+		System.out.println(" x " + position.x + " y " + position.y);
+		System.out.println(" vx " + velocity.x + " vy " + velocity.y);
+		System.out.println(" ax " + acceleration.x + " ay " + acceleration.y);
+
 		for (GameObject o : gameObjects){
 			if(o != this){
-				if (checkCollision(o)){
-					//isDead = true;
-				}
+//				if (checkCollision(o)){
+//					//isDead = true;
+//				}
 			}
 		}
 		// TODO Auto-generated method stub
@@ -103,10 +109,9 @@ public class Projectile extends GameObject {
 
 	public void draw(SpriteBatch batch){
 		//--------------WE'RE USING SPRITES NOW MOTHERFUCKERS
-		sprite.setPosition(body.getPosition().x * GameplayStatics.pixelsToMeters() - width/2, 
-				body.getPosition().y * GameplayStatics.pixelsToMeters() - height/2);
-		sprite.setRotation(body.getLinearVelocity().angle());
-		sprite.draw(batch);
+		
+		sprite.setRotation(velocity.angle());
+		super.draw(batch);
 		/*
 		batch.draw(AssetLibrary.getTexture(projectileImage),
 				position.x - width/2,

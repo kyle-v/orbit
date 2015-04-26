@@ -20,7 +20,7 @@ public class Rocket extends Weapon{
 	}
 
 	public void fire(float xPosition, float yPosition, int powerPercent, double angle, List<GameObject> gameObjects) {
-		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle);
+		System.out.println("Rocket " + name + " was fired with power "+ powerPercent + "% at an angle " + angle + " at pos " + xPosition + "," + yPosition );
 		Vector2 initSpeed = new Vector2(maxInitialSpeed*(float)(powerPercent)/100f, 0f);
 		initSpeed.rotateRad((float)angle);
 		/*

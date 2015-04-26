@@ -44,7 +44,7 @@ public class User implements Serializable{
 	}
 	
 	//we need this because now users are going to be created prior to being in game
-	//this we way call initialize to make all the gdx object only once the game has started
+	//this we way call initialize to make al l the gdx object only once the game has started
 	public void initialize(){
 		isPlaying = true;
 		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weaponTexture1.png", "missile.png");

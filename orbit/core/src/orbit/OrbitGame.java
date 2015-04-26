@@ -307,8 +307,9 @@ public class OrbitGame extends ApplicationAdapter{
 				//player.setWeapon(currentWeapon);
 				//player.fire((int)powerPercent, angle, gameObjects);
 				gameState = GameState.WAITING;
-				incrementToNextPlayer();
 				playerTurnOver(powerPercent, (float)angle);
+				incrementToNextPlayer();
+
 				break;
 			case WAITING: // Turn over, waiting for other player
 				if(currentPlayer == playerIndex)
@@ -381,7 +382,7 @@ public class OrbitGame extends ApplicationAdapter{
 	public void setupServer(){
 		GameServer gameserver = new GameServer(basePort);
 		gameserver.start();
-		GameClient gc = new GameClient();
+		gc = new GameClient();
 		gc.start();
 		
 	}
@@ -397,13 +398,14 @@ public class OrbitGame extends ApplicationAdapter{
 			gameSocket = port;
 		}
 		
-		public synchronized void sendPlayersConnected(){
-			for (PeerThread pt : ptVector){
-				pt.allPlayersConnected(playersConnected);
-			}
-		}
+//		public synchronized void sendPlayersConnected(){
+//			for (PeerThread pt : ptVector){
+//				pt.allPlayersConnected(playersConnected);
+//			}
+//		}
 		
 		public synchronized void sendupdatedGameObjects(List<GameObject> gameObjects) {
+			System.out.println("Sending updated game objects to players");
 			for (PeerThread pt : ptVector) {
 				pt.sendGameObjects(gameObjects);
 			}
@@ -484,17 +486,19 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		public void run(){
 			try{
-				while(gameState == GameState.CONNECTING){
-					gs.sendPlayersConnected();
-				}
+//				while(gameState == GameState.CONNECTING){
+//					gs.sendPlayersConnected();
+//				}
 
 				while(true){
 					Vector3 fireInfo = (Vector3)ois.readObject();
-					//System.out.println((int)fireInfo.z);
+					System.out.println(" x " + fireInfo.x + " y " + fireInfo.y);
 					if(fireInfo != null){
 						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
 						gs.sendupdatedGameObjects(gameObjects);
+						if(gameState == GameState.WAITING) gameState = GameState.WEAPON;
+						else if(gameState == GameState.WEAPON) gameState = GameState.FIRE;
 					}
 				}
 			} catch(IOException e){
@@ -529,17 +533,17 @@ public class OrbitGame extends ApplicationAdapter{
 				
 				s = new Socket(ipAddress, portNumber);
 				oos = new ObjectOutputStream(s.getOutputStream());
-				sendFireInfo(null);
+				//sendFireInfo(null);
 				ois = new ObjectInputStream(s.getInputStream());
-				while (gameState == GameState.CONNECTING){
-					isConnected = ois.readBoolean();
-					if (isConnected){
+//				while (gameState == GameState.CONNECTING){
+//					isConnected = ois.readBoolean();
+//					if (isConnected){
 						if(isHost){
 							gameState = GameState.WEAPON;
 						} else {
 							gameState = GameState.WAITING;
-						}
-					}
+//						}
+//					}
 				}
 				
 				System.out.println("Streams started");
@@ -550,10 +554,11 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 
 		public void sendFireInfo(Vector3 fireInfo){
-			System.out.println("sending fire information to server");
+
 			try{	
 				oos.reset();
 				oos.writeObject(fireInfo);
+				System.out.println("sending fire information to server");
 				oos.flush();
 			}catch(IOException ie){
 				ie.getMessage();
@@ -564,21 +569,20 @@ public class OrbitGame extends ApplicationAdapter{
 		public void run() {
 			try {			
 				while(isAlive){
-					try {
 						sleep(1000);
 						System.out.println("waiting");
 						GameplayStatics.game.gameObjects = (List<GameObject>)ois.readObject();
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
 				}
-			} catch (IOException e) { 
-				System.out.println("Disconnected from game server");
-			}
+				}catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}  catch (IOException e) { 
+					e.printStackTrace();
+					System.out.println("Disconnected from game server with IOException");
+				}
 		}
 	}
 	
@@ -647,8 +651,8 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 		
 	public void playerTurnOver(float powerPercent, float angle){
-		for(int k=0;k<players.size();k++){
-			if(k!=playerIndex){
+//		for(int k=0;k<players.size();k++){
+//			if(k!=playerIndex){
 //				SocketHints socketHint = new SocketHints();
 //				socketHint.connectTimeout = 10000;
 //				Socket socket = Gdx.net.newClientSocket(Protocol.TCP, playerIPAddresses.get(k), basePort + playerIndex, socketHint);
@@ -657,6 +661,7 @@ public class OrbitGame extends ApplicationAdapter{
 				//fire info is what we pass over the socket, we are giving power, angle and the weapon that the player is using
 				Vector3 fireInfo = new Vector3(powerPercent,angle, players.get(currentPlayer).getPlanet().getWeaponIndex());
 				gc.sendFireInfo(fireInfo);
+				//gameState = GameState.WAITING;
 				//try {
 					//ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
 					//stream.writeObject(fireInfo);
@@ -666,8 +671,8 @@ public class OrbitGame extends ApplicationAdapter{
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
 				//}
-			}
-		}
+//			}
+//		}
 	}
 	
 	public void incrementToNextPlayer(){
