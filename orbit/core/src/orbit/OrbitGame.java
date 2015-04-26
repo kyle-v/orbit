@@ -273,36 +273,37 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 
 	public void updateGame(){
-		if(newGameObjects != null){
-			gameObjects = newGameObjects;
-			newGameObjects = null;
-		}
-		
-		
 		float DeltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		//Update
-		int numPlanet = 0;
-		if(!gamePaused){
-			world.step(1f/60f, 6, 2);
-			for(int i = 0; i < gameObjects.size(); i++){
-				GameObject o = gameObjects.get(i);
-				if (!o.isDead){
-					if(o.getName().equals("Planet")){
-						if (numPlanet == 0){
-							player1Health = ((Planet)o).health;
-							players.get(0).getPlanet().health = player1Health;
-							numPlanet++;
-						} else {
-							player2Health = ((Planet)o).health;
-							players.get(1).getPlanet().health = player2Health;
+		synchronized(gameObjects){
+			if(newGameObjects != null){
+				gameObjects = newGameObjects;
+				newGameObjects = null;
+			}
+			
+			//Update
+			int numPlanet = 0;
+			if(!gamePaused){
+				world.step(1f/60f, 6, 2);
+				for(int i = 0; i < gameObjects.size(); i++){
+					GameObject o = gameObjects.get(i);
+					if (!o.isDead){
+						if(o.getName().equals("Planet")){
+							if (numPlanet == 0){
+								player1Health = ((Planet)o).health;
+								players.get(0).getPlanet().health = player1Health;
+								numPlanet++;
+							} else {
+								player2Health = ((Planet)o).health;
+								players.get(1).getPlanet().health = player2Health;
+							}
 						}
+						o.update(DeltaTime);
+					} else {
+						gameObjects.remove(o);
 					}
-					o.update(DeltaTime);
-				} else {
-					gameObjects.remove(o);
 				}
 			}
 		}
@@ -361,10 +362,11 @@ public class OrbitGame extends ApplicationAdapter{
 				
 		batch.draw(backgroundImage, -965, -650);
 			
-		for(GameObject o : gameObjects){
-			o.draw(batch);
+		synchronized(gameObjects){
+			for(GameObject o : gameObjects){
+				o.draw(batch);
+			}
 		}
-		
 		
 		//weapon gui code
 		for(int i = 0; i < weaponSprites.length; i++){
@@ -374,6 +376,11 @@ public class OrbitGame extends ApplicationAdapter{
 		if(gameState == GameState.GAMEOVER){
 			TextBounds bound = writer.getBounds(gameOverText);
 			writer.draw(batch, gameOverText, -bound.width/2, -bound.height/2);
+		} else {
+			String whichuser = "You are Player " + (playerIndex+1);
+			writer.draw(batch,whichuser, -800,-400);
+			String currentUserText = "Player " + (currentPlayer + 1) + "'s Turn";
+			writer.draw(batch, currentUserText, 400, -400);
 		}
 		batch.end();
 
@@ -641,7 +648,7 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 
 	@Override
-	public synchronized void render () {
+	public void render () {
 		updateGame();
 	}
 	
@@ -729,10 +736,16 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 	
 	public void reportWin(){
-		gameOverText = "You Won! Click x in upper right";
-		writer.setScale(3);
-		gameState = GameState.GAMEOVER;
-		writer.setColor(Color.YELLOW);
+		if (isGameOver == false){
+			WeaponGenerator weaponGenerator = new WeaponGenerator();
+			Weapon newWeapon = weaponGenerator.makeWeapon();
+			players.get(playerIndex).addWeapon(newWeapon);
+			players.get(playerIndex).addMoney(100);
+			gameOverText = "You Won! Your reward is \n" + newWeapon.getName() + " and 100 coins";
+			writer.setScale(3);
+			gameState = GameState.GAMEOVER;
+			writer.setColor(Color.YELLOW);
+		}
 		isGameOver = true;
 	}
 	

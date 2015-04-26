@@ -22,8 +22,8 @@ public class WeaponGenerator {
 	
 	//generates a random weapon
 	public Weapon makeWeapon(){
-		int adjectiveIndex = random.nextInt(numAdjectives + 1);
-		int nounIndex = random.nextInt(numNouns + 1);
+		int adjectiveIndex = random.nextInt(numAdjectives);
+		int nounIndex = random.nextInt(numNouns);
 		String name = "The " + adjectives[adjectiveIndex] + nouns[nounIndex];
 		int damage = random.nextInt(MAX_DAMAGE + 1) + 1;
 		int cooldown = random.nextInt(MAX_COOLDOWN + 1);

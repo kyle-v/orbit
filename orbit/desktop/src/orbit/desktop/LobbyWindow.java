@@ -112,9 +112,6 @@ public class LobbyWindow extends Window{
 	
 	private void updateLobbyAvis(){
 		//System.out.println("Updating avis");
-		
-		
-		
 		userContainer.removeAll();
 		aviPanels.removeAllElements();
 		for(User u : currentUsers){
