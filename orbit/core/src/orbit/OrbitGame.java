@@ -125,6 +125,7 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	boolean isConnected = false;
 	boolean isHost;
+	public boolean isGameOver = false;
 	
 	float player1Health = 100;
 	float player2Health = 100;
@@ -767,6 +768,7 @@ public class OrbitGame extends ApplicationAdapter{
 		writer.setScale(3);
 		gameState = GameState.GAMEOVER;
 		writer.setColor(Color.YELLOW);
+		isGameOver = true;
 	}
 	
 	public void reportLoss(){
@@ -774,6 +776,7 @@ public class OrbitGame extends ApplicationAdapter{
 		writer.setScale(3);
 		gameState = GameState.GAMEOVER;
 		writer.setColor(Color.YELLOW);
+		isGameOver = true;
 	}
 	
 	public class GameOverDialog extends Dialog{

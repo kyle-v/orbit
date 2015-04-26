@@ -3,6 +3,7 @@ package orbit.desktop;
 import java.util.ArrayList;
 import java.util.Random;
 
+import orbit.GameData;
 import orbit.OrbitGame;
 import orbit.User;
 
@@ -24,13 +25,17 @@ public class DesktopLauncher {
 //		o.currentUser = new User("mazen", "azar");
 //		ProfileWindow pw = new ProfileWindow(o);
 //		pw.setVisible(true);
+		GameData g = new GameData(1);
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User("Kyle","P"));
 		users.add(new User("Steven", "LJK"));
+		g.players = users;
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		int playerID = 1;
-		//new LwjglApplication(new OrbitGame(users,IPs,playerID,5), config);
+		g.ips = IPs;
+		g.seed = 1;
+		int playerID = 0;
+		new LwjglApplication(new OrbitGame(g,playerID), config);
 	}
 }
