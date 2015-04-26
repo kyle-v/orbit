@@ -62,7 +62,7 @@ public class OrbitGame extends ApplicationAdapter{
 
 	//messing with this might cause an infinite loop just fyi
 	private final float MAX_ASTEROID_SPAWN_RADIUS = 175;
-	private final float MIN_ASTEROID_GAP = 100;
+	private final float MIN_ASTEROID_GAP = 150;
 	private final float MAX_ASTEROID_VELOCITY = 5;
 	private final int lowerAsteroidAmount = 2;
 	private final int upperAsteroidAmount = 4;
@@ -151,17 +151,7 @@ public class OrbitGame extends ApplicationAdapter{
 			connectToServer();
 			isHost = false;
 		}
-		
-//		try{
-//			connectToServer();
-//			isHost = false;
-//		}catch(Exception e){
-//			setupServer();
-//			System.out.println("Hosting server");
-//			isHost = true;
-//		}
 		isConnected = true;
-		System.out.println(isConnected);
 		
 		//Initializing variables
 		fps = new FPSLogger();
@@ -292,7 +282,6 @@ public class OrbitGame extends ApplicationAdapter{
 						if (numPlanet == 0){
 							player1Health = ((Planet)o).health;
 							players.get(0).getPlanet().health = player1Health;
-							System.out.println(player1Health);
 							numPlanet++;
 						} else {
 							player2Health = ((Planet)o).health;
@@ -380,7 +369,6 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.begin(ShapeType.Filled);
 		for(User u : players){
 			Planet p = u.getPlanet();
-			//System.out.println(p.health);
 			if(p.health>0){
 				Vector2 pos = p.position;
 				shapeRenderer.setColor(Color.RED);
@@ -425,14 +413,7 @@ public class OrbitGame extends ApplicationAdapter{
 			gameSocket = port;
 		}
 		
-//		public synchronized void sendPlayersConnected(){
-//			for (PeerThread pt : ptVector){
-//				pt.allPlayersConnected(playersConnected);
-//			}
-//		}
-		
 		public synchronized void sendupdatedGameObjects(List<GameObject> gameObjects) {
-			System.out.println("Sending updated game objects to players");
 			for (PeerThread pt : ptVector) {
 				pt.sendGameObjects(gameObjects);
 			}
@@ -450,12 +431,10 @@ public class OrbitGame extends ApplicationAdapter{
 					ptVector.add(pt);
 					pt.start();
 					numPlayersConnected++;
-					System.out.println(numPlayersConnected);
 					if (numPlayersConnected == numPlayers){
 						playersConnected = true;
 						System.out.println("All players connected!");
 					}
-					System.out.println(ptVector.size());
 				}
 			} catch (IOException ioe) {
 				System.out.println("IOE: " + ioe.getMessage());
@@ -516,7 +495,6 @@ public class OrbitGame extends ApplicationAdapter{
 
 				while(true){
 					Vector3 fireInfo = (Vector3)ois.readObject();
-					System.out.println(" x " + fireInfo.x + " y " + fireInfo.y);
 					if(fireInfo != null){
 						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
