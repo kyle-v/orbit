@@ -277,7 +277,6 @@ public class OrbitGame extends ApplicationAdapter{
 					//shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
 					o.update(DeltaTime);
 				} else {
-					o.Destroy();
 					gameObjects.remove(o);
 				}
 			}

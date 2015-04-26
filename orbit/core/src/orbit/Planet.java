@@ -43,7 +43,6 @@ public class Planet extends GameObject implements Serializable{
 	public float health;
 	private float radius;
 	private String planetSkinPath;
-	//transient private Sprite sprite;
 	
 	private Vector<Weapon> weapons;
 	private Weapon equippedWeapon;
@@ -81,35 +80,9 @@ public class Planet extends GameObject implements Serializable{
 		Texture texture = AssetLibrary.getTexture(planetSkinPath);
 		sprite = new Sprite(texture);
 		sprite.setPosition(position.x - radius, position.y - radius);
-		//createPhysicsBody();
 		equippedWeapon = weapon;
 	}
 	
-	//function to generate the physics body that this sprite is paired to
-//	public void createPhysicsBody(){
-//		if(sprite == null){
-//			System.out.println(planetSkinPath);
-//			Texture texture = AssetLibrary.getTexture(planetSkinPath);
-//			sprite = new Sprite(texture);
-//			sprite.setPosition(position.x - radius, position.y - radius);
-//		}
-//		BodyDef bodyDef = new BodyDef();
-//	     bodyDef.type = BodyDef.BodyType.StaticBody;
-//	     bodyDef.position.set((sprite.getX() + radius) /
-//	                        GameplayStatics.pixelsToMeters(),
-//	                (sprite.getY() + radius) / GameplayStatics.pixelsToMeters());
-//	     body = GameplayStatics.getWorld().createBody(bodyDef);
-//	     CircleShape shape = new CircleShape();
-//	     shape.setRadius(radius/ GameplayStatics.pixelsToMeters());
-//	     FixtureDef fixtureDef = new FixtureDef();
-//	     fixtureDef.shape = shape;
-//	     fixtureDef.density = 0.1f;
-//	     fixtureDef.restitution = 0.5f;
-//	     body.createFixture(fixtureDef);
-//	     body.setUserData(this);
-//	     shape.dispose();
-//	}
-//	
 	public void takeDamage(float damage){
 		health -= damage;
 		if(health<=0){
@@ -146,33 +119,18 @@ public class Planet extends GameObject implements Serializable{
 	public void SetPosition(Vector2 pos){
 		position = pos;
 		sprite.setPosition(pos.x - radius, pos.y - radius);
-//		body.setTransform((sprite.getX() + radius) /
-//                GameplayStatics.pixelsToMeters(),
-//                (sprite.getY() + radius) / GameplayStatics.pixelsToMeters(), 0);
 	}
 
 	@Override
 	public void update(float DeltaTime) {
 		updateVelocityAndPosition(DeltaTime);
 		degreePosition += DeltaTime * ORBIT_ROTATION_SPEED;
-		//localRotation += DeltaTime * LOCAL_ROTATION_SPEED;
-//		float distance = body.getPosition().len();
-//		body.setTransform(new Vector2((float)Math.cos(degreePosition)*distance,(float)Math.sin(degreePosition)*distance), localRotation);
-		//set the sprites position to the same as 
-//		sprite.setPosition((body.getPosition().x * GameplayStatics.pixelsToMeters()) - 
-//                radius,
-//        (body.getPosition().y * GameplayStatics.pixelsToMeters()) - radius);
-	//	position.x = sprite.getX() + sprite.getWidth()/2;
-	//	position.y = sprite.getY() + sprite.getHeight()/2;
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void draw(SpriteBatch batch){
 		
 		sprite.setSize(radius*2 , radius*2);
 		super.draw(batch);
-		//batch.draw(planetSkin, position.x - radius, position.y - radius, radius*2, radius*2);
 	}
 	
 	public boolean checkCollision(GameObject other){
@@ -186,20 +144,6 @@ public class Planet extends GameObject implements Serializable{
 	
 	public String getName(){
 		return "Planet";
-	}
-
-
-	@Override
-	public void OnCollisionEnter(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void OnCollisionExit(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

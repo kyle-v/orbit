@@ -41,8 +41,6 @@ public class Projectile extends GameObject {
 		this.damage = owner.damage;
 		this.gameObjects = gameObjects2;
 		this.gravitytoggle = gravitytoggle;
-		//createPhysicsBody();
-		//body.setLinearVelocity(initialSpeed);
 	}
 
 	@Override
@@ -55,9 +53,9 @@ public class Projectile extends GameObject {
 
 		for (GameObject o : gameObjects){
 			if(o != this){
-//				if (checkCollision(o)){
-//					//isDead = true;
-//				}
+				if (checkCollision(o)){
+					isDead = true;
+				}
 			}
 		}
 		// TODO Auto-generated method stub
@@ -112,28 +110,11 @@ public class Projectile extends GameObject {
 		
 		sprite.setRotation(velocity.angle());
 		super.draw(batch);
-		/*
-		batch.draw(AssetLibrary.getTexture(projectileImage),
-				position.x - width/2,
-				position.y - height/2,
-				width/2, //pivot point for scaling and rotation
-				height/2, // ^
-				width,
-				height,
-				1 , //scale
-				1,
-				this.velocity.angle(), //rotation
-				0, //From image file (for spritesheets)
-				0,
-				(int)width,
-				(int)height,
-				false,
-				false);*/
 	}
 	
 	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
-			//System.out.println(this.getName() + " hit " + other.getName());
+			System.out.println(this.getName() + " hit " + other.getName());
 			return true;
 		}
 		return false;
@@ -147,30 +128,4 @@ public class Projectile extends GameObject {
 		return this.isDead;
 	}
 
-	@Override
-	public void OnCollisionEnter(Contact contact, boolean isA) {
-		GameObject collided;
-		if(isA){
-			collided = (GameObject)contact.getFixtureB().getBody().getUserData();
-		}
-		else{
-			collided = (GameObject)contact.getFixtureA().getBody().getUserData();
-		}
-		System.out.println("test");
-		if(collided instanceof Planet){
-			Planet p = (Planet)collided;
-			p.takeDamage(damage);
-			isDead = true;
-			GameplayStatics.game.checkWinCondition();
-		}
-		if(collided instanceof Asteroid){
-			isDead = true;
-		}
-	}
-
-	@Override
-	public void OnCollisionExit(Contact contact, boolean isA) {
-		// TODO Auto-generated method stub
-		
-	}
 }
