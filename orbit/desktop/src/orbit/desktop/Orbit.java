@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.util.Pair;
 
@@ -25,6 +27,7 @@ public class Orbit {
 	Window login = null; 
 	Window lobby = null;
 	Window profile = null;
+	OrbitGame game = null;
 
 	static String ipAddress = "localhost";
 	private static final int portNumber = 6789;
@@ -47,6 +50,7 @@ public class Orbit {
 		config.title = "Interplanet Orbit";
 		config.width = 1000;
 		config.height = 700;
+		
 		int playerID = -1;
 		for(int i = 0 ; i < gameData.players.size(); i++){
 			if(gameData.players.get(i).getUsername().equals(currentUser.getUsername())) 
@@ -58,8 +62,19 @@ public class Orbit {
 			return;
 		}
 		System.out.println("Launching game");
-	    new LwjglApplication(new OrbitGame(gameData, playerID), config);
-
+		game = new OrbitGame(gameData, playerID);
+		new LwjglApplication(game, config);
+	    
+	    
+	    System.out.println("Game has been launched");
+	    Timer checkIfGameOver = new Timer("Check if game is over");
+	    checkIfGameOver.schedule(new TimerTask(){
+	    	public void run(){
+	    		//if(game.isGameOver){
+	    			
+	    		//}
+	    	}
+	    }, 0l, 2000l);
 		
 	}
 

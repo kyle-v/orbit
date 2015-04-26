@@ -19,6 +19,7 @@ public class Window extends JFrame{
 
 	private static final long serialVersionUID = -3265727502097532460L;
 	private final ImageIcon backgroundImage = new ImageIcon("bin/Button.png");
+	private final ImageIcon disabledImage = new ImageIcon("bin/buttondisabled.png");
 	protected Orbit orbit; //parent class for sharing stuff to main game
 	
 	Window(){
@@ -43,7 +44,7 @@ public class Window extends JFrame{
 		JOrbitButton(String name){
 			
 			this.name = name;
-			Dimension d = new Dimension(100,30);
+			Dimension d = new Dimension(121, 40);
 			setPreferredSize(d);
 			repaint();
 			
@@ -55,7 +56,12 @@ public class Window extends JFrame{
 	        Rectangle2D r2d = fontM.getStringBounds(name, gtwod);				//centers the string in button
 	        int x = (this.getWidth() - (int) r2d.getWidth()) / 2;
 	        int y = (this.getHeight() - (int) r2d.getHeight()) / 2 + fontM.getAscent();
-			g.drawImage(backgroundImage.getImage(), 0, 0, 100, 30, null);
+	        if(isEnabled()){
+				g.drawImage(backgroundImage.getImage(), 0, 0, 121, 40, null);
+	        }else{
+				g.drawImage(disabledImage.getImage(), 0, 0, 121, 40, null);
+
+	        }
 			g.drawString(name, x, y);
 			
 		}

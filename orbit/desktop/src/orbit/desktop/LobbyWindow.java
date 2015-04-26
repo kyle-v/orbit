@@ -165,7 +165,6 @@ public class LobbyWindow extends Window{
 							ww.gameStarted = true;
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
-							//TODO close lobbywindow
 							orbit.launchGame(gameData);
 						}else{
 							if(ww.time == 0){
@@ -400,7 +399,7 @@ public class LobbyWindow extends Window{
 			    	WaitingWindow.this.lw.endMatchmaking();
 			    	WaitingWindow.this.lw.ww = null;
 			    	if(gameStarted){
-			    		WaitingWindow.this.lw.dispose();
+			    		//WaitingWindow.this.lw.dispose();
 			    	}
 			    }
 			});
