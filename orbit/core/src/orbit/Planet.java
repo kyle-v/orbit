@@ -84,11 +84,13 @@ public class Planet extends GameObject implements Serializable{
 	}
 	
 	public void takeDamage(float damage){
+		System.out.println("Got damaged");
 		health -= damage;
 		if(health<=0){
 			Texture texture = AssetLibrary.getTexture(destroyedTexturePath);
 			sprite.setTexture(texture);
 		}
+		System.out.println(health);
 	}
 	
 	public void setWeapon(int weaponIndex){

@@ -52,6 +52,7 @@ public class Projectile extends GameObject {
 			if(o != this){
 				if (checkCollision(o)){
 					if (o.getName() == "Planet"){
+						((Planet)o).takeDamage(damage);
 						isDead = true;
 					}
 				}

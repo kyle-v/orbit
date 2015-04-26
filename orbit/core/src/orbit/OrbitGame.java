@@ -129,6 +129,9 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	boolean isConnected = false;
 	boolean isHost;
+	
+	float player1Health = 100;
+	float player2Health = 100;
 
 	public OrbitGame(ArrayList<User> players, ArrayList<String> ipaddresses, int playerIndex, long randomSeed){
 		this.players = players;
@@ -209,14 +212,10 @@ public class OrbitGame extends ApplicationAdapter{
 			User u = players.get(k);
 			u.initialize();
 			double radians = Math.toRadians(start + increment*k);
-			u.getPlanet().SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
-			u.getPlanet().setDegreePosition((float)radians);
-			gameObjects.add(u.getPlanet());
-//			if(k!=playerIndex){
-//				System.out.println("Looking for port on " + (GameplayStatics.game.basePort + k));
-//				NetworkingListenerThread thread = new NetworkingListenerThread(k);
-//				thread.start();
-//			}
+			Planet planet = u.getPlanet();
+			planet.SetPosition(new Vector2((float)Math.cos(radians)*SPAWN_RADIUS, (float)Math.sin(radians)*SPAWN_RADIUS));
+			planet.setDegreePosition((float)radians);
+			gameObjects.add(planet);
 		}
 		
 		
@@ -286,18 +285,31 @@ public class OrbitGame extends ApplicationAdapter{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		//Update
+		int numPlanet = 0;
 		if(!gamePaused){
 			world.step(1f/60f, 6, 2);
 			for(int i = 0; i < gameObjects.size(); i++){
 				GameObject o = gameObjects.get(i);
 				if (!o.isDead){
-					//shapeRenderer.rect(o.bounds.x,o.bounds.y,o.bounds.width,o.bounds.height);
+					if(o.getName().equals("Planet")){
+						if (numPlanet == 0){
+							player1Health = ((Planet)o).health;
+							players.get(0).getPlanet().health = player1Health;
+							System.out.println(player1Health);
+							numPlanet++;
+						} else {
+							player2Health = ((Planet)o).health;
+							players.get(1).getPlanet().health = player2Health;
+						}
+					}
 					o.update(DeltaTime);
 				} else {
 					gameObjects.remove(o);
 				}
 			}
 		}
+		
+		checkWinCondition();
 
 		//Game loop
 		switch(gameState){
@@ -371,6 +383,7 @@ public class OrbitGame extends ApplicationAdapter{
 		shapeRenderer.begin(ShapeType.Filled);
 		for(User u : players){
 			Planet p = u.getPlanet();
+			//System.out.println(p.health);
 			if(p.health>0){
 				Vector2 pos = p.position;
 				shapeRenderer.setColor(Color.RED);
