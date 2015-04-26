@@ -35,8 +35,8 @@ public class ProfileWindow extends Window{
 	private Vector<WeaponGui> weaponPanels = new Vector<WeaponGui>();
 
 	private JOrbitButton backButton;
-	private final ImageIcon backgroundImage = new ImageIcon("assets/StarBackground.jpg");
-	//private final ImageIcon defaultPlanet = new ImageIcon("assets/defaultPlanet_pinkLarge.png");
+	private final ImageIcon backgroundImage = new ImageIcon("bin/StarBackground.jpg");
+	//private final ImageIcon defaultPlanet = new ImageIcon("bin/defaultPlanet_pinkLarge.png");
 	ImageIcon planetImage;
 	JComboBox jcb;
 	JLabel jl, imageLabel;
@@ -179,13 +179,13 @@ class WeaponGui extends JPanel{
 
 	ProfileWindow pw;
 	public WeaponGui (Weapon weapon, boolean equipped, ProfileWindow profile){
-		System.out.println("WeaponGUi created for " + weapon.getName());
+		System.out.println("WeaponGUi created for " + weapon.getName() + "  " + weapon.getWeaponImage());
 		this.weapon = weapon;
 		this.equipped = equipped;
 		this.pw = profile;
-		setPreferredSize(new Dimension(200, 70));
-		this.setMinimumSize(new Dimension(200, 70));
-		ImageIcon weaponImage = new ImageIcon(weapon.getWeaponImage());
+		setPreferredSize(new Dimension(300, 70));
+		this.setMinimumSize(new Dimension(300, 70));
+		ImageIcon weaponImage = new ImageIcon("bin/weapons/"+weapon.getWeaponImage());
 		JLabel weaponLabel = new JLabel(weapon.getName(), weaponImage, SwingConstants.TRAILING);
 		add(weaponLabel);
 		damageLabel = new JLabel("Damage: " + weapon.getDamage());
@@ -223,7 +223,10 @@ class WeaponGui extends JPanel{
 					pw.orbit.currentUser.addMoney(-weapon.damageUpgradeCost);
 					weapon.upgradeDamage();
 					upgradeDamage.setText("Upgrade +" + weapon.damageUpgradeAmt +" $" + weapon.damageUpgradeCost);
+					damageLabel.setText("Damage: " + weapon.getDamage());
+
 					if(pw.orbit.currentUser.getMoney() < weapon.damageUpgradeCost) upgradeDamage.setEnabled(false);
+				
 				}
 				pw.checkMoney();
 
@@ -238,6 +241,8 @@ class WeaponGui extends JPanel{
 					upgradeSpeed.setText("Upgrade +" + weapon.speedUpgradeAmt +" - $" + weapon.speedUpgradeAmt);
 					if(pw.orbit.currentUser.getMoney() < weapon.speedUpgradeCost) upgradeSpeed.setEnabled(false);
 				
+					speedLabel.setText("Speed: " + weapon.getSpeed());
+
 				}
 				pw.checkMoney();
 

@@ -49,7 +49,7 @@ public class LobbyWindow extends Window{
 	private JButton sendMessageButton;
 	private JTextField messageTextField;
 	private JTextArea chatArea;
-	private final ImageIcon backgroundImage = new ImageIcon("assets/SpaceBackground.jpg");
+	private final ImageIcon backgroundImage = new ImageIcon("bin/SpaceBackground.jpg");
 	Timer updateTimer;
 	Timer checkForGame;
 	public WaitingWindow ww = null;
@@ -308,7 +308,7 @@ public class LobbyWindow extends Window{
 			Dimension d = new Dimension(170, 32);
 			buttonContainer.setPreferredSize(d);
 	
-			aviImage = new ImageIcon("assets/planets/" + user.planetPath);
+			aviImage = new ImageIcon("bin/planets/" + user.planetPath);
 			JLabel label = new JLabel();
 			label.setIcon(aviImage);
 			d = new Dimension(170, 140);
