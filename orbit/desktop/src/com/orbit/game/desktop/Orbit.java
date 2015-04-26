@@ -5,12 +5,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+import javafx.util.Pair;
 
 import javax.swing.JOptionPane;
 
+import orbit.OrbitGame;
 import orbit.ServerRequest;
 import orbit.User;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class Orbit {
@@ -35,13 +40,13 @@ public class Orbit {
 		login.setVisible(true);
 	}
 
-	public void launchGame(){
+	public void launchGame(ArrayList<User> opponents, ArrayList<String> ips, int seed){
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Interplanet Orbit";
-		config.width = 1024;
-		config.height = 600;
-
-//		new LwjglApplication(new OrbitGame(users,0), config);
+		config.width = 1000;
+		config.height = 700;
+		int playerID = opponents.indexOf(currentUser);
+		new LwjglApplication(new OrbitGame(opponents, ips, playerID, seed), config);
 
 	}
 
@@ -91,7 +96,7 @@ public class Orbit {
 		}
 	}
 
-	public static Object sendRequest(ServerRequest sr){
+	public static synchronized Object sendRequest(ServerRequest sr){
 		Object response = null;
 		try {
 			//System.out.println("Sending ServerRequest...");

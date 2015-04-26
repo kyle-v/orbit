@@ -1,13 +1,9 @@
 package orbit;
 
-import java.awt.Image;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 
 public class User implements Serializable{
 

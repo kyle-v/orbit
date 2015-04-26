@@ -110,6 +110,9 @@ public class LobbyWindow extends Window{
 	
 	private void updateLobbyAvis(){
 		//System.out.println("Updating avis");
+		
+		
+		
 		userContainer.removeAll();
 		aviPanels.removeAllElements();
 		for(User u : currentUsers){
@@ -163,7 +166,7 @@ public class LobbyWindow extends Window{
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
 							//TODO close lobbywindow
-							orbit.launchGame();
+							orbit.launchGame(opponents.getKey(), opponents.getValue(), 0);
 						}else{
 							if(ww.time == 0){
 								checkForGame = null;
