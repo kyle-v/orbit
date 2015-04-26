@@ -3,6 +3,8 @@ package com.orbit.game.desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -54,7 +56,7 @@ public class ProfileWindow extends Window{
 		inventoryPanel.setLayout(new BoxLayout(inventoryPanel, BoxLayout.Y_AXIS));
 		buttonPanel = new JPanel();
 
-		setupProfilePanel();
+		setupPanels();
 
 
 		backButton = new JOrbitButton("Back to Lobby");
@@ -64,6 +66,8 @@ public class ProfileWindow extends Window{
 //		JPanel testPanel = new JPanel();
 //		testPanel.add(inventoryPanel);
 		containerPanel.add(inventoryPanel, BorderLayout.EAST);
+		containerPanel.add(planetPanel, BorderLayout.WEST);
+
 		containerPanel.add(profilePanel, BorderLayout.CENTER);		//add panels to main panel
 		containerPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -73,7 +77,7 @@ public class ProfileWindow extends Window{
 		setSize(1024,600);
 	}
 
-	private void setupProfilePanel(){
+	private void setupPanels(){
 		for(Weapon w : orbit.currentUser.weapons){
 			WeaponGui wg;
 			if(orbit.currentUser.equippedWeapons.contains(w)){
@@ -97,7 +101,7 @@ public class ProfileWindow extends Window{
 				setImage(itemEvent.getItem().toString());
 			}
 		});
-		inventoryPanel.add(jcb);
+		planetPanel.add(jcb);
 	}
 	
 	public void setImage(String imagePath){
@@ -156,7 +160,6 @@ public class ProfileWindow extends Window{
 		private static final long serialVersionUID = 2L;
 
 		JProfilePanel(){					
-			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		}
 		protected void paintComponent(Graphics g){
 			g.drawImage(backgroundImage.getImage() ,0,0,null );
@@ -183,21 +186,39 @@ class WeaponGui extends JPanel{
 		this.weapon = weapon;
 		this.equipped = equipped;
 		this.pw = profile;
-		setPreferredSize(new Dimension(300, 70));
-		this.setMinimumSize(new Dimension(300, 70));
+		//setPreferredSize(new Dimension(400, 50));
+		//this.setMinimumSize(new Dimension(400, 50));
 		ImageIcon weaponImage = new ImageIcon("bin/weapons/"+weapon.getWeaponImage());
 		JLabel weaponLabel = new JLabel(weapon.getName(), weaponImage, SwingConstants.TRAILING);
-		add(weaponLabel);
+		GridBagConstraints gbc = new GridBagConstraints();
+		setLayout(new GridBagLayout());
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		add(weaponLabel, gbc);
+		
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.gridwidth = 1;
 		damageLabel = new JLabel("Damage: " + weapon.getDamage());
-		add(damageLabel);
+		add(damageLabel, gbc);
+		
+		gbc.gridx++;
 		upgradeDamage = new JButton("Upgrade +" + weapon.damageUpgradeAmt +" $" + weapon.damageUpgradeCost);
-		add(upgradeDamage);
-
+		add(upgradeDamage, gbc);
+		
+		gbc.gridy++;
+		gbc.gridx = 0;
 		speedLabel = new JLabel("Speed: " + weapon.getSpeed());
-		add(speedLabel);
+		add(speedLabel, gbc);
+		
+		gbc.gridx++;
 		upgradeSpeed = new JButton("Upgrade +" + weapon.speedUpgradeAmt +" - $" + weapon.speedUpgradeAmt);
-		add(upgradeSpeed);
+		add(upgradeSpeed, gbc);
 
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
 		equipButton = new JButton("Equip");
 		if(equipped) {
 			equipButton.setText("Unequip");
@@ -207,7 +228,7 @@ class WeaponGui extends JPanel{
 		if(pw.orbit.currentUser.getMoney() < weapon.damageUpgradeCost) upgradeDamage.setEnabled(false);
 		if(pw.orbit.currentUser.getMoney() < weapon.speedUpgradeCost) upgradeSpeed.setEnabled(false);
 
-		add(equipButton);
+		add(equipButton, gbc);
 		pw.checkEquipLimits();
 		pw.checkMoney();
 
