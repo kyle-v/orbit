@@ -148,6 +148,15 @@ public class OrbitGame extends ApplicationAdapter{
 			connectToServer();
 			isHost = false;
 		}
+		
+//		try{
+//			connectToServer();
+//			isHost = false;
+//		}catch(Exception e){
+//			setupServer();
+//			System.out.println("Hosting server");
+//			isHost = true;
+//		}
 		isConnected = true;
 		System.out.println(isConnected);
 		
@@ -507,6 +516,16 @@ public class OrbitGame extends ApplicationAdapter{
 			}	catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}finally{
+				try {
+					ois.close();
+					oos.close();
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 		}
 		
@@ -529,28 +548,7 @@ public class OrbitGame extends ApplicationAdapter{
 		boolean isConnected = false;
 
 		public GameClient(){
-			try{
-				
-				s = new Socket(ipAddress, portNumber);
-				oos = new ObjectOutputStream(s.getOutputStream());
-				//sendFireInfo(null);
-				ois = new ObjectInputStream(s.getInputStream());
-//				while (gameState == GameState.CONNECTING){
-//					isConnected = ois.readBoolean();
-//					if (isConnected){
-						if(isHost){
-							gameState = GameState.WEAPON;
-						} else {
-							gameState = GameState.WAITING;
-//						}
-//					}
-				}
-				
-				System.out.println("Streams started");
-				
-			}catch(IOException ioe){
-				System.out.println("IOE Exception in GameClient main" + ioe.getMessage());
-			}
+
 		}
 
 		public void sendFireInfo(Vector3 fireInfo){
@@ -561,13 +559,39 @@ public class OrbitGame extends ApplicationAdapter{
 				System.out.println("sending fire information to server");
 				oos.flush();
 			}catch(IOException ie){
-				ie.getMessage();
+				ie.printStackTrace();
 			}
 			
 		}
 
 		public void run() {
-			try {			
+			try {	
+				while(!isConnected){
+					try{
+						
+						s = new Socket(ipAddress, portNumber);
+						oos = new ObjectOutputStream(s.getOutputStream());
+						//sendFireInfo(null);
+						ois = new ObjectInputStream(s.getInputStream());
+//						while (gameState == GameState.CONNECTING){
+//							isConnected = ois.readBoolean();
+//							if (isConnected){
+								if(isHost){
+									gameState = GameState.WEAPON;
+								} else {
+									gameState = GameState.WAITING;
+//								}
+//							}
+								}
+						isConnected = true;
+						
+						System.out.println("Streams started");
+						
+					}catch(IOException ioe){
+						this.sleep(3000);
+						System.out.println("IOE Exception in GameClient main" + ioe.getMessage());
+					}
+				}
 				while(isAlive){
 						sleep(1000);
 						System.out.println("waiting");
@@ -582,6 +606,16 @@ public class OrbitGame extends ApplicationAdapter{
 				}  catch (IOException e) { 
 					e.printStackTrace();
 					System.out.println("Disconnected from game server with IOException");
+				}finally{
+					try {
+						ois.close();
+						oos.close();
+						s.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 		}
 	}
@@ -592,7 +626,7 @@ public class OrbitGame extends ApplicationAdapter{
 		boolean connected = false;
 			gc = new GameClient();
 			gc.start();
-			System.out.println("Connected to server!");
+			//System.out.println("Connected to server!");
 	}
 
 	@Override
