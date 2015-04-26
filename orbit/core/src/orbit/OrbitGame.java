@@ -93,6 +93,7 @@ public class OrbitGame extends ApplicationAdapter{
 	private float powerPercent; // VALUE FROM 0 to 100 percent of the weapons max power
 	private double angle; // Angle to shoot the weapon at
 	private boolean increasing = true; //Whether the value that is being set (angle or power ) is currently increasing or decreasing
+	private boolean myturn;
 	World world;
 	Box2DDebugRenderer debugRenderer;
 	Camera camera;
@@ -320,8 +321,8 @@ public class OrbitGame extends ApplicationAdapter{
 
 				break;
 			case WAITING: // Turn over, waiting for other player
-				if(currentPlayer == playerIndex)
-					gameState = GameState.WEAPON;
+//				if(currentPlayer == playerIndex)
+//					gameState = GameState.WEAPON;
 				//When opponent's turn is over move back to WEAPON state
 				break;
 			default:
@@ -505,8 +506,6 @@ public class OrbitGame extends ApplicationAdapter{
 						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
 						gs.sendupdatedGameObjects(gameObjects);
-						if(gameState == GameState.WAITING) gameState = GameState.WEAPON;
-						else if(gameState == GameState.WEAPON) gameState = GameState.FIRE;
 					}
 				}
 			} catch(IOException e){
@@ -577,8 +576,10 @@ public class OrbitGame extends ApplicationAdapter{
 //							if (isConnected){
 								if(isHost){
 									gameState = GameState.WEAPON;
+									myturn = true;
 								} else {
 									gameState = GameState.WAITING;
+									myturn = false;
 //								}
 //							}
 								}
@@ -595,6 +596,15 @@ public class OrbitGame extends ApplicationAdapter{
 						sleep(1000);
 						System.out.println("waiting");
 						GameplayStatics.game.gameObjects = (List<GameObject>)ois.readObject();
+						System.out.println("read objects");
+						if(myturn == true){
+							myturn = false;
+							gameState = GameState.WAITING;
+						}
+						else if(myturn == false){
+							myturn = true;
+							gameState = GameState.WEAPON;
+						}
 				}
 				}catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
