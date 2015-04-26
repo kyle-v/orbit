@@ -1,5 +1,6 @@
 package com.orbit.game.desktop;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -10,10 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
@@ -25,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import orbit.ServerListenerThread;
 import orbit.ServerRequest;
@@ -43,11 +49,18 @@ public class LoginWindow extends Window{
 	
 
 	private JOrbitPanel mainPanel;
-	private final ImageIcon backgroundImage = new ImageIcon("assets/LoginWallpaper.jpg");
-	private final ImageIcon logo = new ImageIcon("assets/logo.png");
+	private final ImageIcon backgroundImage = new ImageIcon("bin/LoginWallpaper.jpg");
+	private final ImageIcon logo = new ImageIcon("bin/logo.png");
 	private final JLabel usernameLabel = new JLabel("Username: ");
 	private final JLabel passwordLabel = new JLabel("Password: ");
+	JLabel ipLabel = new JLabel("", SwingConstants.CENTER);
+	JLabel connectLabel = new JLabel("Not Connected", SwingConstants.CENTER);
+	private final JLabel ipFieldLabel = new JLabel("IP to connect to: ");
+	boolean connected = false;
 	
+	JPanel networkingPanel;
+	JTextField ipField;
+	JButton connectButton, refreshButton;
 	
 	//need to pass in an orbit ref. will temporarily use blank constructor
 	LoginWindow(Orbit orbit){
@@ -104,15 +117,50 @@ public class LoginWindow extends Window{
 		container.setBackground(c);
 		container.setSize(600,600);
 		
-		GridBagConstraints centerConstraints = new GridBagConstraints();
-		centerConstraints.gridx = 1;
-		centerConstraints.gridy = GridBagConstraints.RELATIVE;
-		mainPanel.add(container, centerConstraints);
+//		GridBagConstraints centerConstraints = new GridBagConstraints();
+//		centerConstraints.gridx = 1;
+//		centerConstraints.gridy = GridBagConstraints.RELATIVE;
+//		centerConstraints.gridy = GridBagConstraints.SOUTH;
+//		mainPanel.add(container, centerConstraints);
+		JPanel southContainer = new JPanel();
+		southContainer.add(container);
+		southContainer.setOpaque(false);
+		mainPanel.add(southContainer, BorderLayout.SOUTH);
+		
+		networkingPanel = new JPanel();
+		ipField = new JTextField("localhost");
+		connectButton = new JButton("Connect");
+		refreshButton = new JButton("Refresh");
+		
+		JPanel ipFieldPanel = new JPanel();
+		ipFieldPanel.setLayout(new BorderLayout());
+		ipFieldPanel.add(ipFieldLabel, BorderLayout.WEST);
+		ipFieldPanel.add(ipField, BorderLayout.CENTER);
+		ipFieldPanel.setBackground(c);
+		
+		JPanel ipPanel = new JPanel();
+		ipPanel.setLayout(new BorderLayout());
+		ipLabel.setText("Local IP: ");
+		ipPanel.add(ipLabel, BorderLayout.NORTH);
+		ipPanel.setBackground(c);
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(connectLabel);
+		buttonPanel.add(connectButton);
+		buttonPanel.add(refreshButton);
+		buttonPanel.setBackground(c);
+		
+		networkingPanel.setLayout(new BorderLayout());
+		networkingPanel.add(ipPanel, BorderLayout.NORTH);
+		networkingPanel.add(ipFieldPanel, BorderLayout.CENTER);
+		networkingPanel.add(buttonPanel, BorderLayout.SOUTH);
+		networkingPanel.setBackground(c);
+		container.add(networkingPanel);
 		
 		addActionListeners();
 		add(mainPanel);
 		setSize(1024,600);
- 
+		refreshButton.doClick();
 	}
 
 	//add action listeners to components
@@ -120,15 +168,17 @@ public class LoginWindow extends Window{
 		//validate text fields and authenticate login
 		userLoginButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				String username = usernameTextField.getText();
-				String password = new String(passwordTextField.getPassword());
-				if(username.equals("") || password.equals("")){
-					//report error
-					System.out.println("Invalid username and password combination.");
-				}
-				else{
-					System.out.println("username: " + username + ", password: " + password);
-					authenticate(username, password);
+				if(connected){
+					String username = usernameTextField.getText();
+					String password = new String(passwordTextField.getPassword());
+					if(username.equals("") || password.equals("")){
+						//report error
+						System.out.println("Invalid username and password combination.");
+					}
+					else{
+						System.out.println("username: " + username + ", password: " + password);
+						authenticate(username, password);
+					}
 				}
 			}
 		});
@@ -136,43 +186,105 @@ public class LoginWindow extends Window{
 		//log in as guest
 		guestLoginButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				
+				if(connected){
+					
+				}
 			}
 		});
 		
 		//create new user
 		newUserButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				String username = usernameTextField.getText();
-				String password = new String(passwordTextField.getPassword());
-				if(username.equals("") || password.equals("")){
+				if(connected){
+					String username = usernameTextField.getText();
+					String password = new String(passwordTextField.getPassword());
+					if(username.equals("") || password.equals("")){
+						//report error
+						System.out.println("Invalid username and password combination.");
+					}
+					else{
+						System.out.println("Creating new user: username: " + username + ", password: " + password);
+						createUser(username, password);
+					}
+				}
+			}
+		});
+		
+		//connect to ip address
+		connectButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String ip = ipField.getText();
+				if(ip.equals("")){
 					//report error
-					System.out.println("Invalid username and password combination.");
+					System.out.println("Invalid ip");
 				}
 				else{
-					System.out.println("Creating new user: username: " + username + ", password: " + password);
-					createUser(username, password);
+					System.out.println("Connecting to IP: " + ip);
+					connected = true;
+					orbit.ipAddress = ip;
+					if(Orbit.initializeSocket()){
+						connectButton.setEnabled(false);
+						refreshButton.setEnabled(false);
+						connectLabel.setText("Connected to ip: " + ip);
+					}
 				}
+			}
+		});
+		
+		//fetch ip address
+		refreshButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				ipLabel.setText("Local IP: " + getIP());
 			}
 		});
 		
 		//login as user if enter key is pressed
 		usernameTextField.addKeyListener(new KeyAdapter(){
             public void keyPressed(KeyEvent e){
-                if(e.getKeyChar() == KeyEvent.VK_ENTER){
-                    userLoginButton.doClick();
-                }       
+                if(connected){
+                	if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                        userLoginButton.doClick();
+                    }  
+                }
             }
         });
 		
 		//login as user if enter key is pressed
 		passwordTextField.addKeyListener(new KeyAdapter(){
             public void keyPressed(KeyEvent e){
-                if(e.getKeyChar() == KeyEvent.VK_ENTER){
-                    userLoginButton.doClick();
-                }       
+                if(connected){
+                	if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                        userLoginButton.doClick();
+                    }       
+                }
             }
         });
+		
+		//login as user if enter key is pressed
+		ipField.addKeyListener(new KeyAdapter(){
+            public void keyPressed(KeyEvent e){
+                if(!connected){
+                	if(e.getKeyChar() == KeyEvent.VK_ENTER){
+                        connectButton.doClick();
+                    }
+                }
+            }
+        });
+	}
+	
+	String getIP(){
+		String ip = "";
+		try {
+			URL toCheckIp = new URL("http://checkip.amazonaws.com");
+			BufferedReader in = new BufferedReader(new InputStreamReader(toCheckIp.openStream()));
+			ip = in.readLine();
+			System.out.println(ip);
+		} catch (MalformedURLException e) {
+			System.out.println("MalformedURLException in NetworkWindow(): " + e.getMessage());
+		} catch (IOException e) {
+			ip = "Error";
+		}
+		return ip;
 	}
 	
 	//verify username/password combo with server and allows or denies login based on server response
@@ -229,7 +341,8 @@ public class LoginWindow extends Window{
 		private static final long serialVersionUID = 1L;
 		
 		JOrbitPanel(){
-			this.setLayout(new GridBagLayout());
+			//this.setLayout(new GridBagLayout());
+			this.setLayout(new BorderLayout());
 
 		}
 		

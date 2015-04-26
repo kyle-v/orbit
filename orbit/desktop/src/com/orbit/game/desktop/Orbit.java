@@ -19,7 +19,7 @@ public class Orbit {
 	Window lobby = null;
 	Window profile = null;
 
-	private static final String ipAddress = "localhost";
+	static String ipAddress = "localhost";
 	private static final int portNumber = 6789;
 	private static Socket s = null;
 	private static ObjectOutputStream oos = null;
@@ -47,7 +47,7 @@ public class Orbit {
 
 	public static void main (String[] arg) {
 		new Orbit();
-		initializeSocket();
+		//initializeSocket();
 	}
 
 	public void openLobby(){
@@ -70,14 +70,16 @@ public class Orbit {
 		}
 	}
 
-	public static void initializeSocket(){
+	public static boolean initializeSocket(){
 
 		try {
 			s = new Socket(ipAddress, portNumber);
 			oos = new ObjectOutputStream(s.getOutputStream());
 			ois = new ObjectInputStream(s.getInputStream());
+			return true;
 		} catch (UnknownHostException e1) { e1.printStackTrace();
 			System.out.println("UnknownHostException");
+			return false;
 		} catch (IOException e1) { //e1.printStackTrace();
 			System.out.println("Could not connect to server.");
 			JOptionPane.showMessageDialog(null,
@@ -85,6 +87,7 @@ public class Orbit {
 					"Connection Error",
 					JOptionPane.ERROR_MESSAGE);
 			//quit game
+			return false;
 		}
 	}
 
