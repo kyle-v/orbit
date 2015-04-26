@@ -47,14 +47,13 @@ public class Projectile extends GameObject {
 	public void update(float DeltaTime) {
 		if(gravitytoggle) calculateGravity();
 		updateVelocityAndPosition(DeltaTime);
-		System.out.println(" x " + position.x + " y " + position.y);
-		System.out.println(" vx " + velocity.x + " vy " + velocity.y);
-		System.out.println(" ax " + acceleration.x + " ay " + acceleration.y);
 
 		for (GameObject o : gameObjects){
 			if(o != this){
 				if (checkCollision(o)){
-					isDead = true;
+					if (o.getName() == "Planet"){
+						isDead = true;
+					}
 				}
 			}
 		}
@@ -114,7 +113,7 @@ public class Projectile extends GameObject {
 	
 	public boolean checkCollision(GameObject other){
 		if (this.bounds.overlaps(other.bounds)){ //use this to check for collisions
-			System.out.println(this.getName() + " hit " + other.getName());
+			
 			return true;
 		}
 		return false;

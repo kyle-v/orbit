@@ -34,35 +34,8 @@ public class GameplayStatics {
 		if(world == null)
 		{
 			world = new World(new Vector2(0,0),true);
-			world.setContactListener(new CollisionListener());
 		}
 		return world;
-		
-	}
-	
-	private static class CollisionListener implements ContactListener{
-
-		public void beginContact(Contact contact) {
-			//call the collision functions on the two bodies that collided
-			((GameObject)(contact.getFixtureA().getBody().getUserData())).OnCollisionEnter(contact, true);
-			((GameObject)(contact.getFixtureB().getBody().getUserData())).OnCollisionEnter(contact, false);
-		}
-
-		@Override
-		public void endContact(Contact contact) {
-			((GameObject)(contact.getFixtureA().getBody().getUserData())).OnCollisionExit(contact, true);
-			((GameObject)(contact.getFixtureB().getBody().getUserData())).OnCollisionExit(contact, false);
-		}
-
-		@Override
-		public void preSolve(Contact contact, Manifold oldManifold) {
-			
-		}
-
-		@Override
-		public void postSolve(Contact contact, ContactImpulse impulse) {
-			
-		}
 		
 	}
 	

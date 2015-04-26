@@ -31,6 +31,6 @@ public class DesktopLauncher {
 		IPs.add("localhost");
 		IPs.add("localhost");
 		int playerID = 1;
-		new LwjglApplication(new OrbitGame(users,IPs,playerID,1), config);
+		new LwjglApplication(new OrbitGame(users,IPs,playerID,5), config);
 	}
 }

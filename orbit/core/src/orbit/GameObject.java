@@ -29,7 +29,6 @@ public abstract class GameObject implements Serializable{
 	protected float height;
 	protected boolean isDead;
 	protected String imagePath;
-	//transient protected Body body;
 	transient protected Sprite sprite;
 	
 	public GameObject (float x, float y, float width, float height) {
@@ -61,10 +60,7 @@ public abstract class GameObject implements Serializable{
 		bounds.x = position.x - width/2;
 		bounds.y = position.y - height/2;
 	}
-	
-	//functions that will be called when a collision happens
-	//because contact has info for both A and B and does not distinguish the bool tells you which object to look at for the gameobject collided with
-	
+
 	abstract public void update(float DeltaTime);
 	
 	public void draw(SpriteBatch b){

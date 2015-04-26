@@ -262,7 +262,6 @@ public class OrbitGame extends ApplicationAdapter{
 		writer = new BitmapFont();
 		writer.setColor(Color.YELLOW);
 		writer.setScale(5);
-		//new GameOverDialog("test", "test", new Skin(Gdx.files.internal("uiskin.atlas")));
 		
 		//weapon gui stuff
 		weaponSprites = new Sprite[player.equippedWeapons.size()];
@@ -315,10 +314,9 @@ public class OrbitGame extends ApplicationAdapter{
 			case FIRE:
 				//player.setWeapon(currentWeapon);
 				//player.fire((int)powerPercent, angle, gameObjects);
-				gameState = GameState.WAITING;
 				playerTurnOver(powerPercent, (float)angle);
 				incrementToNextPlayer();
-
+				gameState = GameState.WAITING;
 				break;
 			case WAITING: // Turn over, waiting for other player
 //				if(currentPlayer == playerIndex)
@@ -495,9 +493,6 @@ public class OrbitGame extends ApplicationAdapter{
 		
 		public void run(){
 			try{
-//				while(gameState == GameState.CONNECTING){
-//					gs.sendPlayersConnected();
-//				}
 
 				while(true){
 					Vector3 fireInfo = (Vector3)ois.readObject();
