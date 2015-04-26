@@ -48,6 +48,15 @@ public class Projectile extends GameObject {
 	public void update(float DeltaTime) {
 		if(gravitytoggle) calculateGravity();
 		updateVelocityAndPosition(DeltaTime);
+		if (position.x > 1000){
+			isDead = true;
+		} else if (position.x < -1000){
+			isDead = true;
+		} else if (position.y < -700){
+			isDead = true;
+		} else if (position.y > 700){
+			isDead = true;
+		}
 
 		for (GameObject o : gameObjects){
 			if(o != this){
