@@ -30,7 +30,6 @@ public class DesktopLauncher {
 		ArrayList<String> IPs = new ArrayList<String>();
 		IPs.add("localhost");
 		IPs.add("localhost");
-		Random randy = new Random();
 		int playerID = 1;
 		new LwjglApplication(new OrbitGame(users,IPs,playerID,1), config);
 	}

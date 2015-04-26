@@ -35,7 +35,7 @@ public class User implements Serializable{
 		money = STARTING_MONEY;
 		weapons = new Vector<Weapon>();
 		equippedWeapons = new Vector<Weapon>();
-		planetPath = "miller.png";
+		planetPath = "planets/miller.png";
 		destroyedPlanetPath = "DestroyedPlanet.png";
 		createWeapons();
 
@@ -44,10 +44,10 @@ public class User implements Serializable{
 
 	private void createWeapons() {
 
-		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
+		Weapon defaultRocket = new Rocket("N00b Rocket", 50, 0, 10f, 10f, "weapons/rocketweapon.png", "projectiles/rocket.png");
 		weapons.add(defaultRocket);
 		equippedWeapons.add(defaultRocket);
-		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "rocketweapon.png", "rocket.png");
+		Weapon godRocket = new Rocket("GOD Rocket", 50, 0, 10f, 10f, "weapons/rocketweapon.png", "projectiles/rocket.png");
 		weapons.add(godRocket);
 		equippedWeapons.add(godRocket);		
 	}
