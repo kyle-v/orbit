@@ -61,7 +61,6 @@ public class Orbit {
 
 	public static void main (String[] arg) {
 		new Orbit();
-		//initializeSocket();
 	}
 
 	public void openLobby(){

@@ -81,6 +81,8 @@ public class OrbitGame extends ApplicationAdapter{
 	private Planet playerPlanet;
 	private FPSLogger fps;
 	private List<GameObject> gameObjects;
+	private List<GameObject> newGameObjects;
+
 	GameClient gc;
 	
 	//Sprites for Weapon GUI
@@ -273,6 +275,12 @@ public class OrbitGame extends ApplicationAdapter{
 	}
 
 	public void updateGame(){
+		if(newGameObjects != null){
+			gameObjects = newGameObjects;
+			newGameObjects = null;
+		}
+		
+		
 		float DeltaTime = Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(.03f, 0, .08f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -315,7 +323,7 @@ public class OrbitGame extends ApplicationAdapter{
 				//player.setWeapon(currentWeapon);
 				//player.fire((int)powerPercent, angle, gameObjects);
 				playerTurnOver(powerPercent, (float)angle);
-				incrementToNextPlayer();
+
 				gameState = GameState.WAITING;
 				break;
 			case WAITING: // Turn over, waiting for other player
@@ -326,7 +334,7 @@ public class OrbitGame extends ApplicationAdapter{
 			default:
 				break;
 		}
-		
+	
 		draw();
 	}
 
@@ -335,6 +343,7 @@ public class OrbitGame extends ApplicationAdapter{
 		
 	
 	public void draw(){
+		
 		//Drawing everything
 		//tell it to draw from our current camera's point of view
 		batch.setProjectionMatrix(camera.combined);
@@ -342,9 +351,10 @@ public class OrbitGame extends ApplicationAdapter{
 				
 		batch.draw(backgroundImage, -965, -650);
 				
-		for(GameObject o : gameObjects){
-			o.draw(batch);
-		}
+			for(GameObject o : gameObjects){
+				o.draw(batch);
+			}
+		
 		
 		//weapon gui code
 		for(int i = 0; i < weaponSprites.length; i++){
@@ -501,6 +511,7 @@ public class OrbitGame extends ApplicationAdapter{
 						GameplayStatics.game.players.get(currentPlayer).setWeapon((int)fireInfo.z);
 						GameplayStatics.game.players.get(currentPlayer).fire((int) fireInfo.x, fireInfo.y, GameplayStatics.game.gameObjects);
 						gs.sendupdatedGameObjects(gameObjects);
+						incrementToNextPlayer();
 					}
 				}
 			} catch(IOException e){
@@ -590,7 +601,8 @@ public class OrbitGame extends ApplicationAdapter{
 				while(isAlive){
 						sleep(1000);
 						System.out.println("waiting");
-						GameplayStatics.game.gameObjects = (List<GameObject>)ois.readObject();
+						GameplayStatics.game.newGameObjects = Collections.synchronizedList((List<GameObject>)ois.readObject());
+						
 						System.out.println("read objects");
 						if(myturn == true){
 							myturn = false;
@@ -715,11 +727,7 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	public void incrementToNextPlayer(){
 		currentPlayer ++;
-		if(currentPlayer >= players.size()){
-			currentPlayer = 0;
-		}
-		if(!players.get(currentPlayer).isPlaying)
-			incrementToNextPlayer();
+		currentPlayer %= players.size();	
 	}
 	
 	public void checkWinCondition(){
