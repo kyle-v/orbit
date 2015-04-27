@@ -172,6 +172,7 @@ public class ProfileWindow extends Window{
 			weaponPanels.add(wg);
 			inventoryPanel.add(wg);
 		}
+		checkEquipLimits();
 	}
 
 	public void checkMoney(){
