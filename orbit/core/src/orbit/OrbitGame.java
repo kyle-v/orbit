@@ -61,7 +61,7 @@ public class OrbitGame extends ApplicationAdapter{
 	
 
 	//messing with this might cause an infinite loop just fyi
-	private final float MAX_ASTEROID_SPAWN_RADIUS = 500;
+	private final float MAX_ASTEROID_SPAWN_RADIUS = 700;
 	private final float MIN_ASTEROID_GAP = 300;
 	private final float MAX_ASTEROID_VELOCITY = 5;
 	private final int lowerAsteroidAmount = 5;
@@ -247,7 +247,7 @@ public class OrbitGame extends ApplicationAdapter{
 						break;
 					}
 					//checks if distance of asteroids are bigger than MIN_ASTEROID_GAP; makes sure asteroids don't spawn too close together
-					if (Math.hypot(x - u.getPlanet().position.x,y - u.getPlanet().position.y) < MIN_ASTEROID_GAP/2){
+					if (Math.hypot(x - u.getPlanet().position.x,y - u.getPlanet().position.y) < MIN_ASTEROID_GAP){
 						spawnConflict = true;
 						break;
 					}
