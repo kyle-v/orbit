@@ -102,13 +102,14 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	//ok im adding stuff that should allow this to actually scale for players
 	//an array of all players that will be in the game
-	ArrayList<User> players;
+	public ArrayList<User> players;
 	ArrayList<String> playerIPAddresses;
 	int basePort = 9020;
 	//int that indicates which index we are playing as
-	int playerIndex;
+	public int playerIndex;
 	int currentPlayer;
 	int numPlayers;
+	public boolean win = false;
 	
 	//Asteroids
 	ArrayList<Asteroid> asteroids;
@@ -129,8 +130,9 @@ public class OrbitGame extends ApplicationAdapter{
 	boolean isHost;
 	public boolean isGameOver = false;
 	
-	float player1Health = 100;
-	float player2Health = 100;
+	float player1Health;
+	float player2Health;
+	
 
 	public OrbitGame(GameData gameData, int playerIndex){
 		this.players = gameData.players;
@@ -138,6 +140,8 @@ public class OrbitGame extends ApplicationAdapter{
 		this.playerIPAddresses = gameData.ips;
 		this.randomSeed = gameData.seed;
 		this.numPlayers = players.size();
+		player1Health = players.get(0).getPlanet().health;
+		player2Health = players.get(1).getPlanet().health;
 	}
 	
 	@Override
@@ -755,6 +759,7 @@ public class OrbitGame extends ApplicationAdapter{
 			writer.setColor(Color.YELLOW);
 		}
 		isGameOver = true;
+		win = true;
 	}
 	
 	public void reportLoss(){
@@ -763,6 +768,7 @@ public class OrbitGame extends ApplicationAdapter{
 		gameState = GameState.GAMEOVER;
 		writer.setColor(Color.YELLOW);
 		isGameOver = true;
+		win = false;
 	}
 	
 	public class GameOverDialog extends Dialog{
