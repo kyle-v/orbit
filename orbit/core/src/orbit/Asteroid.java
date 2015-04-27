@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 
 public class Asteroid extends GameObject implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static final float DEFAULT_MASS = 300f;
+	public static final float DEFAULT_MASS = 250f;
 	public static final float DEFAULT_RADIUS = 30f;
 	public static final float DEFAULT_DRAG = .0f;
 	private static final float MAX_ROTATION = 5f;

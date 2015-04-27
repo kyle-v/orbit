@@ -32,7 +32,7 @@ public class Planet extends GameObject implements Serializable{
 	
 	public static final float DEFAULT_RADIUS = 40f;
 	
-	public static final float DEFAULT_MASS = 200f;
+	public static final float DEFAULT_MASS = 400f;
 	
 	public static final float DEFAULT_STARTING_HEALTH = 100;
 	
