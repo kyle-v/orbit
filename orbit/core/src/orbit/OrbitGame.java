@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.Vector;
 
 
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -132,18 +133,32 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	float player1Health;
 	float player2Health;
+	
+	private Socket socketToMainServer;
+	private ObjectInputStream ois;
+	private ObjectOutputStream oos;
 
-	public OrbitGame(GameData gameData, int playerIndex){
+	public OrbitGame(GameData gameData, int playerIndex, Socket s){
 		this.players = gameData.players;
 		this.playerIndex = playerIndex;
 		this.playerIPAddresses = gameData.ips;
 		this.randomSeed = gameData.seed;
 		this.numPlayers = players.size();
 		this.basePort = gameData.baseport;
+		this.socketToMainServer = s;
 	}
 	
 	@Override
 	public void create () {
+		
+		try {
+			this.ois = new ObjectInputStream(socketToMainServer.getInputStream());
+			this.oos = new ObjectOutputStream(socketToMainServer.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not connect to main server");
+			e.printStackTrace();
+		}
 		
 		gameState = GameState.CONNECTING;
 		//setup server stuff
@@ -754,6 +769,7 @@ public class OrbitGame extends ApplicationAdapter{
 			Weapon newWeapon = weaponGenerator.makeWeapon();
 			players.get(playerIndex).addWeapon(newWeapon);
 			players.get(playerIndex).addMoney(100);
+			Object serverResponse = sendRequest(new ServerRequest("Update user",players.get(playerIndex)));
 			gameOverText = "You Won! Your reward is \n" + newWeapon.getName() + " and 100 coins";
 			writer.setScale(3);
 			gameState = GameState.GAMEOVER;
@@ -786,6 +802,22 @@ public class OrbitGame extends ApplicationAdapter{
 			};
 			this.button(button);
 		}
+	}
+	
+	public Object sendRequest(ServerRequest sr){
+		Object response = null;
+		try {
+			//System.out.println("Sending ServerRequest...");
+			oos.reset();
+			oos.writeObject(sr);
+			oos.flush();
+			//System.out.println("ServerRequest sent. Waiting for response...");
+			response = ois.readObject();
+			//System.out.println("Got response. Returned.");
+		} catch (IOException e) { e.printStackTrace();
+		} catch (ClassNotFoundException e) { e.printStackTrace();
+		}
+		return response;
 	}
 
 }
