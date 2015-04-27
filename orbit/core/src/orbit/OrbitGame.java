@@ -239,8 +239,8 @@ public class OrbitGame extends ApplicationAdapter{
 			gameObjects.add(planet);
 		}
 		
-		player1Health = players.get(0).getPlanet().health;
-		player2Health = players.get(1).getPlanet().health;
+		player1Health = 100;
+		player2Health = 100;
 		
 		playerPlanet = player.getPlanet();
 		
