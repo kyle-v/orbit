@@ -341,6 +341,8 @@ public class OrbitGame extends ApplicationAdapter{
 				//player.fire((int)powerPercent, angle, gameObjects);
 				playerTurnOver(powerPercent, (float)angle);
 				gameState = GameState.WAITING;
+				powerPercent = 0;
+
 				break;
 			case WAITING: // Turn over, waiting for other player
 //				if(currentPlayer == playerIndex)

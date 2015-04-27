@@ -16,14 +16,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -206,6 +210,21 @@ public class Server extends JFrame{
 		System.out.println("Server stopped");
 	}
 	
+	String getIP(){
+		String ip = "";
+		try {
+			URL toCheckIp = new URL("http://checkip.amazonaws.com");
+			BufferedReader in = new BufferedReader(new InputStreamReader(toCheckIp.openStream()));
+			ip = in.readLine();
+			System.out.println(ip);
+		} catch (MalformedURLException e) {
+			System.out.println("MalformedURLException in NetworkWindow(): " + e.getMessage());
+		} catch (IOException e) {
+			ip = "Error";
+		}
+		return ip;
+	}
+	
 	public synchronized void addToReady(OrbitServerThread ost){
 		if(!readyClients.contains(ost)){
 			readyClients.add(ost);
@@ -218,7 +237,9 @@ public class Server extends JFrame{
 				for(int i = 0; i < NUM_PLAYERS_PER_GAME; i++){
 					OrbitServerThread c = readyClients.pop();
 					users.add(c.getUser());
-					ips.add(c.s.getInetAddress().toString().substring(1));//substring to remove leading '/'
+					String ip = c.s.getInetAddress().toString().substring(1);
+					if(ip.equals("127.0.0.1")) ip = getIP();
+					ips.add(ip);//substring to remove leading '/'
 					clients[i] = c;
 				}
 				gameData.players = users;

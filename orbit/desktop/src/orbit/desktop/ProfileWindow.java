@@ -20,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import orbit.ServerRequest;
@@ -56,6 +57,7 @@ public class ProfileWindow extends Window{
 		containerPanel = new JPanel(new BorderLayout());		//Initializing
 		profilePanel = new JProfilePanel();
 		planetPanel = new JPanel();
+		
 		inventoryPanel = new JPanel();
 		inventoryPanel.setLayout(new BoxLayout(inventoryPanel, BoxLayout.Y_AXIS));
 		buttonPanel = new JPanel();
@@ -69,9 +71,8 @@ public class ProfileWindow extends Window{
 		buttonPanel.add(Box.createGlue());
 		buttonPanel.add(backButton);
 		
-//		JPanel testPanel = new JPanel();
-//		testPanel.add(inventoryPanel);
-		containerPanel.add(inventoryPanel, BorderLayout.EAST);
+		JScrollPane jsp = new JScrollPane(inventoryPanel);
+		containerPanel.add(jsp, BorderLayout.EAST);
 		containerPanel.add(planetPanel, BorderLayout.WEST);
 
 		containerPanel.add(profilePanel, BorderLayout.CENTER);		//add panels to main panel
@@ -205,7 +206,7 @@ class WeaponGui extends JPanel{
 		this.pw = profile;
 		//setPreferredSize(new Dimension(400, 50));
 		//this.setMinimumSize(new Dimension(400, 50));
-		ImageIcon weaponImage = new ImageIcon("bin/weapons/"+weapon.getWeaponImage());
+		ImageIcon weaponImage = new ImageIcon("bin/"+weapon.getWeaponImage());
 		JLabel weaponLabel = new JLabel(weapon.getName(), weaponImage, SwingConstants.TRAILING);
 		GridBagConstraints gbc = new GridBagConstraints();
 		setLayout(new GridBagLayout());

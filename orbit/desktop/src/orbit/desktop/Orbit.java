@@ -81,13 +81,9 @@ public class Orbit {
 	    Timer checkIfGameOver = new Timer("Check if game is over");
 	    checkIfGameOver.schedule(new TimerTask(){
 	    	public void run(){
-	    		if(game.isGameOver){
+	    		if(game.isGameOver || game == null || app == null){
 	    			lobby.enableButtons(true);
-
 	    			System.out.println("Game has ended");
-	    			if(game.win){
-	    				Orbit.sendRequest(new ServerRequest("Update user", game.players.get(game.playerIndex)));
-	    			}
 	    			this.cancel();
 	    		}
 	    	}
