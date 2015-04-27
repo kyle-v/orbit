@@ -6,6 +6,9 @@
 
 \f0\fs24 \cf0 README\
 \
+\
+\
+\
 Setting up a server:\
 \
 1. Run mysql server.\
@@ -34,6 +37,20 @@ How to Play the Game:\
 3. Hit spacebar again to stop the aiming and start the power bar\
 4. Hit spacebar one more time to launch the weapon.\
 5. Wait for the other player to play their turn.\
+IMPORTANT\
+6. When the game ends, you need to close the entire Orbit client launcher before playing again.  This is due to a bug with opening multiple OpenGL contexts. We are working on a fix for this, but for now, please close the client program and then relaunch to play another game.\
+\
+\
+How to import into eclipse\
+\
+0. To be able to compile, you will need Gradle. If you do not wish to compile (and just use the given runnable jars) skip these steps and import the Source/orbit project in the usual way.\
+1. In the menubar under Help -> Install new software\
+2. Enter in the "Work with" field:  http://dist.springsource.com/release/TOOLS/gradle\
+3. Select All, click next, next, etc finish.\
+4. In the project manager, right-click, Import - Gradle. Click next. Select the "orbit" folder in the Source folder and then click **Build Model**. Select the all the projects.  Next next etc. \
+5. Now there are two projects, core and desktop. To run the client, run Orbit.java as a java application in the desktop project (this is the client launcher)\
+6. In the core project, run Server.java as a Java application (this is the server)\
+\
 \
 \
 \
