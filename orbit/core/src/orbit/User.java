@@ -49,7 +49,10 @@ public class User implements Serializable{
 		equippedWeapons.add(defaultRocket);
 		Weapon godLaser = new Laser("Sweet Laser", 25, 0, 0, 20f, "weapons/lasergun.png", "projectiles/laser.png");
 		weapons.add(godLaser);
-		equippedWeapons.add(godLaser);		
+		equippedWeapons.add(godLaser);	
+		Weapon shotgun = new Shotgun("Shotty", 25, 0, 0, 15f, "weapons/shotgunweapon.png", "projectiles/shotgunbullet.png");
+		weapons.add(shotgun);
+		//equippedWeapons.add(slowRocket);	
 	}
 
 
