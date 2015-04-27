@@ -29,7 +29,14 @@ public class WeaponGenerator {
 		int cooldown = random.nextInt(MAX_COOLDOWN + 1);
 		float mass = random.nextFloat() * (MAX_MASS - 1) + 1;
 		float speed = random.nextFloat() * (MAX_SPEED - 1) + 1;
+		int randomWeapon = random.nextInt(3);
 		
-		return new Rocket(name,damage,cooldown,mass,speed,"weapons/weaponTexture1.png","projectiles/rocket.png");
+		if (randomWeapon == 0){
+			return new Rocket(name,damage,cooldown,mass,speed,"weapons/rocketweapon.png","projectiles/rocket.png");
+		} else if (randomWeapon == 1){
+			return new Rocket(name,damage,cooldown,mass,speed,"weapons/lasergun.png","projectiles/laser.png");
+		} else {
+			return new Shotgun(name,damage,cooldown,mass,speed,"weapons/shotgunweapon.png","projectiles/shotgunbullet.png");
+		}
 	}
 }

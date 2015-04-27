@@ -139,6 +139,8 @@ public class LobbyWindow extends Window{
 				if(orbit.profile == null){
 					orbit.profile = new ProfileWindow(orbit);
 				}
+				orbit.currentUser = (User)Orbit.sendRequest(new ServerRequest("Get User", null));
+
 				orbit.profile.setVisible(true);
 				orbit.lobby.dispose();
 			}

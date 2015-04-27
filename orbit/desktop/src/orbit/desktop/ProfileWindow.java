@@ -83,7 +83,7 @@ public class ProfileWindow extends Window{
 		addActionListeners();
 		setSize(1024,600);
 	}
-
+	
 	private void setupPanels(){
 		for(Weapon w : orbit.currentUser.weapons){
 			WeaponGui wg;
@@ -160,6 +160,18 @@ public class ProfileWindow extends Window{
 	public void setVisible(boolean set){
 		super.setVisible(set);
 		checkMoney();
+		weaponPanels.removeAllElements();
+		inventoryPanel.removeAll();
+		for(Weapon w : orbit.currentUser.weapons){
+			WeaponGui wg;
+			if(orbit.currentUser.equippedWeapons.contains(w)){
+				wg = new WeaponGui(w, true, this);
+			}else{
+				wg = new WeaponGui(w, false, this);
+			}
+			weaponPanels.add(wg);
+			inventoryPanel.add(wg);
+		}
 	}
 
 	public void checkMoney(){
