@@ -132,7 +132,6 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	float player1Health;
 	float player2Health;
-	
 
 	public OrbitGame(GameData gameData, int playerIndex){
 		this.players = gameData.players;
@@ -140,8 +139,6 @@ public class OrbitGame extends ApplicationAdapter{
 		this.playerIPAddresses = gameData.ips;
 		this.randomSeed = gameData.seed;
 		this.numPlayers = players.size();
-		player1Health = players.get(0).getPlanet().health;
-		player2Health = players.get(1).getPlanet().health;
 	}
 	
 	@Override
@@ -212,7 +209,8 @@ public class OrbitGame extends ApplicationAdapter{
 			gameObjects.add(planet);
 		}
 		
-		
+		player1Health = players.get(0).getPlanet().health;
+		player2Health = players.get(1).getPlanet().health;
 		
 		playerPlanet = player.getPlanet();
 		
