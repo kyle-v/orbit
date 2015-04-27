@@ -139,6 +139,7 @@ public class OrbitGame extends ApplicationAdapter{
 		this.playerIPAddresses = gameData.ips;
 		this.randomSeed = gameData.seed;
 		this.numPlayers = players.size();
+		this.basePort = gameData.baseport;
 	}
 	
 	@Override
