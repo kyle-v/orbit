@@ -59,6 +59,7 @@ public class Database implements Serializable{
 		System.out.println("QUERY: " + (queryUser(username) == -1));
 		System.out.println("EMPTY: " + usernameToUserMap.isEmpty());
 		if(queryUser(username) == -1 || usernameToUserMap.isEmpty()){
+			System.out.println("user not found in database");
 			return false;
 		}
 		else{
@@ -67,6 +68,7 @@ public class Database implements Serializable{
 				return true;
 			}
 			else{
+				System.out.println(usernameToUserMap.get(username).getPass() + " != " + password);
 				return false;
 			}
 		}

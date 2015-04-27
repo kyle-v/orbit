@@ -55,7 +55,7 @@ public class OrbitServerThread extends Thread {
 		finally{
 			System.out.println("Client disconnected");
 			if(user!= null){
-				Server.activeUsers.remove(user);
+				server.activeUsers.remove(user);
 				server.usernameToThreadMap.remove(user.getUsername());
 			}
 			server.clients.remove(this);
@@ -106,7 +106,7 @@ public class OrbitServerThread extends Thread {
 			server.addToReady(this);
 			sendResponse(true);
 		}else if(request.equalsIgnoreCase("User Quit")){
-			server.d.usernameToUserMap.replace(user.getUsername(), user);
+			server.d.usernameToUserMap.replace(user.getUsername(), (User)o);
 			server.clients.remove(this);
 			server.activeUsers.remove(this.user);
 			server.usernameToThreadMap.remove(this.user.getUsername());
@@ -174,7 +174,7 @@ public class OrbitServerThread extends Thread {
 			if(!server.usernameToThreadMap.containsKey(username)){
 				response = "Valid";
 				this.user = d.usernameToUserMap.get(username);
-				Server.activeUsers.add(user);
+				server.activeUsers.add(user);
 				server.usernameToThreadMap.put(username, this);
 			}
 			else{
@@ -182,6 +182,8 @@ public class OrbitServerThread extends Thread {
 			}
 		}
 		else{
+			System.out.println("invalid login attempt " + username + " " + password);
+
 			response = "Invalid";
 		}
 		sendResponse(response);
