@@ -120,6 +120,10 @@ public class Planet extends GameObject implements Serializable{
 	//should use set position to change a game objects position now because it updates the physics body as well
 	public void SetPosition(Vector2 pos){
 		position = pos;
+		if(sprite == null){
+			Texture texture = AssetLibrary.getTexture(planetSkinPath);
+			sprite = new Sprite(texture);
+		}
 		sprite.setPosition(pos.x - radius, pos.y - radius);
 	}
 
