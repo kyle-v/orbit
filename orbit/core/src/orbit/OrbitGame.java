@@ -769,6 +769,7 @@ public class OrbitGame extends ApplicationAdapter{
 			Weapon newWeapon = weaponGenerator.makeWeapon();
 			players.get(playerIndex).addWeapon(newWeapon);
 			players.get(playerIndex).addMoney(100);
+			
 			Object serverResponse = sendRequest(new ServerRequest("Update user",players.get(playerIndex)));
 			gameOverText = "You Won! Your reward is \n" + newWeapon.getName() + " and 100 coins";
 			writer.setScale(3);
@@ -806,6 +807,7 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	public Object sendRequest(ServerRequest sr){
 		Object response = null;
+		synchronized(socketToMainServer){
 		try {
 			//System.out.println("Sending ServerRequest...");
 			oos.reset();
@@ -819,5 +821,5 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		return response;
 	}
-
+	}
 }
