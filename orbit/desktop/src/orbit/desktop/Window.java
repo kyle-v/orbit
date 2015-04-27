@@ -28,6 +28,8 @@ public class Window extends JFrame{
 	
 	Window(Orbit parent){
 		super("Orbit");
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.orbit = parent;
 	}
 

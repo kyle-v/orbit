@@ -45,8 +45,8 @@ public class LobbyWindow extends Window{
 	private JPanel leftSideContainer;
 	
 	
-	private JButton findGameButton;				//private gui elements
-	private JButton profileButton;
+	JButton findGameButton;				//private gui elements
+	JButton profileButton;
 	private JButton quitButton;
 	private JButton sendMessageButton;
 	private JTextField messageTextField;
@@ -162,6 +162,8 @@ public class LobbyWindow extends Window{
 							ww.gameStarted = true;
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
+							findGameButton.setEnabled(false);
+							profileButton.setEnabled(false);
 							orbit.launchGame(gameData);
 						}else{
 							if(ww.time == 0){

@@ -35,10 +35,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class Orbit {
 
 	Window login = null; 
-	Window lobby = null;
+	LobbyWindow lobby = null;
 	Window profile = null;
 	OrbitGame game = null;
-
+	LwjglApplication app = null;
 	static String ipAddress = "localhost";
 	private static final int portNumber = 6789;
 	private static Socket s = null;
@@ -60,7 +60,8 @@ public class Orbit {
 		config.title = "Interplanet Orbit";
 		config.width = 1000;
 		config.height = 700;
-		
+		config.forceExit = false;
+
 		int playerID = -1;
 		for(int i = 0 ; i < gameData.players.size(); i++){
 			if(gameData.players.get(i).getUsername().equals(currentUser.getUsername())) 
@@ -73,18 +74,22 @@ public class Orbit {
 		}
 		System.out.println("Launching game");
 		game = new OrbitGame(gameData, playerID);
-		new LwjglApplication(game, config);
-	    
+		app = new LwjglApplication(game, config);
+
 	    
 	    System.out.println("Game has been launched");
 	    Timer checkIfGameOver = new Timer("Check if game is over");
 	    checkIfGameOver.schedule(new TimerTask(){
 	    	public void run(){
-	    		//if(game.isGameOver){
-	    			
-	    		//}
+	    		if(game.isGameOver){
+	    			System.out.println("Game has ended");
+	    			lobby.profileButton.setEnabled(true);
+	    			lobby.findGameButton.setEnabled(true);
+	    			this.cancel();
+	    		}
 	    	}
 	    }, 0l, 2000l);
+	    
 		
 	}
 

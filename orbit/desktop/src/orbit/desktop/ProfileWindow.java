@@ -34,6 +34,10 @@ public class ProfileWindow extends Window{
 	private JPanel planetPanel;			//these panels will be the 3 various profile screens
 	private JPanel inventoryPanel;
 
+	
+	private JLabel moneyLabel;
+	private JLabel userLabel;
+
 	private Vector<WeaponGui> weaponPanels = new Vector<WeaponGui>();
 
 	private JOrbitButton backButton;
@@ -55,6 +59,8 @@ public class ProfileWindow extends Window{
 		inventoryPanel = new JPanel();
 		inventoryPanel.setLayout(new BoxLayout(inventoryPanel, BoxLayout.Y_AXIS));
 		buttonPanel = new JPanel();
+		moneyLabel = new JLabel("$"+orbit.currentUser.getMoney());
+		userLabel = new JLabel(orbit.currentUser.getUsername());
 
 		setupPanels();
 
@@ -102,6 +108,10 @@ public class ProfileWindow extends Window{
 			}
 		});
 		jcb.setSelectedItem(orbit.currentUser.planetPath.substring(orbit.currentUser.planetPath.lastIndexOf('/')+1));
+		
+		planetPanel.setLayout(new BoxLayout(planetPanel, BoxLayout.Y_AXIS));
+		planetPanel.add(userLabel);
+		planetPanel.add(moneyLabel);
 		planetPanel.add(jcb);
 	}
 	
