@@ -337,7 +337,6 @@ public class OrbitGame extends ApplicationAdapter{
 				player.setWeapon(currentWeapon);
 				//player.fire((int)powerPercent, angle, gameObjects);
 				playerTurnOver(powerPercent, (float)angle);
-
 				gameState = GameState.WAITING;
 				break;
 			case WAITING: // Turn over, waiting for other player
@@ -386,8 +385,10 @@ public class OrbitGame extends ApplicationAdapter{
 		} else {
 			String whichuser = "You are Player " + (playerIndex+1);
 			writer.draw(batch,whichuser, -800,-400);
-			String currentUserText = "Player " + (currentPlayer + 1) + "'s Turn";
-			writer.draw(batch, currentUserText, 400, -400);
+			if(myturn){
+				String currentUserText = "Your Turn";
+				writer.draw(batch, currentUserText, 400, -400);
+			}
 		}
 		batch.end();
 
