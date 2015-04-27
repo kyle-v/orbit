@@ -76,20 +76,20 @@ public class Orbit {
 		game = new OrbitGame(gameData, playerID, s);
 		app = new LwjglApplication(game, config);
 
-	    
-	    System.out.println("Game has been launched");
-	    Timer checkIfGameOver = new Timer("Check if game is over");
-	    checkIfGameOver.schedule(new TimerTask(){
-	    	public void run(){
-	    		if(game.isGameOver || game == null || app == null){
-	    			lobby.enableButtons(true);
-	    			System.out.println("Game has ended");
-	    			this.cancel();
-	    		}
-	    	}
-	    }, 0l, 2000l);
-	    
-		
+
+		System.out.println("Game has been launched");
+		Timer checkIfGameOver = new Timer("Check if game is over");
+		checkIfGameOver.schedule(new TimerTask(){
+			public void run(){
+				if(game.isGameOver || game == null || app == null){
+					lobby.enableButtons(true);
+					System.out.println("Game has ended");
+					this.cancel();
+				}
+			}
+		}, 0l, 2000l);
+
+
 	}
 
 	public static void main (String[] arg) {
@@ -124,8 +124,8 @@ public class Orbit {
 			ois = new ObjectInputStream(s.getInputStream());
 			return true;
 		} catch (UnknownHostException e1) { e1.printStackTrace();
-			System.out.println("UnknownHostException");
-			return false;
+		System.out.println("UnknownHostException");
+		return false;
 		} catch (IOException e1) { //e1.printStackTrace();
 			System.out.println("Could not connect to server.");
 			JOptionPane.showMessageDialog(null,
@@ -137,18 +137,21 @@ public class Orbit {
 		}
 	}
 
-	public static synchronized Object sendRequest(ServerRequest sr){
+	public static Object sendRequest(ServerRequest sr){
 		Object response = null;
-		try {
-			//System.out.println("Sending ServerRequest...");
-			oos.reset();
-			oos.writeObject(sr);
-			oos.flush();
-			//System.out.println("ServerRequest sent. Waiting for response...");
-			response = ois.readObject();
-			//System.out.println("Got response. Returned.");
-		} catch (IOException e) { e.printStackTrace();
-		} catch (ClassNotFoundException e) { e.printStackTrace();
+		synchronized(s){
+
+			try {
+				//System.out.println("Sending ServerRequest...");
+				oos.reset();
+				oos.writeObject(sr);
+				oos.flush();
+				//System.out.println("ServerRequest sent. Waiting for response...");
+				response = ois.readObject();
+				//System.out.println("Got response. Returned.");
+			} catch (IOException e) { e.printStackTrace();
+			} catch (ClassNotFoundException e) { e.printStackTrace();
+			}
 		}
 		return response;
 	}
