@@ -9,9 +9,12 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
+
+
 
 
 
@@ -19,6 +22,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -134,6 +138,21 @@ public class OrbitGame extends ApplicationAdapter{
 	float player1Health;
 	float player2Health;
 	
+	private static HashMap<String, String> themeSongs;
+	static
+    {
+        themeSongs = new HashMap<String, String>();
+        themeSongs.put("planets/miller.png", "imperial.wav");
+        themeSongs.put("planets/classicford.png", "mygirl.wav");
+        themeSongs.put("planets/deathstar.png", "starwars.wav");
+        themeSongs.put("planets/earth.png", "starwars.wav");
+        themeSongs.put("planets/moon.png", "starwars.wav");
+        themeSongs.put("planets/neptune.png", "starwars.wav");
+        themeSongs.put("planets/worker.png", "ymca.wav");
+        themeSongs.put("planets/gangsterford.png", "howwedo.wav");
+        themeSongs.put("planets/mars.png", "starwars.wav");
+    }
+	
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 
@@ -150,7 +169,10 @@ public class OrbitGame extends ApplicationAdapter{
 	
 	@Override
 	public void create () {
-		
+
+		System.out.println(themeSongs.get(players.get(playerIndex).planetPath));
+		Sound themeSound = AssetLibrary.getSound(themeSongs.get(players.get(playerIndex).planetPath));
+		themeSound.play();
 		gameState = GameState.CONNECTING;
 		//setup server stuff
 		if (playerIndex == 0){
