@@ -30,6 +30,6 @@ public class WeaponGenerator {
 		float mass = random.nextFloat() * (MAX_MASS - 1) + 1;
 		float speed = random.nextFloat() * (MAX_SPEED - 1) + 1;
 		
-		return new Rocket(name,damage,cooldown,mass,speed,"weaponTexture1.png","rocket.png");
+		return new Rocket(name,damage,cooldown,mass,speed,"weapons/weaponTexture1.png","projectiles/rocket.png");
 	}
 }
