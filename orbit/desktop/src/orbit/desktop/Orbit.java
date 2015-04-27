@@ -73,9 +73,7 @@ public class Orbit {
 			return;
 		}
 		System.out.println("Launching game");
-		synchronized(oos){
 		game = new OrbitGame(gameData, playerID, oos, ois);
-		}
 		app = new LwjglApplication(game, config);
 
 
@@ -141,7 +139,7 @@ public class Orbit {
 
 	public static Object sendRequest(ServerRequest sr){
 		Object response = null;
-		synchronized(s){
+		synchronized(oos){
 
 			try {
 				//System.out.println("Sending ServerRequest...");
