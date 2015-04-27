@@ -758,6 +758,7 @@ public class OrbitGame extends ApplicationAdapter{
 		}
 		isGameOver = true;
 		win = true;
+		gc.isAlive = false;
 	}
 	
 	public void reportLoss(){
@@ -767,6 +768,7 @@ public class OrbitGame extends ApplicationAdapter{
 		writer.setColor(Color.YELLOW);
 		isGameOver = true;
 		win = false;
+		gc.isAlive = false;
 	}
 	
 	public class GameOverDialog extends Dialog{
