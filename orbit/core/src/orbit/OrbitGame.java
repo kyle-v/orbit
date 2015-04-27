@@ -172,7 +172,8 @@ public class OrbitGame extends ApplicationAdapter{
 
 		System.out.println(themeSongs.get(players.get(playerIndex).planetPath));
 		Sound themeSound = AssetLibrary.getSound(themeSongs.get(players.get(playerIndex).planetPath));
-		themeSound.play();
+		if(themeSound != null)
+			themeSound.play();
 		gameState = GameState.CONNECTING;
 		//setup server stuff
 		if (playerIndex == 0){
