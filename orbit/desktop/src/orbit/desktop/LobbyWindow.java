@@ -119,6 +119,9 @@ public class LobbyWindow extends Window{
 			userContainer.add(temp);
 			aviPanels.add(temp);
 		}
+		for(int i = 12 - currentUsers.size(); i >= 0 ;i--){
+			userContainer.add(new JLabel());
+		}
 		userContainer.revalidate();
 		userContainer.repaint();
 	}
@@ -299,8 +302,8 @@ public class LobbyWindow extends Window{
 			trade = new JOrbitButton("Trade");
 			acceptButton = new JOrbitButton("Accept");
 			declineButton = new JOrbitButton("Decline");
-			buttonContainer.add(playGame);
-			buttonContainer.add(trade);
+			//buttonContainer.add(playGame);
+			//buttonContainer.add(trade);
 			statusLabel = new JLabel();
 			if(user != null){
 				statusLabel.setText(user.getUsername());
