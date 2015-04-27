@@ -119,12 +119,14 @@ public class OrbitServerThread extends Thread {
 			//opponents vector should be the same in all clients that are in the same game
 			
 			sendResponse(gameData);
+			if(gameData != null) gameData = null;
 		}else if(request.equals("Update User")){
 			User u = (User)o;
 			server.activeUsers.remove(this.user);
 			server.activeUsers.add(u);
 			this.user = u;
 			server.d.usernameToUserMap.replace(user.getUsername(), user);
+			System.out.println("Updated " + u.getUsername() + " weapons = " + u.weapons.size());
 			sendResponse("Done");
 		}else if(request.equals("User to Profile Screen")){
 			server.readyClients.remove(server.usernameToThreadMap.get(user.getUsername()));
