@@ -73,7 +73,9 @@ public class Orbit {
 			return;
 		}
 		System.out.println("Launching game");
-		game = new OrbitGame(gameData, playerID, s);
+		synchronized(oos){
+		game = new OrbitGame(gameData, playerID, oos, ois);
+		}
 		app = new LwjglApplication(game, config);
 
 
