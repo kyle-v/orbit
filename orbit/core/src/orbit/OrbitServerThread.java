@@ -54,7 +54,10 @@ public class OrbitServerThread extends Thread {
 		} 
 		finally{
 			System.out.println("Client disconnected");
-			if(user!= null)Server.activeUsers.remove(user);
+			if(user!= null){
+				Server.activeUsers.remove(user);
+				server.usernameToThreadMap.remove(user.getUsername());
+			}
 			server.clients.remove(this);
 			if(server.readyClients.contains(this)){
 				server.readyClients.remove(this);

@@ -155,6 +155,11 @@ public class ProfileWindow extends Window{
 		}
 	}
 	
+	@Override
+	public void setVisible(boolean set){
+		super.setVisible(set);
+		checkMoney();
+	}
 
 	public void checkMoney(){
 		for(WeaponGui wg: weaponPanels){
@@ -163,6 +168,7 @@ public class ProfileWindow extends Window{
 			if(orbit.currentUser.getMoney() < wg.weapon.speedUpgradeCost) wg.upgradeSpeed.setEnabled(false);
 			else wg.upgradeDamage.setEnabled(true);
 		}
+		moneyLabel.setText("$"+orbit.currentUser.getMoney());
 
 	}
 

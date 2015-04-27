@@ -83,8 +83,10 @@ public class Orbit {
 	    	public void run(){
 	    		if(game.isGameOver){
 	    			System.out.println("Game has ended");
-	    			lobby.profileButton.setEnabled(true);
-	    			lobby.findGameButton.setEnabled(true);
+	    			if(game.win){
+	    				Orbit.sendRequest(new ServerRequest("Update user", game.players.get(game.playerIndex)));
+	    			}
+	    			lobby.enableButtons(true);
 	    			this.cancel();
 	    		}
 	    	}

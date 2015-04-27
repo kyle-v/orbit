@@ -162,8 +162,7 @@ public class LobbyWindow extends Window{
 							ww.gameStarted = true;
 							//dispatchEvent(new WindowEvent(ww, WindowEvent.WINDOW_CLOSING));
 							this.cancel();
-							findGameButton.setEnabled(false);
-							profileButton.setEnabled(false);
+							enableButtons(false);
 							orbit.launchGame(gameData);
 						}else{
 							if(ww.time == 0){
