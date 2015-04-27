@@ -119,7 +119,6 @@ public class OrbitServerThread extends Thread {
 			//opponents vector should be the same in all clients that are in the same game
 			
 			sendResponse(gameData);
-			if(gameData != null) gameData = null;
 		}else if(request.equals("Update User")){
 			User u = (User)o;
 			server.activeUsers.remove(this.user);
